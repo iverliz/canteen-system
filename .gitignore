@@ -28,3 +28,6 @@ Thumbs.db
 # Database backups
 *.sql
 *.sql.zip
+
+# VS Code History
+.history/
