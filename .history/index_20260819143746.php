@@ -11,6 +11,7 @@ session_start();
     <title>Canteen System</title>
     <link rel="stylesheet" href="assests/css/style.css">
     <link href="auth/login.php" rel="stylesheet">
+    <link rel="stylesheet" href="assests/css/login1111.css">
     <link href="auth/register.php" rel="stylesheet">
 </head>
 

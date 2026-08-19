@@ -13,9 +13,6 @@ session_start();
     <title>Login - Canteen System</title>
 
     <link rel="stylesheet" href="../assests/css/login.css">
-    <link href="auth/register.php" rel="stylesheet">
-    
-
 </head>
 
 <body>
@@ -24,12 +21,12 @@ session_start();
 
         <!-- Decorative food images -->
         <img src="../assests/images/hotdog.png" class="food food-hotdog" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut" alt="">
-        <img src="../assests/images/burger.png" class="food food-burger" alt="">
-        <img src="../assests/images/pizza.png" class="food food-pizza" alt="">
-        <img src="../assests/images/noodles.png" class="food food-noodles" alt="">
-        <img src="../assests/images/cake.png" class="food food-cake" alt="">
-        <img src="../assests/images/drink.png" class="food food-drink" alt="">
+        <img src="assests/images/donut.png" class="food food-donut" alt="">
+        <img src="assests/images/burger.png" class="food food-burger" alt="">
+        <img src="assests/images/pizza.png" class="food food-pizza" alt="">
+        <img src="assests/images/noodles.png" class="food food-noodles" alt="">
+        <img src="assests/images/cake.png" class="food food-cake" alt="">
+        <img src="assests/images/drink.png" class="food food-drink" alt="">
 
         <div class="login-box">
 
@@ -70,17 +67,14 @@ session_start();
                         <span>✓</span> Log In
                     </button>
 
-                    <a href="register.php" class="signup-btn">
+                    <a href="signup.php" class="signup-btn">
                         <span>□</span> SIGN UP
                     </a>
 
                 </div>
 
             </form>
-        
-             <a href="forgot_password.php" class="forgot-password">
-        Forgot Password?
-    </a>
+
         </div>
 
     </div>

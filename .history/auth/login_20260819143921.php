@@ -12,10 +12,7 @@ session_start();
 
     <title>Login - Canteen System</title>
 
-    <link rel="stylesheet" href="../assests/css/login.css">
-    <link href="auth/register.php" rel="stylesheet">
-    
-
+    <link rel="stylesheet" href="assests/css/login.css">111111
 </head>
 
 <body>
@@ -23,13 +20,13 @@ session_start();
     <div class="login-container">
 
         <!-- Decorative food images -->
-        <img src="../assests/images/hotdog.png" class="food food-hotdog" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut" alt="">
-        <img src="../assests/images/burger.png" class="food food-burger" alt="">
-        <img src="../assests/images/pizza.png" class="food food-pizza" alt="">
-        <img src="../assests/images/noodles.png" class="food food-noodles" alt="">
-        <img src="../assests/images/cake.png" class="food food-cake" alt="">
-        <img src="../assests/images/drink.png" class="food food-drink" alt="">
+        <img src="assets/images/hotdog.png" class="food food-hotdog" alt="">
+        <img src="assets/images/donut.png" class="food food-donut" alt="">
+        <img src="assets/images/burger.png" class="food food-burger" alt="">
+        <img src="assets/images/pizza.png" class="food food-pizza" alt="">
+        <img src="assets/images/noodles.png" class="food food-noodles" alt="">
+        <img src="assets/images/cake.png" class="food food-cake" alt="">
+        <img src="assets/images/drink.png" class="food food-drink" alt="">
 
         <div class="login-box">
 
@@ -70,17 +67,14 @@ session_start();
                         <span>✓</span> Log In
                     </button>
 
-                    <a href="register.php" class="signup-btn">
+                    <a href="signup.php" class="signup-btn">
                         <span>□</span> SIGN UP
                     </a>
 
                 </div>
 
             </form>
-        
-             <a href="forgot_password.php" class="forgot-password">
-        Forgot Password?
-    </a>
+
         </div>
 
     </div>

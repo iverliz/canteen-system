@@ -78,9 +78,7 @@ session_start();
 
             </form>
         
-             <a href="forgot_password.php" class="forgot-password">
-        Forgot Password?
-    </a>
+            
         </div>
 
     </div>

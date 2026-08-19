@@ -12,7 +12,7 @@ session_start();
 
     <title>Sign Up - Canteen System</title>
 
-    <link rel="stylesheet" href="../assests/css/register.css">
+    <link rel="stylesheet" href="../assets/css/register.css">
 </head>
 
 <body>
@@ -20,12 +20,12 @@ session_start();
     <div class="signup-container">
 
         <!-- Decorative food images -->
-        <img src="../assests/images/burger.png" class="food food-burger-top" alt="">
-        <img src="../assests/images/pizza.png" class="food food-pizza-top" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut-top" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut-center" alt="">
-        <img src="../assests/images/food.png" class="food food-center" alt="">
-        <img src="../assests/images/burger.png" class="food food-burger-bottom" alt="">
+        <img src="../assets/images/burger.png" class="food food-burger-top" alt="">
+        <img src="../assets/images/pizza.png" class="food food-pizza-top" alt="">
+        <img src="../assets/images/donut.png" class="food food-donut-top" alt="">
+        <img src="../assets/images/donut.png" class="food food-donut-center" alt="">
+        <img src="../assets/images/food.png" class="food food-center" alt="">
+        <img src="../assets/images/burger.png" class="food food-burger-bottom" alt="">
         <img src="../assets/images/noodles.png" class="food food-noodles" alt="">
 
         <div class="signup-box">

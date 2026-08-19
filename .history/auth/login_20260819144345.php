@@ -13,7 +13,6 @@ session_start();
     <title>Login - Canteen System</title>
 
     <link rel="stylesheet" href="../assests/css/login.css">
-    <link href="auth/register.php" rel="stylesheet">
     
 
 </head>
@@ -70,17 +69,14 @@ session_start();
                         <span>✓</span> Log In
                     </button>
 
-                    <a href="register.php" class="signup-btn">
+                    <a href="signup.php" class="signup-btn">
                         <span>□</span> SIGN UP
                     </a>
 
                 </div>
 
             </form>
-        
-             <a href="forgot_password.php" class="forgot-password">
-        Forgot Password?
-    </a>
+
         </div>
 
     </div>

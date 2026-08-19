@@ -12,7 +12,8 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     >
 
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
@@ -28,7 +29,7 @@
 
         <nav class="menu">
 
-            <a href="#" class="active">
+            <a href="dashboard.php" class="active">
                 <i class="fa-solid fa-gauge"></i>
                 Dashboard
             </a>

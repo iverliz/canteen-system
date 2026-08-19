@@ -9,9 +9,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Canteen System</title>
-    <link rel="stylesheet" href="assests/css/style.css">
-    <link href="auth/login.php" rel="stylesheet">
-    <link href="auth/register.php" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
@@ -22,7 +20,7 @@ session_start();
         <div class="left">
 
             <div class="logo">
-                ORDERFOOD
+                CANTEEN SYSTEM
             </div>
 
             <h1>
