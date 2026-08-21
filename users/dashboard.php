@@ -1,40 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>OrderEats Dashboard</title>
 
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    >
-
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assests/css/dashboard_user.css">
 </head>
 
 <body>
 
-<div class="app-container">
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-    <!-- ================= SIDEBAR ================= -->
+    const profileBtn = document.getElementById("profileBtn");
+    const profileDropdown = document.getElementById("profileDropdown");
+
+    profileBtn.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        profileDropdown.classList.toggle("show");
+
+    });
+
+    profileDropdown.addEventListener("click", function (event) {
+        event.stopPropagation();
+    });
+
+    document.addEventListener("click", function () {
+
+        profileDropdown.classList.remove("show");
+
+    });
+
+});
+</script>
+<div class="dashboard-container">
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+
     <aside class="sidebar">
 
         <div class="logo">
-            <h2>Order<span>Eats</span></h2>
+            Order<span>Eats</span>
         </div>
 
-        <nav class="menu">
+        <nav class="sidebar-menu">
 
-            <a href="#" class="active">
-                <i class="fa-solid fa-gauge"></i>
+            <a href="dashboard.php" class="menu-item active">
                 Dashboard
             </a>
 
-            <a href="menu.php">
-                <i class="fa-solid fa-utensils"></i>
+            <a href="menu.php" class="menu-item">
                 Menu
             </a>
 
@@ -44,427 +64,170 @@
 
 
     <!-- ================= MAIN CONTENT ================= -->
+
     <main class="main-content">
 
-        <!-- TOP HEADER -->
+        <!-- HEADER -->
+
         <header class="top-header">
 
             <h1>DASHBOARD</h1>
 
-            <div class="search-bar">
-                <input
-                    type="text"
-                    placeholder="Search Food"
-                >
-
-                <button type="button">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+            <div class="search-box">
+                <input type="text" placeholder="Search Food">
+                <span class="search-icon">⌕</span>
             </div>
 
-            <div class="menu-toggle">
-                <i class="fa-solid fa-bars"></i>
+
+            <!-- ================= PROFILE ================= -->
+
+            <div class="profile-container">
+
+    <button type="button" class="profile-button" id="profileBtn">
+
+        <div class="profile-icon">👤</div>
+
+        <span class="profile-name"></span>
+
+        <span class="profile-arrow">⌄</span>
+
+    </button>
+
+
+    <div class="profile-dropdown" id="profileDropdown">
+
+        <div class="profile-info">
+
+            <div class="profile-large-icon">👤</div>
+
+            <div>
+                <strong></strong>
+                <small>Student</small>
             </div>
 
+        </div>
+
+
+        <div class="dropdown-divider"></div>
+<a href="../auth/logout.php" class="logout-button">
+    🚪 Logout
+</a>
+        </a>
+
+    </div>
+
+</div>
         </header>
 
 
-        <!-- ================= PROMO BANNER ================= -->
-        <section class="banner">
+        <!-- ================= PROMOTION BANNER ================= -->
 
-            <div class="banner-text">
+        <section class="promo-banner">
 
-                <h2>
-                    Craving Something
-                    <br>
-                    <span class="highlight">Tasty?</span>
-                </h2>
+    <div class="promo-content">
 
-                <p class="price">₱99</p>
+        <span class="promo-small">TODAY'S SPECIAL</span>
 
-                <button type="button" class="btn-banner-order">
-                    Order
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </button>
+        <h2>Delicious Food<br>For Only ₱50!</h2>
 
-            </div>
+        <p>
+            Grab your favorite canteen meals at an affordable price.
+        </p>
 
-            <div class="banner-image">
+        <a href="menu.php" class="promo-button">
+            Order Now
+        </a>
 
-                <img
-                    src="https://via.placeholder.com/350x200?text=Food+Banner+Art"
-                    alt="Food Banner"
-                >
+    </div>
 
-            </div>
+    <div class="promo-image">
+        <img src="../assests/css/images/hotdog.png" alt="Hotdog">
+    </div>
 
-        </section>
+</section>
 
 
         <!-- ================= POPULAR FOOD ================= -->
-        <section class="popular-food">
 
-            <h3>Popular Food</h3>
+        <section class="popular-section">
 
-            <div class="food-grid">
-
-                <?php
-
-                $foodItems = [
-
-                    [
-                        'title' => 'Fried Rice with Drinks',
-                        'rating' => 5,
-                        'price' => '₱99',
-                        'image' => 'https://via.placeholder.com/120'
-                    ],
-
-                    [
-                        'title' => 'Burger',
-                        'rating' => 5,
-                        'price' => '₱85',
-                        'image' => 'https://via.placeholder.com/120'
-                    ],
-
-                    [
-                        'title' => 'Spaghetti',
-                        'rating' => 5,
-                        'price' => '₱75',
-                        'image' => 'https://via.placeholder.com/120'
-                    ],
-
-                    [
-                        'title' => 'Hotdog',
-                        'rating' => 5,
-                        'price' => '₱60',
-                        'image' => 'https://via.placeholder.com/120'
-                    ],
-
-                    [
-                        'title' => 'Pizza',
-                        'rating' => 5,
-                        'price' => '₱120',
-                        'image' => 'https://via.placeholder.com/120'
-                    ],
-
-                    [
-                        'title' => 'Chicken Meal',
-                        'rating' => 5,
-                        'price' => '₱110',
-                        'image' => 'https://via.placeholder.com/120'
-                    ],
-
-                    [
-                        'title' => 'Fries',
-                        'rating' => 5,
-                        'price' => '₱50',
-                        'image' => 'https://via.placeholder.com/120'
-                    ],
-
-                    [
-                        'title' => 'Sandwich',
-                        'rating' => 5,
-                        'price' => '₱70',
-                        'image' => 'https://via.placeholder.com/120'
-                    ]
-
-                ];
-
-                foreach ($foodItems as $item):
-                ?>
-
-                    <div class="food-card">
-
-                        <div class="food-img">
-
-                            <img
-                                src="<?php echo htmlspecialchars($item['image']); ?>"
-                                alt="<?php echo htmlspecialchars($item['title']); ?>"
-                            >
-
-                        </div>
-
-                        <h4>
-                            <?php echo htmlspecialchars($item['title']); ?>
-                        </h4>
-
-                        <div class="rating">
-
-                            <?php for ($i = 0; $i < $item['rating']; $i++): ?>
-
-                                <i class="fa-solid fa-star"></i>
-
-                            <?php endfor; ?>
-
-                        </div>
-
-                        <div class="card-footer">
-
-                            <span class="card-price">
-                                <?php echo htmlspecialchars($item['price']); ?>
-                            </span>
-
-                            <button
-                                type="button"
-                                class="btn-card-order"
-                            >
-                                ORDER
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                <?php endforeach; ?>
-
-            </div>
+            <h2 class="section-title">
+                Popular Food
+            </h2>
 
         </section>
 
     </main>
 
 
-    <!-- ================= RIGHT PANEL ================= -->
-    <aside class="right-panel">
+    <!-- ================= RIGHT SIDEBAR ================= -->
+
+    <aside class="right-sidebar">
 
 
-        <!-- ORDER HISTORY -->
-        <div class="panel-card history-card">
+        <!-- ================= HISTORY ORDER ================= -->
 
-            <h3>Order History</h3>
+        <section class="history-box">
 
-            <div class="history-list">
+            <h2>History Order</h2>
 
-                <div class="history-item">
+            <!--
+                Previous purchases will appear here later.
 
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Spaghetti"
-                    >
+                Example:
+                - Food image
+                - Food name
+                - Quantity
+                - Date
+            -->
 
-                    <span class="item-name">
-                        Spaghetti
-                    </span>
-
-                    <span class="item-qty">
-                        x1
-                    </span>
-
-                </div>
-
-
-                <div class="history-item">
-
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Burger"
-                    >
-
-                    <span class="item-name">
-                        Burger
-                    </span>
-
-                    <span class="item-qty">
-                        x1
-                    </span>
-
-                </div>
-
-
-                <div class="history-item">
-
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Pizza"
-                    >
-
-                    <span class="item-name">
-                        Pizza
-                    </span>
-
-                    <span class="item-qty">
-                        x1
-                    </span>
-
-                </div>
+            <div class="history-content">
 
             </div>
 
-        </div>
+        </section>
 
 
-        <!-- MY ORDER -->
-        <div class="panel-card order-card">
+        <!-- ================= MY ORDER ================= -->
 
-            <h3>My Order</h3>
+       <!-- ================= MY ORDER ================= -->
 
-            <div class="order-list">
+<section class="my-order-box">
 
+    <h2>My Order</h2>
 
-                <!-- BURGER -->
-                <div class="order-item">
+    <!-- FOOD ORDERS WILL APPEAR HERE LATER -->
 
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Burger"
-                    >
-
-                    <div class="order-details">
-
-                        <span class="item-name">
-                            Burger
-                        </span>
-
-                        <span class="item-qty">
-                            x1
-                        </span>
-
-                    </div>
-
-                    <span class="item-price">
-                        ₱25
-                    </span>
-
-                </div>
+    <div class="my-order-content">
+    </div>
 
 
-                <!-- SPAGHETTI -->
-                <div class="order-item">
+    <!-- ORDER TOTAL -->
 
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Spaghetti"
-                    >
+    <div class="order-total">
 
-                    <div class="order-details">
+        <span>Total</span>
 
-                        <span class="item-name">
-                            Spaghetti
-                        </span>
+        <strong>₱0.00</strong>
 
-                        <span class="item-qty">
-                            x1
-                        </span>
-
-                    </div>
-
-                    <span class="item-price">
-                        ₱25
-                    </span>
-
-                </div>
+    </div>
 
 
-                <!-- HOTDOG -->
-                <div class="order-item">
+    <!-- CHECKOUT -->
 
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Hotdog"
-                    >
+    <div class="checkout-area">
 
-                    <div class="order-details">
+        <button type="button" class="checkout-button">
+            Checkout
+        </button>
 
-                        <span class="item-name">
-                            Hotdog
-                        </span>
+    </div>
 
-                        <span class="item-qty">
-                            x1
-                        </span>
-
-                    </div>
-
-                    <span class="item-price">
-                        ₱25
-                    </span>
-
-                </div>
-
-
-                <!-- PIZZA -->
-                <div class="order-item">
-
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Pizza"
-                    >
-
-                    <div class="order-details">
-
-                        <span class="item-name">
-                            Pizza
-                        </span>
-
-                        <span class="item-qty">
-                            x1
-                        </span>
-
-                    </div>
-
-                    <span class="item-price">
-                        ₱25
-                    </span>
-
-                </div>
-
-
-                <!-- BURGER -->
-                <div class="order-item">
-
-                    <img
-                        src="https://via.placeholder.com/40"
-                        alt="Burger"
-                    >
-
-                    <div class="order-details">
-
-                        <span class="item-name">
-                            Burger
-                        </span>
-
-                        <span class="item-qty">
-                            x1
-                        </span>
-
-                    </div>
-
-                    <span class="item-price">
-                        ₱25
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- ORDER FOOTER -->
-            <div class="order-footer">
-
-                <div class="total-row">
-
-                    <span>Total:</span>
-
-                    <span class="total-price">
-                        ₱125
-                    </span>
-
-                </div>
-
-                <button
-                    type="button"
-                    class="btn-checkout"
-                >
-                    CHECK OUT
-                </button>
-
-            </div>
-
-        </div>
-
-    </aside>
-
+</section>
 </div>
 
+
+
 </body>
+
 </html>
