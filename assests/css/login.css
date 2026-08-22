@@ -21,7 +21,9 @@ body {
 
 body {
     font-family: Arial, Helvetica, sans-serif;
+
     background: #f8e9b5;
+
     overflow: hidden;
 }
 
@@ -176,7 +178,9 @@ body {
 }
 
 
-/* LOGIN */
+/* =========================================
+   LOGIN BUTTON
+========================================= */
 
 .login-btn {
     width: 95px;
@@ -199,7 +203,9 @@ body {
 }
 
 
-/* SIGN UP */
+/* =========================================
+   SIGN UP BUTTON
+========================================= */
 
 .signup-btn {
     width: 113px;
@@ -223,7 +229,7 @@ body {
 
 
 /* =========================================
-   FOOD DECORATIONS
+   FOOD IMAGES
 ========================================= */
 
 .food {
@@ -231,13 +237,17 @@ body {
 
     z-index: 2;
 
+    display: block;
+
     pointer-events: none;
 
     user-select: none;
 }
 
 
-/* TOP LEFT */
+/* =========================================
+   TOP LEFT - HOTDOG
+========================================= */
 
 .food-hotdog {
     width: 180px;
@@ -249,7 +259,9 @@ body {
 }
 
 
-/* TOP RIGHT */
+/* =========================================
+   TOP RIGHT - DONUT
+========================================= */
 
 .food-donut {
     width: 180px;
@@ -261,7 +273,9 @@ body {
 }
 
 
-/* CENTER PIZZA */
+/* =========================================
+   CENTER RIGHT - PIZZA
+========================================= */
 
 .food-pizza {
     width: 190px;
@@ -275,9 +289,11 @@ body {
 }
 
 
-/* LEFT SIDE PIZZA */
+/* =========================================
+   LEFT SIDE - SMALL PIZZA
+========================================= */
 
-.food-pizza:nth-of-type(4) {
+.food-pizza-small {
     width: 100px;
 
     top: 300px;
@@ -287,9 +303,11 @@ body {
 }
 
 
-/* CENTER FOOD */
+/* =========================================
+   CENTER FOOD - SPAGHETTI
+========================================= */
 
-.food-cake {
+.food-spagetti {
     width: 180px;
 
     top: 425px;
@@ -299,7 +317,9 @@ body {
 }
 
 
-/* BOTTOM LEFT BURGER */
+/* =========================================
+   BOTTOM LEFT - BURGER
+========================================= */
 
 .food-burger {
     width: 155px;
@@ -311,9 +331,11 @@ body {
 }
 
 
-/* BOTTOM RIGHT NOODLES */
+/* =========================================
+   BOTTOM RIGHT - RAMEN
+========================================= */
 
-.food-noodles {
+.food-ramen {
     width: 180px;
 
     bottom: -45px;
@@ -323,7 +345,9 @@ body {
 }
 
 
-/* SMALL DRINK */
+/* =========================================
+   SMALL DRINK
+========================================= */
 
 .food-drink {
     width: 95px;
@@ -332,6 +356,22 @@ body {
     right: 5px;
 
     transform: rotate(15deg);
+}
+
+
+/* =========================================
+   TACOS
+========================================= */
+
+.food-tacos {
+    width: 105px;
+
+    top: 310px;
+    right: -25px;
+
+    transform: rotate(12deg);
+
+    opacity: 0.9;
 }
 
 
@@ -352,6 +392,7 @@ body {
 
     .login-box h1 {
         font-size: 40px;
+
         margin-bottom: 120px;
     }
 
@@ -361,6 +402,7 @@ body {
 
     .input-group input {
         height: 48px;
+
         font-size: 21px;
     }
 
@@ -376,7 +418,24 @@ body {
     .food-pizza {
         width: 150px;
     }
+
+    .food-spagetti {
+        width: 140px;
+    }
+
+    .food-burger {
+        width: 125px;
+    }
+
+    .food-ramen {
+        width: 145px;
+    }
+
+    .food-tacos {
+        width: 85px;
+    }
 }
+
 
 /* =========================================
    FORGOT PASSWORD
@@ -399,3 +458,4 @@ body {
 .forgot-password:hover {
     text-decoration: underline;
 }
+
