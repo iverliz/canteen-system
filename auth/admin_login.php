@@ -1,0 +1,98 @@
+<?php
+session_start();
+
+if (isset($_POST['login'])) {
+    $_SESSION['admin_logged_in'] = true;
+    header("Location: ../admin/dashboard-admin.php");
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login - Canteen System</title>
+
+    <link rel="stylesheet" href="../assests/css/admin_login.css">
+</head>
+
+<body>
+
+    <div class="admin-login-container">
+
+        <!-- Decorative food images -->
+        <img src="../assests/css/images/donut.png" class="food food-donut-top" alt="">
+        <img src="../assests/css/images/hotdog.png" class="food food-hotdog-top" alt="">
+        <img src="../assests/css/images/burger.png" class="food food-burger-top" alt="">
+        <img src="../assests/css/images/tacos.png" class="food food-tacos-right" alt="">
+        <img src="../assests/css/images/pizza.png" class="food food-pizza-left" alt="">
+        <img src="../assests/css/images/burger.png" class="food food-burger-bottom" alt="">
+        <img src="../assests/css/images/ramen.png" class="food food-ramen-bottom" alt="">
+
+        <div class="admin-login-box">
+
+            <span class="admin-badge">ADMIN</span>
+
+            <h1>LOGIN</h1>
+
+            <form action="admin_login.php" method="POST">
+
+                <!-- Username -->
+                <div class="input-group">
+                    <label for="username">Username</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Username"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="input-group password-group">
+                    <label for="password">Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                    >
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-container">
+
+                    <button
+                        type="submit"
+                        name="login"
+                        class="login-btn"
+                    >
+                        <span>✓</span> Log In
+                    </button>
+
+                    <a href="admin_register.php" class="signup-btn">
+                        <span>□</span> SIGN UP
+                    </a>
+
+                </div>
+
+            </form>
+
+            <!-- Forgot Password -->
+            <a href="admin_forgot_password.php" class="forgot-password">
+                Forgot Password?
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

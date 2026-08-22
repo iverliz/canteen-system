@@ -21,26 +21,26 @@ body {
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #f8e9b5;
+    background: #f2dca0;
     overflow: hidden;
 }
 
 
 /* =========================================
-   FORGOT CONTAINER (background collage layer)
+   ADMIN SIGNUP CONTAINER
 ========================================= */
 
-.forgot-container {
+.admin-signup-container {
     position: relative;
 
     width: 100%;
     max-width: 580px;
     height: 100vh;
-    min-height: 650px;
+    min-height: 760px;
 
     margin: 0 auto;
 
-    background: #fff0b9;
+    background: #ffe9a3;
 
     overflow: hidden;
 
@@ -56,111 +56,72 @@ body {
 
 .food {
     position: absolute;
-
     display: block;
-
     z-index: 1;
-
     pointer-events: none;
     user-select: none;
-
     object-fit: contain;
-
     opacity: 0.9;
 
     -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
     mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
 }
 
-
-/* =========================================
-   TOP CLUSTER
-========================================= */
-
-.food-noodles-top {
-    width: 170px;
-
-    top: -45px;
-    left: -50px;
-
+.food-burger-top {
+    width: 175px;
+    top: -50px;
+    left: -55px;
     transform: rotate(15deg);
 }
 
-.food-donut-top {
-    width: 140px;
-
-    top: -35px;
-    left: 45%;
-    transform: translateX(-50%) rotate(-10deg);
-}
-
-.food-burger-top {
-    width: 175px;
-
-    top: -50px;
-    right: -55px;
-
+.food-pizza-top {
+    width: 165px;
+    top: -45px;
+    right: -50px;
     transform: rotate(-12deg);
 }
 
-
-/* =========================================
-   SIDE ACCENTS
-========================================= */
+.food-donut-top {
+    width: 135px;
+    top: 15px;
+    left: 45%;
+    transform: translateX(-50%) rotate(10deg);
+}
 
 .food-donut-center {
     width: 120px;
-
-    top: 42%;
+    top: 45%;
     left: -50px;
+    transform: translateY(-50%) rotate(-15deg);
+}
+
+.food-tacos-center {
+    width: 130px;
+    top: 45%;
+    right: -50px;
     transform: translateY(-50%) rotate(15deg);
 }
 
-.food-burger-left {
-    width: 110px;
-
-    top: 62%;
+.food-burger-bottom {
+    width: 175px;
+    bottom: -50px;
     left: -50px;
-    transform: translateY(-50%) rotate(-10deg);
+    transform: rotate(-8deg);
 }
 
-
-/* =========================================
-   BOTTOM CLUSTER
-========================================= */
-
-.food-pizza-bottom {
-    width: 170px;
-
+.food-ramen-bottom {
+    width: 165px;
     bottom: -50px;
-    left: -55px;
-
+    right: -50px;
     transform: rotate(10deg);
 }
 
-.food-hotdog-bottom {
-    width: 160px;
-
-    bottom: -45px;
-    right: -50px;
-
-    transform: rotate(-15deg);
-}
-
-.food-noodles-right {
-    width: 130px;
-
-    top: 62%;
-    right: -50px;
-    transform: translateY(-50%) rotate(12deg);
-}
-
 
 /* =========================================
-   FORGOT CARD (floats above the collage)
+   ADMIN SIGNUP CARD
 ========================================= */
 
-.forgot-box {
+.admin-signup-box {
     position: relative;
 
     z-index: 10;
@@ -168,11 +129,34 @@ body {
     width: 82%;
     max-width: 420px;
 
-    padding: 42px 34px;
+    padding: 46px 34px 42px;
 
     background: rgba(255, 248, 222, 0.94);
     border-radius: 22px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+
+    border-top: 4px solid #b5502e;
+}
+
+
+/* =========================================
+   ADMIN BADGE
+========================================= */
+
+.admin-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: #b5502e;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 5px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -180,17 +164,13 @@ body {
    TITLE
 ========================================= */
 
-.forgot-box h1 {
+.admin-signup-box h1 {
     text-align: center;
-
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 400;
-    line-height: 1.25;
-
     color: #111;
-
-    margin-bottom: 34px;
-    letter-spacing: 1px;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
 }
 
 
@@ -200,75 +180,53 @@ body {
 
 .input-group {
     position: relative;
-
     width: 100%;
-
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 }
-
-
-/* =========================================
-   LABEL
-========================================= */
 
 .input-group label {
     display: block;
-
     font-size: 17px;
     font-weight: 400;
-
     color: #111;
-
     margin-bottom: 6px;
 }
 
-
-/* =========================================
-   INPUT
-========================================= */
-
-.input-group input {
+.input-group input,
+.input-group select {
     width: 100%;
     height: 44px;
-
     padding: 8px 12px;
-
     border: 1.5px solid #222;
     border-radius: 8px;
-
     background: rgba(255, 255, 255, 0.7);
-
     font-size: 17px;
-
     outline: none;
+    font-family: inherit;
+    color: #111;
 }
 
-
-/* =========================================
-   INPUT PLACEHOLDER
-========================================= */
+.input-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%23333' stroke-width='2' fill='none' fill-rule='evenodd'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+}
 
 .input-group input::placeholder {
     color: #777;
     opacity: 0.8;
 }
 
-
-/* =========================================
-   INPUT FOCUS
-========================================= */
-
-.input-group input:focus {
-    border-color: #333;
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #b5502e;
 }
 
-
-/* =========================================
-   PASSWORD
-========================================= */
-
 .password-group {
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
 
 
@@ -278,10 +236,8 @@ body {
 
 .button-container {
     display: flex;
-
     justify-content: space-between;
     align-items: center;
-
     width: 100%;
 }
 
@@ -290,61 +246,38 @@ body {
    BUTTONS
 ========================================= */
 
-.confirm-btn,
+.create-btn,
 .back-btn {
     display: flex;
-
     justify-content: center;
     align-items: center;
-
     height: 40px;
-
     border-radius: 7px;
-
     font-size: 15px;
-
     cursor: pointer;
-
     text-decoration: none;
 }
 
-
-/* =========================================
-   CONFIRM BUTTON
-========================================= */
-
-.confirm-btn {
-    width: 115px;
-
-    border: 1px solid #388e3c;
-
-    background: #4caf50;
-
+.create-btn {
+    width: 110px;
+    border: 1px solid #a04121;
+    background: #b5502e;
     color: white;
 }
 
-.confirm-btn:hover {
-    background: #43a047;
+.create-btn:hover {
+    background: #9c4526;
 }
 
-.confirm-btn span {
+.create-btn span {
     margin-right: 6px;
-
     font-size: 17px;
 }
 
-
-/* =========================================
-   BACK BUTTON
-========================================= */
-
 .back-btn {
     width: 100px;
-
     border: 1px solid #666;
-
     background: #9e9e9e;
-
     color: white;
 }
 
@@ -354,7 +287,6 @@ body {
 
 .back-btn span {
     margin-right: 6px;
-
     font-size: 16px;
 }
 
@@ -365,32 +297,29 @@ body {
 
 @media (max-width: 600px) {
 
-    .forgot-container {
-        width: 100%;
-    }
-
-    .forgot-box {
+    .admin-signup-box {
         width: 88%;
-        padding: 32px 24px;
+        padding: 42px 24px 32px;
     }
 
-    .forgot-box h1 {
-        font-size: 26px;
-        margin-bottom: 26px;
+    .admin-signup-box h1 {
+        font-size: 28px;
+        margin-bottom: 24px;
     }
 
     .input-group label {
         font-size: 15px;
     }
 
-    .input-group input {
+    .input-group input,
+    .input-group select {
         height: 42px;
         font-size: 15px;
     }
 
-    .food-noodles-top,
-    .food-burger-top {
-        width: 125px;
+    .food-burger-top,
+    .food-pizza-top {
+        width: 130px;
     }
 
     .food-donut-top {
@@ -398,13 +327,12 @@ body {
     }
 
     .food-donut-center,
-    .food-burger-left,
-    .food-noodles-right {
-        width: 90px;
+    .food-tacos-center {
+        width: 95px;
     }
 
-    .food-pizza-bottom,
-    .food-hotdog-bottom {
-        width: 125px;
+    .food-burger-bottom,
+    .food-ramen-bottom {
+        width: 130px;
     }
 }

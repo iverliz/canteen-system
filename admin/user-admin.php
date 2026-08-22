@@ -134,7 +134,7 @@
         <div class="sidebar-bottom">
 
             <a
-                href="#"
+                href="../auth/log_out_admin.php"
                 class="sidebar-link"
             >
 

@@ -20,14 +20,14 @@ session_start();
     <div class="forgot-container">
 
         <!-- Decorative food images -->
-        <img src="../assests/images/noodles.png" class="food food-noodles-top" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut-top" alt="">
-        <img src="../assests/images/burger.png" class="food food-burger-top" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut-center" alt="">
-        <img src="../assests/images/burger.png" class="food food-burger-left" alt="">
-        <img src="../assests/images/pizza.png" class="food food-pizza-bottom" alt="">
-        <img src="../assests/images/hotdog.png" class="food food-hotdog-bottom" alt="">
-        <img src="../assests/images/noodles.png" class="food food-noodles-right" alt="">
+        <img src="../assests/css/images/ramen.png" class="food food-noodles-top" alt="">
+        <img src="../assests/css/images/donut.png" class="food food-donut-top" alt="">
+        <img src="../assests/css/images/burger.png" class="food food-burger-top" alt="">
+        <img src="../assests/css/images/donut.png" class="food food-donut-center" alt="">
+        <img src="../assests/css/images/burger.png" class="food food-burger-left" alt="">
+        <img src="../assests/css/images/pizza.png" class="food food-pizza-bottom" alt="">
+        <img src="../assests/css/images/hotdog.png" class="food food-hotdog-bottom" alt="">
+        <img src="../assests/css/images/ramen.png" class="food food-noodles-right" alt="">
 
         <div class="forgot-box">
 

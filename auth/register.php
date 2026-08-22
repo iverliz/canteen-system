@@ -20,13 +20,13 @@ session_start();
     <div class="signup-container">
 
         <!-- Decorative food images -->
-        <img src="../assests/images/burger.png" class="food food-burger-top" alt="">
-        <img src="../assests/images/pizza.png" class="food food-pizza-top" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut-top" alt="">
-        <img src="../assests/images/donut.png" class="food food-donut-center" alt="">
-        <img src="../assests/images/food.png" class="food food-center" alt="">
-        <img src="../assests/images/burger.png" class="food food-burger-bottom" alt="">
-        <img src="../assets/images/noodles.png" class="food food-noodles" alt="">
+        <img src="../assests/css/images/burger.png" class="food food-burger-top" alt="">
+        <img src="../assests/css/images/pizza.png" class="food food-pizza-top" alt="">
+        <img src="../assests/css/images/donut.png" class="food food-donut-top" alt="">
+        <img src="../assests/css/images/donut.png" class="food food-donut-center" alt="">
+        <img src="../assests/css/images/tacos.png" class="food food-center" alt="">
+        <img src="../assests/css/images/burger.png" class="food food-burger-bottom" alt="">
+        <img src="../assests/css/images/ramen.png" class="food food-noodles" alt="">
 
         <div class="signup-box">
 
