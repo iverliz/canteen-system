@@ -1,11 +1,7 @@
 <?php
 session_start();
 
-/*
-|--------------------------------------------------------------------------
-| DATABASE CONNECTION
-|--------------------------------------------------------------------------
-*/
+/* DATABASE CONNECTION */
 
 $host = "localhost";
 $dbname = "canteen-system";
@@ -16,11 +12,7 @@ $message = "";
 $message_type = "";
 
 
-/*
-|--------------------------------------------------------------------------
-| PASSWORD RESET
-|--------------------------------------------------------------------------
-*/
+/* PASSWORD RESET */
 
 if (isset($_POST['confirm'])) {
 
@@ -30,11 +22,7 @@ if (isset($_POST['confirm'])) {
     $repeat_password = $_POST['repeat_password'] ?? "";
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | BASIC VALIDATION
-    |--------------------------------------------------------------------------
-    */
+    /* BASIC VALIDATION */
 
     if (
         empty($staff_id) ||
@@ -60,11 +48,7 @@ if (isset($_POST['confirm'])) {
 
         try {
 
-            /*
-            |--------------------------------------------------------------------------
-            | CONNECT TO DATABASE
-            |--------------------------------------------------------------------------
-            */
+            /* CONNECT TO DATABASE */
 
             $pdo = new PDO(
                 "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
@@ -77,11 +61,7 @@ if (isset($_POST['confirm'])) {
             );
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | FIND ACCOUNT USING STAFF ID
-            |--------------------------------------------------------------------------
-            */
+            /* FIND ACCOUNT USING STAFF ID */
 
             $stmt = $pdo->prepare("
                 SELECT *
@@ -95,11 +75,7 @@ if (isset($_POST['confirm'])) {
             $admin = $stmt->fetch();
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | CHECK IF ACCOUNT EXISTS
-            |--------------------------------------------------------------------------
-            */
+            /* CHECK IF ACCOUNT EXISTS */
 
             if (!$admin) {
 
@@ -108,11 +84,7 @@ if (isset($_POST['confirm'])) {
 
             } else {
 
-                /*
-                |--------------------------------------------------------------------------
-                | CHECK OLD PASSWORD
-                |--------------------------------------------------------------------------
-                */
+                /* CHECK OLD PASSWORD */
 
                 if (!password_verify($old_password, $admin['password'])) {
 
@@ -121,11 +93,7 @@ if (isset($_POST['confirm'])) {
 
                 } else {
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | HASH NEW PASSWORD
-                    |--------------------------------------------------------------------------
-                    */
+                    /* HASH NEW PASSWORD */
 
                     $hashed_password = password_hash(
                         $new_password,
@@ -133,11 +101,7 @@ if (isset($_POST['confirm'])) {
                     );
 
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | UPDATE PASSWORD
-                    |--------------------------------------------------------------------------
-                    */
+                    /* UPDATE PASSWORD */
 
                     $update = $pdo->prepare("
                         UPDATE admin_register
@@ -155,11 +119,7 @@ if (isset($_POST['confirm'])) {
                     $message_type = "success";
 
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | CLEAR FORM VALUES
-                    |--------------------------------------------------------------------------
-                    */
+                    /* CLEAR FORM VALUES */
 
                     $_POST = [];
                 }
@@ -202,9 +162,7 @@ if (isset($_POST['confirm'])) {
 <div class="forgot-page">
 
 
-    <!-- =================================
-         DECORATIVE FOOD IMAGES
-    ================================== -->
+    <!-- DECORATIVE FOOD IMAGES -->
 
     <img
         src="../assests/css/images/ramen.png"
@@ -255,9 +213,7 @@ if (isset($_POST['confirm'])) {
     >
 
 
-    <!-- =================================
-         FORGOT PASSWORD CARD
-    ================================== -->
+    <!-- FORGOT PASSWORD CARD -->
 
     <div class="forgot-card">
 
@@ -299,9 +255,7 @@ if (isset($_POST['confirm'])) {
         </p>
 
 
-        <!-- =================================
-             MESSAGE
-        ================================== -->
+        <!-- MESSAGE -->
 
         <?php if (!empty($message)): ?>
 
@@ -314,9 +268,7 @@ if (isset($_POST['confirm'])) {
         <?php endif; ?>
 
 
-        <!-- =================================
-             FORM
-        ================================== -->
+        <!-- FORM -->
 
         <form
             action="admin_forgot_password.php"

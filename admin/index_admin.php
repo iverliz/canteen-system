@@ -30,9 +30,7 @@ session_start();
 <div class="container">
 
 
-    <!-- =========================
-         LEFT SIDE
-    ========================== -->
+    <!-- LEFT SIDE -->
 
     <div class="left">
 
@@ -169,9 +167,7 @@ session_start();
 
 
 
-    <!-- =========================
-         RIGHT SIDE
-    ========================== -->
+    <!-- RIGHT SIDE -->
 
     <div class="right">
 

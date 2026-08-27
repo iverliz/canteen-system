@@ -1,3 +1,4 @@
+<!-- admin_login.php -->
 <?php
 
 session_start();
@@ -7,9 +8,7 @@ require_once "../config/database.php";
 $error = "";
 
 
-/* =========================================
-   LOGIN PROCESS
-========================================= */
+/* LOGIN PROCESS */
 
 if (isset($_POST['login'])) {
 
@@ -17,9 +16,7 @@ if (isset($_POST['login'])) {
     $password = $_POST['password'];
 
 
-    /* =========================================
-       CHECK EMPTY INPUT
-    ========================================= */
+    /* CHECK EMPTY INPUT */
 
     if (empty($username) || empty($password)) {
 
@@ -28,9 +25,7 @@ if (isset($_POST['login'])) {
     } else {
 
 
-        /* =========================================
-           FIND ADMIN ACCOUNT
-        ========================================= */
+        /* FIND ADMIN ACCOUNT */
 
         $stmt = $conn->prepare(
             "SELECT id, username, staff_id, role, password, status
@@ -49,18 +44,14 @@ if (isset($_POST['login'])) {
         $result = $stmt->get_result();
 
 
-        /* =========================================
-           CHECK ACCOUNT
-        ========================================= */
+        /* CHECK ACCOUNT */
 
         if ($result->num_rows === 1) {
 
             $admin = $result->fetch_assoc();
 
 
-            /* =========================================
-               CHECK ACCOUNT STATUS
-            ========================================= */
+            /* CHECK ACCOUNT STATUS */
 
             if ($admin['status'] !== 'active') {
 
@@ -69,9 +60,7 @@ if (isset($_POST['login'])) {
             }
 
 
-            /* =========================================
-               VERIFY PASSWORD
-            ========================================= */
+            /* VERIFY PASSWORD */
 
             elseif (
                 password_verify(
@@ -80,11 +69,7 @@ if (isset($_POST['login'])) {
                 )
             ) {
 
-                /*
-                =========================================
-                LOGIN SUCCESSFUL
-                =========================================
-                */
+                /* LOGIN SUCCESSFUL */
 
                 $_SESSION['admin_logged_in'] = true;
 
@@ -101,11 +86,7 @@ if (isset($_POST['login'])) {
                     $admin['role'];
 
 
-                /*
-                =========================================
-                REDIRECT
-                =========================================
-                */
+                /* REDIRECT */
 
                 header(
                     "Location: ../admin/dashboard-admin.php"
@@ -122,10 +103,6 @@ if (isset($_POST['login'])) {
 
         } else {
 
-            /*
-            Don't reveal whether the username
-            actually exists.
-            */
 
             $error =
                 "Incorrect username or password.";
@@ -166,9 +143,7 @@ if (isset($_POST['login'])) {
 <div class="login-page">
 
 
-    <!-- =================================
-         DECORATIVE FOOD IMAGES
-    ================================== -->
+    <!-- DECORATIVE FOOD IMAGES -->
 
     <img
         src="../assests/css/images/donut.png"
@@ -214,9 +189,7 @@ if (isset($_POST['login'])) {
 
 
 
-    <!-- =================================
-         LOGIN CARD
-    ================================== -->
+    <!-- LOGIN CARD -->
 
     <div class="login-card">
 
@@ -270,9 +243,7 @@ if (isset($_POST['login'])) {
 
 
 
-        <!-- =================================
-             LOGIN FORM
-        ================================== -->
+        <!-- LOGIN FORM -->
 
         <form
             action="admin_login.php"
@@ -324,7 +295,7 @@ if (isset($_POST['login'])) {
                         class="show-password"
                         aria-label="Show password"
                     >
-                        👁
+                        👁️
                     </button>
 
                 </div>

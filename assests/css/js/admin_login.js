@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             passwordInput.type = "password";
 
-            togglePassword.textContent = "👁";
+            togglePassword.textContent = "👁️";
 
             togglePassword.setAttribute(
                 "aria-label",

@@ -1,93 +1,22 @@
 /* categories-admin.js */
-const CATEGORY_STORAGE_KEY =
-    "canteenCategories";
 
 
-/* VARIABLES */
+/* =========================================
+   VARIABLES
+========================================= */
 
-let categories =
-    loadCategories();
+let editingCategoryId = null;
 
-
-let editingCategoryId =
-    null;
-
-
-let deletingCategoryId =
-    null;
+let deletingCategoryId = null;
 
 
-/* DEFAULT CATEGORIES */
-
-function createDefaultCategories() {
-
-    return [
-
-        {
-            id: generateId(),
-
-            title: "Meals",
-
-            description:
-                "Complete and satisfying meals for students.",
-
-            image: ""
-
-        },
-
-
-        {
-            id: generateId(),
-
-            title: "Snacks",
-
-            description:
-                "Quick and delicious snacks for break time.",
-
-            image: ""
-
-        },
-
-
-        {
-            id: generateId(),
-
-            title: "Drinks",
-
-            description:
-                "Refreshing drinks and beverages.",
-
-            image: ""
-
-        }
-
-    ];
-
-}
-
-
-/* INITIALIZE */
+/* =========================================
+   INITIALIZE
+========================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function() {
-
-
-        if (
-            !localStorage.getItem(
-                CATEGORY_STORAGE_KEY
-            )
-        ) {
-
-            categories =
-                createDefaultCategories();
-
-            saveCategories();
-
-        }
-
-
-        renderCategories();
+    function () {
 
         setupEvents();
 
@@ -95,251 +24,27 @@ document.addEventListener(
 );
 
 
-/* LOAD CATEGORIES */
-
-function loadCategories() {
-
-    const saved =
-        localStorage.getItem(
-            CATEGORY_STORAGE_KEY
-        );
-
-
-    if (!saved) {
-
-        return [];
-
-    }
-
-
-    try {
-
-        return JSON.parse(saved);
-
-    } catch (error) {
-
-        console.error(
-            "Could not load categories:",
-            error
-        );
-
-        return [];
-
-    }
-
-}
-
-
-/* SAVE CATEGORIES */
-
-function saveCategories() {
-
-    localStorage.setItem(
-        CATEGORY_STORAGE_KEY,
-        JSON.stringify(categories)
-    );
-
-
-    /* Notify other pages/tabs that categories changed. */
-
-    window.dispatchEvent(
-        new Event(
-            "categoriesUpdated"
-        )
-    );
-
-}
-
-
-/* RENDER CATEGORIES */
-
-function renderCategories() {
-
-    const grid =
-        document.getElementById(
-            "categoryGrid"
-        );
-
-
-    const addCard =
-        document.getElementById(
-            "addCategoryCard"
-        );
-
-
-    /* Remove old category cards. */
-
-    const oldCards =
-        grid.querySelectorAll(
-            ".category-item-card"
-        );
-
-
-    oldCards.forEach(
-        card =>
-            card.remove()
-    );
-
-
-    /* Create category cards. */
-
-    categories.forEach(
-        category => {
-
-            const card =
-                createCategoryCard(
-                    category
-                );
-
-
-            /* Insert the category BEFORE the Add card. */
-
-            grid.insertBefore(
-                card,
-                addCard
-            );
-
-        }
-    );
-
-
-    /* Update counter. */
-
-    document.getElementById(
-        "categoryCount"
-    ).textContent =
-        categories.length;
-
-}
-
-
-/* CREATE CATEGORY CARD */
-
-function createCategoryCard(
-    category
-) {
-
-    const card =
-        document.createElement(
-            "div"
-        );
-
-
-    card.className =
-        "category-card category-item-card";
-
-
-    let imageHTML;
-
-
-    if (
-        category.image &&
-        category.image !== ""
-    ) {
-
-        imageHTML = `
-
-            <img
-                src="${category.image}"
-                alt="${escapeHTML(category.title)}"
-                class="category-image"
-            >
-
-        `;
-
-    } else {
-
-        imageHTML = `
-
-            <div
-                class="category-image-placeholder"
-            >
-                🍽️
-            </div>
-
-        `;
-
-    }
-
-
-    card.innerHTML = `
-
-        ${imageHTML}
-
-
-        <div class="category-content">
-
-
-            <h3>
-                ${escapeHTML(category.title)}
-            </h3>
-
-
-            <p>
-                ${escapeHTML(category.description)}
-            </p>
-
-
-            <div class="category-actions">
-
-
-                <button
-                    type="button"
-                    class="edit-button"
-                    onclick="
-                        editCategory('${category.id}')
-                    "
-                >
-                    Edit
-                </button>
-
-
-                <button
-                    type="button"
-                    class="delete-card-button"
-                    onclick="
-                        deleteCategory('${category.id}')
-                    "
-                >
-                    Delete
-                </button>
-
-
-            </div>
-
-
-        </div>
-
-    `;
-
-
-    return card;
-
-}
-
-
-/* SETUP EVENTS */
+/* =========================================
+   SETUP EVENTS
+========================================= */
 
 function setupEvents() {
 
-    /* Add category card. */
+
+    /* ADD CATEGORY */
 
     document
-        .getElementById(
-            "addCategoryCard"
-        )
+        .getElementById("addCategoryCard")
         .addEventListener(
             "click",
             openAddModal
         );
 
 
-    /* Close modal. */
+    /* CLOSE */
 
     document
-        .getElementById(
-            "closeModal"
-        )
+        .getElementById("closeModal")
         .addEventListener(
             "click",
             closeCategoryModal
@@ -347,45 +52,37 @@ function setupEvents() {
 
 
     document
-        .getElementById(
-            "cancelButton"
-        )
+        .getElementById("cancelButton")
         .addEventListener(
             "click",
             closeCategoryModal
         );
 
 
-    /* Form submit. */
+    /* FORM */
 
     document
-        .getElementById(
-            "categoryForm"
-        )
+        .getElementById("categoryForm")
         .addEventListener(
             "submit",
             saveCategory
         );
 
 
-    /* Image upload. */
+    /* IMAGE */
 
     document
-        .getElementById(
-            "categoryImage"
-        )
+        .getElementById("categoryImage")
         .addEventListener(
             "change",
             previewImage
         );
 
 
-    /* Delete buttons. */
+    /* DELETE */
 
     document
-        .getElementById(
-            "cancelDelete"
-        )
+        .getElementById("cancelDelete")
         .addEventListener(
             "click",
             closeDeleteModal
@@ -393,28 +90,23 @@ function setupEvents() {
 
 
     document
-        .getElementById(
-            "confirmDelete"
-        )
+        .getElementById("confirmDelete")
         .addEventListener(
             "click",
             confirmCategoryDelete
         );
 
 
-    /* Close modal when clicking outside it. */
+    /* CLICK OUTSIDE */
 
     document
-        .getElementById(
-            "categoryModal"
-        )
+        .getElementById("categoryModal")
         .addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 if (
-                    event.target ===
-                    this
+                    event.target === this
                 ) {
 
                     closeCategoryModal();
@@ -426,16 +118,13 @@ function setupEvents() {
 
 
     document
-        .getElementById(
-            "deleteModal"
-        )
+        .getElementById("deleteModal")
         .addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 if (
-                    event.target ===
-                    this
+                    event.target === this
                 ) {
 
                     closeDeleteModal();
@@ -446,15 +135,14 @@ function setupEvents() {
         );
 
 
-    /* Escape key. */
+    /* ESCAPE */
 
     document.addEventListener(
         "keydown",
-        function(event) {
+        function (event) {
 
             if (
-                event.key ===
-                "Escape"
+                event.key === "Escape"
             ) {
 
                 closeCategoryModal();
@@ -469,12 +157,13 @@ function setupEvents() {
 }
 
 
-/* OPEN ADD MODAL */
+/* =========================================
+   OPEN ADD MODAL
+========================================= */
 
 function openAddModal() {
 
-    editingCategoryId =
-        null;
+    editingCategoryId = null;
 
 
     document.getElementById(
@@ -500,26 +189,13 @@ function openAddModal() {
 }
 
 
-/* EDIT CATEGORY */
+/* =========================================
+   EDIT CATEGORY
+========================================= */
 
 function editCategory(
     categoryId
 ) {
-
-    const category =
-        categories.find(
-            item =>
-                item.id ===
-                categoryId
-        );
-
-
-    if (!category) {
-
-        return;
-
-    }
-
 
     editingCategoryId =
         categoryId;
@@ -531,22 +207,59 @@ function editCategory(
         "Edit Category";
 
 
+    /*
+     * Find the category card
+     * already rendered by PHP.
+     */
+
+    const card =
+        document.querySelector(
+            `.category-item-card[data-id="${categoryId}"]`
+        );
+
+
+    if (!card) {
+
+        return;
+
+    }
+
+
+    const title =
+        card.querySelector(
+            ".category-content h3"
+        ).textContent.trim();
+
+
+    const description =
+        card.querySelector(
+            ".category-content p"
+        ).textContent.trim();
+
+
     document.getElementById(
         "categoryTitle"
     ).value =
-        category.title;
+        title;
 
 
     document.getElementById(
         "categoryDescription"
     ).value =
-        category.description;
+        description;
 
 
-    /* Display existing image. */
+    /* Existing image */
+
+    const image =
+        card.querySelector(
+            ".category-image img"
+        );
+
 
     if (
-        category.image
+        image &&
+        image.src
     ) {
 
         const preview =
@@ -562,7 +275,7 @@ function editCategory(
 
 
         preview.src =
-            category.image;
+            image.src;
 
 
         preview.style.display =
@@ -579,6 +292,17 @@ function editCategory(
     }
 
 
+    /*
+     * Do not force the user to
+     * upload another image.
+     */
+
+    document.getElementById(
+        "categoryImage"
+    ).value =
+        "";
+
+
     document.getElementById(
         "categoryModal"
     ).classList.add(
@@ -588,9 +312,11 @@ function editCategory(
 }
 
 
-/* SAVE CATEGORY */
+/* =========================================
+   SAVE CATEGORY
+========================================= */
 
-function saveCategory(
+async function saveCategory(
     event
 ) {
 
@@ -609,13 +335,13 @@ function saveCategory(
         ).value.trim();
 
 
-    const image =
+    const imageInput =
         document.getElementById(
-            "imagePreview"
-        ).src;
+            "categoryImage"
+        );
 
 
-    /* Validate title. */
+    /* Validate */
 
     if (!title) {
 
@@ -627,102 +353,148 @@ function saveCategory(
 
     }
 
-    let imageData = "";
 
+    if (!description) {
 
-    if (
-        image &&
-        image !==
-        window.location.href
-    ) {
+        alert(
+            "Please enter a category description."
+        );
 
-        imageData =
-            image;
+        return;
 
     }
 
 
+    /* =====================================
+       CREATE FORMDATA
+    ===================================== */
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "category_title",
+        title
+    );
+
+
+    formData.append(
+        "category_description",
+        description
+    );
+
+
+    /*
+     * If editing, send category ID.
+     */
 
     if (
-        editingCategoryId
+        editingCategoryId !== null
     ) {
 
-        const category =
-            categories.find(
-                item =>
-                    item.id ===
-                    editingCategoryId
-            );
+        formData.append(
+            "category_id",
+            editingCategoryId
+        );
 
+        formData.append(
+            "action",
+            "edit"
+        );
 
-        if (category) {
+    } else {
 
-            category.title =
-                title;
-
-            category.description =
-                description;
-
-
-
-            if (
-                imageData &&
-                imageData !==
-                category.image
-            ) {
-
-                category.image =
-                    imageData;
-
-            }
-
-        }
-
-    }
-
-
-    else {
-
-        const newCategory = {
-
-            id:
-                generateId(),
-
-            title:
-                title,
-
-            description:
-                description,
-
-            image:
-                imageData
-
-        };
-
-
-        categories.push(
-            newCategory
+        formData.append(
+            "action",
+            "add"
         );
 
     }
 
 
+    /*
+     * Only send image if the user
+     * selected a new image.
+     */
 
-    saveCategories();
+    if (
+        imageInput.files.length > 0
+    ) {
+
+        formData.append(
+            "category_picture",
+            imageInput.files[0]
+        );
+
+    }
 
 
+    /* =====================================
+       SAVE TO PHP
+    ===================================== */
+
+    try {
+
+        const response =
+            await fetch(
+                "categories-admin.php",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
 
 
-    renderCategories();
+        const result =
+            await response.json();
 
 
+        if (
+            result.success
+        ) {
 
-    closeCategoryModal();
+            alert(
+                result.message
+            );
+
+
+            /*
+             * Reload the page so the
+             * category comes directly
+             * from MySQL.
+             */
+
+            window.location.reload();
+
+        } else {
+
+            alert(
+                result.message
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Save category error:",
+            error
+        );
+
+
+        alert(
+            "Unable to connect to the server."
+        );
+
+    }
 
 }
 
 
-/* PREVIEW IMAGE */
+/* =========================================
+   IMAGE PREVIEW
+========================================= */
 
 function previewImage(
     event
@@ -738,6 +510,8 @@ function previewImage(
 
     }
 
+
+    /* Maximum 2MB */
 
     if (
         file.size >
@@ -758,12 +532,42 @@ function previewImage(
     }
 
 
+    const allowedTypes = [
+
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp"
+
+    ];
+
+
+    if (
+        !allowedTypes.includes(
+            file.type
+        )
+    ) {
+
+        alert(
+            "Only JPG, PNG, GIF, and WEBP images are allowed."
+        );
+
+
+        event.target.value =
+            "";
+
+
+        return;
+
+    }
+
+
     const reader =
         new FileReader();
 
 
     reader.onload =
-        function(e) {
+        function (e) {
 
             const preview =
                 document.getElementById(
@@ -798,7 +602,9 @@ function previewImage(
 }
 
 
-/* RESET IMAGE*/
+/* =========================================
+   RESET IMAGE PREVIEW
+========================================= */
 
 function resetImagePreview() {
 
@@ -834,7 +640,9 @@ function resetImagePreview() {
 }
 
 
-/* CLOSE CATEGORY MODAL */
+/* =========================================
+   CLOSE CATEGORY MODAL
+========================================= */
 
 function closeCategoryModal() {
 
@@ -851,26 +659,14 @@ function closeCategoryModal() {
 }
 
 
-/* DELETE CATEGORY */
+/* =========================================
+   DELETE CATEGORY
+========================================= */
 
 function deleteCategory(
-    categoryId
+    categoryId,
+    categoryTitle
 ) {
-
-    const category =
-        categories.find(
-            item =>
-                item.id ===
-                categoryId
-        );
-
-
-    if (!category) {
-
-        return;
-
-    }
-
 
     deletingCategoryId =
         categoryId;
@@ -879,7 +675,7 @@ function deleteCategory(
     document.getElementById(
         "deleteMessage"
     ).textContent =
-        `Are you sure you want to delete "${category.title}"?`;
+        `Are you sure you want to delete "${categoryTitle}"?`;
 
 
     document.getElementById(
@@ -891,12 +687,14 @@ function deleteCategory(
 }
 
 
-/* CONFIRM DELETE */
+/* =========================================
+   CONFIRM DELETE
+========================================= */
 
-function confirmCategoryDelete() {
+async function confirmCategoryDelete() {
 
     if (
-        !deletingCategoryId
+        deletingCategoryId === null
     ) {
 
         return;
@@ -904,26 +702,77 @@ function confirmCategoryDelete() {
     }
 
 
-    categories =
-        categories.filter(
-            category =>
-                category.id !==
-                deletingCategoryId
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "action",
+        "delete"
+    );
+
+
+    formData.append(
+        "category_id",
+        deletingCategoryId
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "categories-admin.php",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            result.success
+        ) {
+
+            alert(
+                result.message
+            );
+
+
+            window.location.reload();
+
+        } else {
+
+            alert(
+                result.message
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Delete category error:",
+            error
         );
 
 
-    saveCategories();
+        alert(
+            "Unable to connect to the server."
+        );
 
-
-    renderCategories();
-
-
-    closeDeleteModal();
+    }
 
 }
 
 
-/* CLOSE DELETE MODAL */
+/* =========================================
+   CLOSE DELETE MODAL
+========================================= */
 
 function closeDeleteModal() {
 
@@ -936,39 +785,5 @@ function closeDeleteModal() {
 
     deletingCategoryId =
         null;
-
-}
-
-
-/* GENERATE ID */
-
-function generateId() {
-
-    return Date.now().toString()
-        +
-        Math.random()
-            .toString(36)
-            .substring(2, 9);
-
-}
-
-
-/* ESCAPE HTML */
-
-function escapeHTML(
-    text
-) {
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-
-    div.textContent =
-        text;
-
-
-    return div.innerHTML;
 
 }

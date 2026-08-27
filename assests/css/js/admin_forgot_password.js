@@ -1,10 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | SHOW / HIDE PASSWORD
-    |--------------------------------------------------------------------------
-    */
+    /* SHOW / HIDE PASSWORD */
 
     const passwordButtons = document.querySelectorAll(".password-toggle");
 
@@ -41,11 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | PASSWORD MATCH CHECK
-    |--------------------------------------------------------------------------
-    */
+    /* PASSWORD MATCH CHECK */
 
     const newPassword =
         document.getElementById("new_password");
@@ -121,11 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | FORM SUBMISSION CHECK
-    |--------------------------------------------------------------------------
-    */
+    /* FORM SUBMISSION CHECK */
 
     const form =
         document.getElementById("resetPasswordForm");
@@ -139,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
 
             event.preventDefault();
-
+            
             alert(
                 "The new password and repeat password do not match."
             );

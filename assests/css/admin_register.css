@@ -1,7 +1,4 @@
-/* =========================================
-   RESET
-========================================= */
-
+/* admin_register.css */
 * {
     margin: 0;
     padding: 0;
@@ -9,812 +6,489 @@
 }
 
 
-/* =========================================
-   HTML / BODY
-========================================= */
-
 html,
 body {
     width: 100%;
     min-height: 100%;
 }
 
-
 body {
-
     min-height: 100vh;
-
     font-family:
         Arial,
         Helvetica,
         sans-serif;
-
     background:
         linear-gradient(
             135deg,
             #fff7ed,
             #ffedd5
         );
-
     color: #222;
-
 }
 
 
-/* =========================================
-   LINKS
-========================================= */
 
 a {
     text-decoration: none;
 }
 
 
-/* =========================================
-   PAGE
-========================================= */
-
 .register-page {
-
     position: relative;
-
     width: 100%;
-
     min-height: 100vh;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     padding: 40px 20px;
-
     overflow: hidden;
 
 }
 
 
-/* =========================================
-   FOOD IMAGES
-========================================= */
+/* FOOD IMAGES */
 
 .food {
-
     position: absolute;
-
     display: block;
-
     z-index: 1;
-
     pointer-events: none;
-
     user-select: none;
-
     object-fit: contain;
-
     opacity: 0.65;
-
     -webkit-mask-image:
         radial-gradient(
             ellipse at center,
             black 55%,
             transparent 85%
         );
-
     mask-image:
         radial-gradient(
             ellipse at center,
             black 55%,
             transparent 85%
         );
-
 }
 
-
-/* TOP LEFT */
 
 .food-burger-top {
-
     width: 170px;
-
     top: -45px;
-
     left: -45px;
-
     transform:
         rotate(15deg);
-
 }
 
-
-/* TOP RIGHT */
 
 .food-pizza-top {
-
     width: 165px;
-
     top: -40px;
-
     right: -45px;
-
     transform:
         rotate(-12deg);
-
 }
 
 
-/* TOP CENTER */
-
 .food-donut-top {
-
     width: 120px;
-
     top: 5px;
-
     left: 50%;
-
     transform:
         translateX(-50%)
         rotate(10deg);
-
 }
 
 
-/* LEFT CENTER */
-
 .food-donut-center {
-
     width: 115px;
-
     top: 48%;
-
     left: -45px;
-
     transform:
         translateY(-50%)
         rotate(-15deg);
-
 }
 
 
-/* RIGHT CENTER */
-
 .food-tacos-center {
-
     width: 125px;
-
     top: 48%;
-
     right: -45px;
-
     transform:
         translateY(-50%)
         rotate(15deg);
-
 }
 
-
-/* BOTTOM LEFT */
 
 .food-burger-bottom {
-
     width: 170px;
-
     bottom: -50px;
-
     left: -45px;
-
     transform:
         rotate(-8deg);
-
 }
 
-
-/* BOTTOM RIGHT */
 
 .food-ramen-bottom {
-
     width: 160px;
-
     bottom: -45px;
-
     right: -45px;
-
     transform:
         rotate(10deg);
-
 }
 
 
-/* =========================================
-   REGISTRATION CARD
-========================================= */
+/* REGISTRATION CARD */
 
 .register-card {
-
     position: relative;
-
     z-index: 10;
-
     width: 100%;
-
     max-width: 470px;
-
     padding: 38px 42px 32px;
-
     background:
         rgba(255, 255, 255, 0.96);
-
     border:
         1px solid #f1e5d8;
-
     border-top:
         4px solid #f97316;
-
     border-radius: 18px;
-
     box-shadow:
         0 20px 50px
         rgba(0, 0, 0, 0.10);
-
 }
 
 
-/* =========================================
-   LOGO
-========================================= */
+/* LOGO */
 
 .logo {
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 9px;
-
     margin-bottom: 18px;
-
     color: #f97316;
-
     font-size: 21px;
-
     font-weight: bold;
-
 }
-
 
 .logo-icon {
-
     width: 38px;
-
     height: 38px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     border-radius: 9px;
-
     background: #f97316;
-
     color: white;
-
     font-size: 19px;
-
 }
 
 
-/* =========================================
-   ADMIN BADGE
-========================================= */
+/* ADMIN BADGE */
 
 .admin-badge {
-
     width: fit-content;
-
     margin: 0 auto 12px;
-
     padding: 6px 12px;
-
     border-radius: 20px;
-
     background: #fff7ed;
-
     border:
         1px solid #fed7aa;
-
     color: #f97316;
-
     font-size: 10px;
-
     font-weight: bold;
-
     letter-spacing: 1.5px;
-
 }
 
 
-/* =========================================
-   TITLE
-========================================= */
+/* TITLE */
 
 .register-card h1 {
-
     text-align: center;
-
     margin-bottom: 8px;
-
     color: #222;
-
     font-size: 30px;
-
     font-weight: 700;
-
 }
-
 
 .subtitle {
-
     max-width: 350px;
-
     margin: 0 auto 25px;
-
     text-align: center;
-
     color: #888;
-
     font-size: 13px;
-
     line-height: 1.5;
-
 }
 
 
-/* =========================================
-   INPUT GROUP
-========================================= */
+/* INPUT GROUP */
 
 .input-group {
-
     width: 100%;
-
     margin-bottom: 17px;
-
 }
-
 
 .input-group label {
-
     display: block;
-
     margin-bottom: 7px;
-
     color: #444;
-
     font-size: 13px;
-
     font-weight: bold;
-
 }
-
 
 .input-group input,
 .input-group select {
-
     width: 100%;
-
     height: 44px;
-
     padding:
         8px 12px;
-
     border:
         1px solid #ddd;
-
     border-radius: 8px;
-
     outline: none;
-
     background: #ffffff;
-
     color: #333;
-
     font-family: inherit;
-
     font-size: 13px;
-
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
         background 0.2s ease;
-
 }
-
 
 .input-group input::placeholder {
-
     color: #aaa;
-
 }
-
 
 .input-group input:hover,
 .input-group select:hover {
-
     border-color: #fdba74;
-
 }
-
 
 .input-group input:focus,
 .input-group select:focus {
-
     border-color: #f97316;
-
     background: #fffaf5;
-
     box-shadow:
         0 0 0 3px
         rgba(249, 115, 22, 0.10);
-
 }
 
 
-/* =========================================
-   SELECT
-========================================= */
+/* SELECT */
 
 .input-group select {
-
     cursor: pointer;
-
     appearance: none;
-
     -webkit-appearance: none;
-
     background-image:
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%23f97316' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-
     background-repeat: no-repeat;
-
-    background-position:
+    background-position:    
         right 13px center;
-
     padding-right: 35px;
-
 }
 
 
-/* =========================================
-   BUTTON CONTAINER
-========================================= */
+/* BUTTON CONTAINER*/
 
 .button-container {
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     gap: 12px;
-
     width: 100%;
-
     margin-top: 8px;
-
 }
 
 
-/* =========================================
-   BUTTON BASE
-========================================= */
+/* BUTTON BASE */
 
 .create-btn,
 .back-btn {
-
     height: 43px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     border-radius: 8px;
-
     font-family: inherit;
-
     font-size: 13px;
-
     font-weight: bold;
-
     cursor: pointer;
-
     transition:
         all 0.2s ease;
-
 }
 
 
-/* =========================================
-   CREATE BUTTON
-========================================= */
+/* CREATE BUTTON */
 
 .create-btn {
-
     flex: 1;
-
     border:
         1px solid #f97316;
-
     background:
         #f97316;
-
     color: #ffffff;
-
 }
 
-
 .create-btn:hover {
-
     background:
         #ea580c;
-
     border-color:
         #ea580c;
-
     transform:
         translateY(-1px);
-
     box-shadow:
         0 5px 12px
         rgba(249, 115, 22, 0.20);
-
 }
 
 
-/* =========================================
-   BACK BUTTON
-========================================= */
+/* BACK BUTTON */
 
 .back-btn {
-
     width: 95px;
-
     border:
         1px solid #ddd;
-
     background: #ffffff;
-
     color: #666;
-
 }
-
 
 .back-btn:hover {
-
     background: #f8f8f8;
-
     border-color: #ccc;
-
     color: #444;
-
 }
 
 
-/* =========================================
-   LOGIN TEXT
-========================================= */
+/* LOGIN TEXT */
 
 .login-text {
-
     margin-top: 22px;
-
     padding-top: 18px;
-
     border-top:
         1px solid #eeeeee;
-
     text-align: center;
-
     color: #999;
-
     font-size: 12px;
-
 }
-
 
 .login-text a {
-
     margin-left: 3px;
-
     color: #f97316;
-
     font-weight: bold;
-
 }
-
 
 .login-text a:hover {
-
     color: #ea580c;
-
     text-decoration: underline;
-
 }
 
-/* =========================================
-   FORM MESSAGE
-========================================= */
+/* FORM MESSAGE */
 
 .form-message {
-
     width: 100%;
-
     margin-bottom: 20px;
-
     padding: 11px 14px;
-
     border-radius: 8px;
-
     text-align: center;
-
     font-size: 13px;
-
     font-weight: 600;
-
 }
 
 
 /* SUCCESS */
 
 .form-message.success {
-
     background: #ecfdf5;
-
     border: 1px solid #86efac;
-
     color: #15803d;
-
 }
 
 
 /* ERROR */
 
 .form-message.error {
-
     background: #fef2f2;
-
     border: 1px solid #fca5a5;
-
     color: #dc2626;
-
 }
 
 
-/* =========================================
-   RESPONSIVE
-========================================= */
+/* RESPONSIVE */
 
 @media (max-width: 600px) {
 
     .register-page {
-
         padding: 25px 15px;
-
     }
 
-
     .register-card {
-
         padding:
             32px 25px
             28px;
-
     }
-
 
     .register-card h1 {
-
         font-size: 27px;
-
     }
-
 
     .subtitle {
-
         font-size: 12px;
-
     }
-
 
     .food-burger-top,
     .food-pizza-top {
-
         width: 125px;
-
     }
-
 
     .food-donut-top {
-
         width: 90px;
-
     }
-
 
     .food-donut-center,
     .food-tacos-center {
-
         width: 90px;
-
     }
-
 
     .food-burger-bottom,
     .food-ramen-bottom {
-
         width: 125px;
-
     }
 
 }
 
 
-/* =========================================
-   SMALL MOBILE
-========================================= */
+/* SMALL MOBILE */
 
 @media (max-width: 400px) {
 
     .register-page {
-
         padding: 15px;
-
     }
 
-
     .register-card {
-
         padding:
             28px 20px
             24px;
-
     }
-
 
     .logo {
-
         font-size: 19px;
-
     }
-
 
     .register-card h1 {
-
         font-size: 25px;
-
     }
-
 
     .button-container {
-
         flex-direction: column-reverse;
-
     }
-
 
     .back-btn,
     .create-btn {
-
         width: 100%;
-
     }
 
 }

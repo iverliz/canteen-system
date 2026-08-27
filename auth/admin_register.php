@@ -14,11 +14,7 @@ if (isset($_POST['register'])) {
     $role = $_POST['role'];
     $password = $_POST['password'];
 
-    /*
-    =========================================
-    VALIDATE INPUT
-    =========================================
-    */
+    /* VALIDATE INPUT */
 
     if (
         empty($username) ||
@@ -32,11 +28,7 @@ if (isset($_POST['register'])) {
 
     } else {
 
-        /*
-        =========================================
-        CHECK IF STAFF ID ALREADY EXISTS
-        =========================================
-        */
+        /* CHECK IF STAFF ID ALREADY EXISTS */
 
         $check = $conn->prepare(
             "SELECT id FROM admin_register WHERE staff_id = ?"
@@ -59,11 +51,7 @@ if (isset($_POST['register'])) {
 
         } else {
 
-            /*
-            =========================================
-            HASH PASSWORD
-            =========================================
-            */
+            /* HASH PASSWORD */
 
             $hashed_password = password_hash(
                 $password,
@@ -71,11 +59,7 @@ if (isset($_POST['register'])) {
             );
 
 
-            /*
-            =========================================
-            INSERT ADMIN ACCOUNT
-            =========================================
-            */
+            /* INSERT ADMIN ACCOUNT */
 
             $stmt = $conn->prepare(
                 "INSERT INTO admin_register
@@ -97,9 +81,7 @@ if (isset($_POST['register'])) {
                 $message = "Admin account created successfully!";
                 $message_type = "success";
 
-                /*
-                Clear form values after successful registration
-                */
+                /* Clear form values after successful registration */
                 $username = "";
                 $staff_id = "";
 
@@ -147,9 +129,7 @@ if (isset($_POST['register'])) {
 <div class="register-page">
 
 
-    <!-- =================================
-         DECORATIVE FOOD IMAGES
-    ================================== -->
+    <!-- DECORATIVE FOOD IMAGES -->
 
     <img
         src="../assests/css/images/burger.png"
@@ -195,9 +175,7 @@ if (isset($_POST['register'])) {
 
 
 
-    <!-- =================================
-         REGISTRATION CARD
-    ================================== -->
+    <!--  REGISTRATION CARD -->
 
     <div class="register-card">
 
@@ -252,9 +230,7 @@ if (isset($_POST['register'])) {
 
 
 
-        <!-- =================================
-             FORM
-        ================================== -->
+        <!-- FORM -->
 
         <form
             action="admin_register.php"
