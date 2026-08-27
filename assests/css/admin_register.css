@@ -8,45 +8,70 @@
     box-sizing: border-box;
 }
 
+
+/* =========================================
+   HTML / BODY
+========================================= */
+
 html,
 body {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
 }
 
-
-/* =========================================
-   BODY
-========================================= */
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f2dca0;
-    overflow: hidden;
+
+    min-height: 100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7ed,
+            #ffedd5
+        );
+
+    color: #222;
+
 }
 
 
 /* =========================================
-   ADMIN SIGNUP CONTAINER
+   LINKS
 ========================================= */
 
-.admin-signup-container {
+a {
+    text-decoration: none;
+}
+
+
+/* =========================================
+   PAGE
+========================================= */
+
+.register-page {
+
     position: relative;
 
     width: 100%;
-    max-width: 580px;
-    height: 100vh;
-    min-height: 760px;
 
-    margin: 0 auto;
+    min-height: 100vh;
 
-    background: #ffe9a3;
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 40px 20px;
 
     overflow: hidden;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 
@@ -55,87 +80,232 @@ body {
 ========================================= */
 
 .food {
-    position: absolute;
-    display: block;
-    z-index: 1;
-    pointer-events: none;
-    user-select: none;
-    object-fit: contain;
-    opacity: 0.9;
 
-    -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
-    mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
+    position: absolute;
+
+    display: block;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    object-fit: contain;
+
+    opacity: 0.65;
+
+    -webkit-mask-image:
+        radial-gradient(
+            ellipse at center,
+            black 55%,
+            transparent 85%
+        );
+
+    mask-image:
+        radial-gradient(
+            ellipse at center,
+            black 55%,
+            transparent 85%
+        );
+
 }
+
+
+/* TOP LEFT */
 
 .food-burger-top {
-    width: 175px;
-    top: -50px;
-    left: -55px;
-    transform: rotate(15deg);
+
+    width: 170px;
+
+    top: -45px;
+
+    left: -45px;
+
+    transform:
+        rotate(15deg);
+
 }
+
+
+/* TOP RIGHT */
 
 .food-pizza-top {
+
     width: 165px;
-    top: -45px;
-    right: -50px;
-    transform: rotate(-12deg);
+
+    top: -40px;
+
+    right: -45px;
+
+    transform:
+        rotate(-12deg);
+
 }
+
+
+/* TOP CENTER */
 
 .food-donut-top {
-    width: 135px;
-    top: 15px;
-    left: 45%;
-    transform: translateX(-50%) rotate(10deg);
+
+    width: 120px;
+
+    top: 5px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%)
+        rotate(10deg);
+
 }
+
+
+/* LEFT CENTER */
 
 .food-donut-center {
-    width: 120px;
-    top: 45%;
-    left: -50px;
-    transform: translateY(-50%) rotate(-15deg);
+
+    width: 115px;
+
+    top: 48%;
+
+    left: -45px;
+
+    transform:
+        translateY(-50%)
+        rotate(-15deg);
+
 }
+
+
+/* RIGHT CENTER */
 
 .food-tacos-center {
-    width: 130px;
-    top: 45%;
-    right: -50px;
-    transform: translateY(-50%) rotate(15deg);
+
+    width: 125px;
+
+    top: 48%;
+
+    right: -45px;
+
+    transform:
+        translateY(-50%)
+        rotate(15deg);
+
 }
+
+
+/* BOTTOM LEFT */
 
 .food-burger-bottom {
-    width: 175px;
+
+    width: 170px;
+
     bottom: -50px;
-    left: -50px;
-    transform: rotate(-8deg);
+
+    left: -45px;
+
+    transform:
+        rotate(-8deg);
+
 }
 
+
+/* BOTTOM RIGHT */
+
 .food-ramen-bottom {
-    width: 165px;
-    bottom: -50px;
-    right: -50px;
-    transform: rotate(10deg);
+
+    width: 160px;
+
+    bottom: -45px;
+
+    right: -45px;
+
+    transform:
+        rotate(10deg);
+
 }
 
 
 /* =========================================
-   ADMIN SIGNUP CARD
+   REGISTRATION CARD
 ========================================= */
 
-.admin-signup-box {
+.register-card {
+
     position: relative;
 
     z-index: 10;
 
-    width: 82%;
-    max-width: 420px;
+    width: 100%;
 
-    padding: 46px 34px 42px;
+    max-width: 470px;
 
-    background: rgba(255, 248, 222, 0.94);
-    border-radius: 22px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+    padding: 38px 42px 32px;
 
-    border-top: 4px solid #b5502e;
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    border:
+        1px solid #f1e5d8;
+
+    border-top:
+        4px solid #f97316;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.10);
+
+}
+
+
+/* =========================================
+   LOGO
+========================================= */
+
+.logo {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-bottom: 18px;
+
+    color: #f97316;
+
+    font-size: 21px;
+
+    font-weight: bold;
+
+}
+
+
+.logo-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #f97316;
+
+    color: white;
+
+    font-size: 19px;
+
 }
 
 
@@ -144,19 +314,28 @@ body {
 ========================================= */
 
 .admin-badge {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
 
-    background: #b5502e;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    padding: 5px 16px;
+    width: fit-content;
+
+    margin: 0 auto 12px;
+
+    padding: 6px 12px;
+
     border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+    background: #fff7ed;
+
+    border:
+        1px solid #fed7aa;
+
+    color: #f97316;
+
+    font-size: 10px;
+
+    font-weight: bold;
+
+    letter-spacing: 1.5px;
+
 }
 
 
@@ -164,13 +343,35 @@ body {
    TITLE
 ========================================= */
 
-.admin-signup-box h1 {
+.register-card h1 {
+
     text-align: center;
-    font-size: 34px;
-    font-weight: 400;
-    color: #111;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
+
+    margin-bottom: 8px;
+
+    color: #222;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+}
+
+
+.subtitle {
+
+    max-width: 350px;
+
+    margin: 0 auto 25px;
+
+    text-align: center;
+
+    color: #888;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
 }
 
 
@@ -179,54 +380,113 @@ body {
 ========================================= */
 
 .input-group {
-    position: relative;
+
     width: 100%;
-    margin-bottom: 20px;
+
+    margin-bottom: 17px;
+
 }
 
+
 .input-group label {
+
     display: block;
-    font-size: 17px;
-    font-weight: 400;
-    color: #111;
-    margin-bottom: 6px;
+
+    margin-bottom: 7px;
+
+    color: #444;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
 }
+
 
 .input-group input,
 .input-group select {
+
     width: 100%;
+
     height: 44px;
-    padding: 8px 12px;
-    border: 1.5px solid #222;
+
+    padding:
+        8px 12px;
+
+    border:
+        1px solid #ddd;
+
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.7);
-    font-size: 17px;
+
     outline: none;
+
+    background: #ffffff;
+
+    color: #333;
+
     font-family: inherit;
-    color: #111;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+
 }
 
-.input-group select {
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%23333' stroke-width='2' fill='none' fill-rule='evenodd'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 36px;
-}
 
 .input-group input::placeholder {
-    color: #777;
-    opacity: 0.8;
+
+    color: #aaa;
+
 }
+
+
+.input-group input:hover,
+.input-group select:hover {
+
+    border-color: #fdba74;
+
+}
+
 
 .input-group input:focus,
 .input-group select:focus {
-    border-color: #b5502e;
+
+    border-color: #f97316;
+
+    background: #fffaf5;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(249, 115, 22, 0.10);
+
 }
 
-.password-group {
-    margin-bottom: 28px;
+
+/* =========================================
+   SELECT
+========================================= */
+
+.input-group select {
+
+    cursor: pointer;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%23f97316' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+
+    background-repeat: no-repeat;
+
+    background-position:
+        right 13px center;
+
+    padding-right: 35px;
+
 }
 
 
@@ -235,59 +495,206 @@ body {
 ========================================= */
 
 .button-container {
+
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
     width: 100%;
+
+    margin-top: 8px;
+
 }
 
 
 /* =========================================
-   BUTTONS
+   BUTTON BASE
 ========================================= */
 
 .create-btn,
 .back-btn {
+
+    height: 43px;
+
     display: flex;
-    justify-content: center;
+
     align-items: center;
-    height: 40px;
-    border-radius: 7px;
-    font-size: 15px;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
     cursor: pointer;
-    text-decoration: none;
+
+    transition:
+        all 0.2s ease;
+
 }
+
+
+/* =========================================
+   CREATE BUTTON
+========================================= */
 
 .create-btn {
-    width: 110px;
-    border: 1px solid #a04121;
-    background: #b5502e;
-    color: white;
+
+    flex: 1;
+
+    border:
+        1px solid #f97316;
+
+    background:
+        #f97316;
+
+    color: #ffffff;
+
 }
+
 
 .create-btn:hover {
-    background: #9c4526;
+
+    background:
+        #ea580c;
+
+    border-color:
+        #ea580c;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 5px 12px
+        rgba(249, 115, 22, 0.20);
+
 }
 
-.create-btn span {
-    margin-right: 6px;
-    font-size: 17px;
-}
+
+/* =========================================
+   BACK BUTTON
+========================================= */
 
 .back-btn {
-    width: 100px;
-    border: 1px solid #666;
-    background: #9e9e9e;
-    color: white;
+
+    width: 95px;
+
+    border:
+        1px solid #ddd;
+
+    background: #ffffff;
+
+    color: #666;
+
 }
+
 
 .back-btn:hover {
-    background: #8a8a8a;
+
+    background: #f8f8f8;
+
+    border-color: #ccc;
+
+    color: #444;
+
 }
 
-.back-btn span {
-    margin-right: 6px;
-    font-size: 16px;
+
+/* =========================================
+   LOGIN TEXT
+========================================= */
+
+.login-text {
+
+    margin-top: 22px;
+
+    padding-top: 18px;
+
+    border-top:
+        1px solid #eeeeee;
+
+    text-align: center;
+
+    color: #999;
+
+    font-size: 12px;
+
+}
+
+
+.login-text a {
+
+    margin-left: 3px;
+
+    color: #f97316;
+
+    font-weight: bold;
+
+}
+
+
+.login-text a:hover {
+
+    color: #ea580c;
+
+    text-decoration: underline;
+
+}
+
+/* =========================================
+   FORM MESSAGE
+========================================= */
+
+.form-message {
+
+    width: 100%;
+
+    margin-bottom: 20px;
+
+    padding: 11px 14px;
+
+    border-radius: 8px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+/* SUCCESS */
+
+.form-message.success {
+
+    background: #ecfdf5;
+
+    border: 1px solid #86efac;
+
+    color: #15803d;
+
+}
+
+
+/* ERROR */
+
+.form-message.error {
+
+    background: #fef2f2;
+
+    border: 1px solid #fca5a5;
+
+    color: #dc2626;
+
 }
 
 
@@ -297,42 +704,117 @@ body {
 
 @media (max-width: 600px) {
 
-    .admin-signup-box {
-        width: 88%;
-        padding: 42px 24px 32px;
+    .register-page {
+
+        padding: 25px 15px;
+
     }
 
-    .admin-signup-box h1 {
-        font-size: 28px;
-        margin-bottom: 24px;
+
+    .register-card {
+
+        padding:
+            32px 25px
+            28px;
+
     }
 
-    .input-group label {
-        font-size: 15px;
+
+    .register-card h1 {
+
+        font-size: 27px;
+
     }
 
-    .input-group input,
-    .input-group select {
-        height: 42px;
-        font-size: 15px;
+
+    .subtitle {
+
+        font-size: 12px;
+
     }
+
 
     .food-burger-top,
     .food-pizza-top {
-        width: 130px;
+
+        width: 125px;
+
     }
 
+
     .food-donut-top {
-        width: 100px;
+
+        width: 90px;
+
     }
+
 
     .food-donut-center,
     .food-tacos-center {
-        width: 95px;
+
+        width: 90px;
+
     }
+
 
     .food-burger-bottom,
     .food-ramen-bottom {
-        width: 130px;
+
+        width: 125px;
+
     }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+    .register-page {
+
+        padding: 15px;
+
+    }
+
+
+    .register-card {
+
+        padding:
+            28px 20px
+            24px;
+
+    }
+
+
+    .logo {
+
+        font-size: 19px;
+
+    }
+
+
+    .register-card h1 {
+
+        font-size: 25px;
+
+    }
+
+
+    .button-container {
+
+        flex-direction: column-reverse;
+
+    }
+
+
+    .back-btn,
+    .create-btn {
+
+        width: 100%;
+
+    }
+
 }
