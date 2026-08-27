@@ -1,12 +1,18 @@
-/* MENU VARIABLES */
+/* =========================================================
+   MENU ADMIN JAVASCRIPT
+========================================================= */
 
-let editingCard = null;
+let editingFoodId = null;
+let deletingFoodId = null;
 
-/* PEN ADD MODAL */
+
+/* =========================================================
+   OPEN ADD MODAL
+========================================================= */
 
 function openAddModal() {
 
-    editingCard = null;
+    editingFoodId = null;
 
     document.getElementById("modalTitle").textContent =
         "Add Menu Item";
@@ -19,34 +25,49 @@ function openAddModal() {
 
     document.getElementById("menuForm").reset();
 
+    document.getElementById("foodId").value = "";
+
     document.getElementById("imagePreview").innerHTML =
         "<span>Image Preview</span>";
 
-    document.getElementById("menuModal").classList.add("show");
-
+    document.getElementById("menuModal")
+        .classList.add("show");
 }
 
 
-/* OPEN EDIT MODAL */
+/* =========================================================
+   OPEN EDIT MODAL
+========================================================= */
 
-function openEditModal(button) {
+function openEditModal(foodId) {
 
-    editingCard = button.closest(".food-card");
+    const card =
+        document.querySelector(
+            `.food-card[data-id="${foodId}"]`
+        );
+
+    if (!card) {
+        return;
+    }
+
+    editingFoodId = foodId;
 
     const name =
-        editingCard.querySelector("h3").textContent;
+        card.querySelector("h3").textContent.trim();
 
     const price =
-        editingCard.querySelector(".price").textContent
+        card.querySelector(".price")
+            .textContent
             .replace("₱", "")
             .trim();
 
-    const description =
-        editingCard.querySelector(".food-description").textContent.trim();
-
     const category =
-        editingCard.dataset.category;
+        card.dataset.category;
 
+    const description =
+        card.querySelector(".food-description")
+            .textContent
+            .trim();
 
     document.getElementById("modalTitle").textContent =
         "Edit Menu Item";
@@ -57,6 +78,8 @@ function openEditModal(button) {
     document.getElementById("saveButton").textContent =
         "Save Changes";
 
+    document.getElementById("foodId").value =
+        foodId;
 
     document.getElementById("foodName").value =
         name;
@@ -68,339 +91,207 @@ function openEditModal(button) {
         category;
 
     document.getElementById("foodDescription").value =
-        description;
+        description === "No description available."
+            ? ""
+            : description;
 
-
-    /* Show existing image */
 
     const image =
-        editingCard.querySelector(".food-image img");
+        card.querySelector(".food-image img");
 
     if (image) {
 
-        document.getElementById("imagePreview").innerHTML =
-            `<img src="${image.src}" alt="Preview">`;
+        document.getElementById("imagePreview").innerHTML = `
+            <img
+                src="${image.src}"
+                alt="Image Preview"
+            >
+        `;
 
     } else {
 
-        const placeholder =
-            editingCard.querySelector(".food-placeholder");
-
-        if (placeholder) {
-
-            document.getElementById("imagePreview").innerHTML =
-                `<div class="preview-placeholder">
-                    ${placeholder.textContent}
-                </div>`;
-
-        }
-
+        document.getElementById("imagePreview").innerHTML =
+            "<span>Image Preview</span>";
     }
 
+    document.getElementById("foodImage").value = "";
 
-    document.getElementById("menuModal").classList.add("show");
-
+    document.getElementById("menuModal")
+        .classList.add("show");
 }
 
 
-/* CLOSE MODAL */
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
 
 function closeModal() {
 
-    document
-        .getElementById("menuModal")
+    document.getElementById("menuModal")
         .classList.remove("show");
 
-    editingCard = null;
-
+    editingFoodId = null;
 }
 
 
-/* SAVE FOOD */
+/* =========================================================
+   SAVE FOOD
+========================================================= */
 
-function saveFood(event) {
+async function saveFood(event) {
 
     event.preventDefault();
 
-
     const name =
-        document
-            .getElementById("foodName")
+        document.getElementById("foodName")
             .value
             .trim();
-
 
     const price =
-        document
-            .getElementById("foodPrice")
+        document.getElementById("foodPrice")
             .value;
-
 
     const category =
-        document
-            .getElementById("foodCategory")
+        document.getElementById("foodCategory")
             .value;
 
-
     const description =
-        document
-            .getElementById("foodDescription")
+        document.getElementById("foodDescription")
             .value
             .trim();
+
+    const image =
+        document.getElementById("foodImage")
+            .files[0];
 
 
     if (!name || !price || !category) {
 
-        alert(
-            "Please complete all required fields."
-        );
-
-        return;
-
-    }
-
-
-    const categoryName =
-        getCategoryName(category);
-
-
-    /* EDIT EXISTING FOOD */
-
-    if (editingCard) {
-
-        editingCard.dataset.name =
-            name;
-
-        editingCard.dataset.category =
-            category;
-
-
-        editingCard.querySelector("h3").textContent =
-            name;
-
-
-        editingCard.querySelector(".price").textContent =
-            "₱" +
-            parseFloat(price).toFixed(2);
-
-
-        editingCard.querySelector(
-            ".food-description"
-        ).textContent =
-            description ||
-            "No description available.";
-
-
-        editingCard.querySelector(
-            ".category-label"
-        ).textContent =
-            categoryName;
-
-
-        updateImage(editingCard);
-
-
         showMessage(
-            "Menu item updated successfully."
+            "Please complete all required fields.",
+            "error"
         );
 
-    }
-
-
-    /* ADD NEW FOOD */
-
-    else {
-
-        const card =
-            createFoodCard(
-                name,
-                price,
-                category,
-                categoryName,
-                description
-            );
-
-
-        const foodGrid =
-            document.getElementById(
-                "foodGrid"
-            );
-
-
-        const addCard =
-            document.querySelector(
-                ".add-food-card"
-            );
-
-
-        /*
-         * Insert the new food
-         * BEFORE the Add Food card.
-         */
-
-        foodGrid.insertBefore(
-            card,
-            addCard
-        );
-
-
-        updateImage(card);
-
-
-        showMessage(
-            "Menu item added successfully."
-        );
-
-    }
-
-
-    closeModal();
-
-    applyFilters();
-
-}
-
-
-/* CREATE FOOD CARD*/
-
-function createFoodCard(
-    name,
-    price,
-    category,
-    categoryName,
-    description
-) {
-
-    const card =
-        document.createElement("div");
-
-
-    card.className =
-        "food-card";
-
-
-    card.dataset.name =
-        name;
-
-
-    card.dataset.category =
-        category;
-
-
-    card.innerHTML = `
-
-        <div class="food-image">
-
-            <div class="food-placeholder">
-                ${getCategoryIcon(category)}
-            </div>
-
-        </div>
-
-
-        <div class="food-info">
-
-            <div class="category-label">
-                ${categoryName}
-            </div>
-
-
-            <h3>
-                ${escapeHTML(name)}
-            </h3>
-
-
-            <p class="food-description">
-                ${
-                    escapeHTML(
-                        description ||
-                        "No description available."
-                    )
-                }
-            </p>
-
-
-            <div class="food-bottom">
-
-                <span class="price">
-                    ₱${parseFloat(price).toFixed(2)}
-                </span>
-
-            </div>
-
-
-            <div class="food-actions">
-
-                <button
-                    class="edit-button"
-                    onclick="openEditModal(this)"
-                >
-                    Edit
-                </button>
-
-
-                <button
-                    class="delete-button"
-                    onclick="deleteItem(this)"
-                >
-                    Delete
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    return card;
-
-}
-
-
-/* UPDATE IMAGE */
-
-function updateImage(card) {
-
-    const file =
-        document.getElementById("foodImage").files[0];
-
-
-    if (!file) {
         return;
     }
 
 
-    const reader =
-        new FileReader();
+    const formData =
+        new FormData();
+
+    formData.append(
+        "action",
+        editingFoodId ? "edit" : "add"
+    );
+
+    formData.append(
+        "food_name",
+        name
+    );
+
+    formData.append(
+        "food_price",
+        price
+    );
+
+    formData.append(
+        "menu_food_category",
+        category
+    );
+
+    formData.append(
+        "food_description",
+        description
+    );
 
 
-    reader.onload = function(event) {
+    if (editingFoodId) {
 
-        card.querySelector(".food-image").innerHTML = `
-
-            <img
-                src="${event.target.result}"
-                alt="Food Image"
-            >
-
-        `;
-
-    };
+        formData.append(
+            "food_id",
+            editingFoodId
+        );
+    }
 
 
-    reader.readAsDataURL(file);
+    if (image) {
 
+        formData.append(
+            "food_picture",
+            image
+        );
+    }
+
+
+    const saveButton =
+        document.getElementById("saveButton");
+
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+
+
+    try {
+
+        const response =
+            await fetch("menu-admin.php", {
+                method: "POST",
+                body: formData
+            });
+
+
+        const result =
+            await response.json();
+
+
+        if (result.success) {
+
+            showMessage(
+                result.message
+            );
+
+            closeModal();
+
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+
+        } else {
+
+            showMessage(
+                result.message,
+                "error"
+            );
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "An error occurred while saving the food item.",
+            "error"
+        );
+
+    } finally {
+
+        saveButton.disabled = false;
+
+        saveButton.textContent =
+            editingFoodId
+                ? "Save Changes"
+                : "Add Menu Item";
+    }
 }
 
 
-/* IMAGE PREVIEW */
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
 
 function previewImage(event) {
 
     const file =
         event.target.files[0];
-
 
     if (!file) {
 
@@ -408,7 +299,40 @@ function previewImage(event) {
             "<span>Image Preview</span>";
 
         return;
+    }
 
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif"
+    ];
+
+
+    if (!allowedTypes.includes(file.type)) {
+
+        showMessage(
+            "Please select a JPG, PNG, WEBP, or GIF image.",
+            "error"
+        );
+
+        event.target.value = "";
+
+        return;
+    }
+
+
+    if (file.size > 16 * 1024 * 1024) {
+
+        showMessage(
+            "The image is too large. Maximum size is 16MB.",
+            "error"
+        );
+
+        event.target.value = "";
+
+        return;
     }
 
 
@@ -419,91 +343,316 @@ function previewImage(event) {
     reader.onload = function(e) {
 
         document.getElementById("imagePreview").innerHTML = `
-
             <img
                 src="${e.target.result}"
                 alt="Image Preview"
             >
-
         `;
-
     };
 
 
     reader.readAsDataURL(file);
-
 }
 
 
-/* DELETE FOOD */
+/* =========================================================
+   CHANGE AVAILABILITY
+========================================================= */
 
-function deleteItem(button) {
+async function changeAvailability(
+    foodId,
+    availability
+) {
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "action",
+        "availability"
+    );
+
+    formData.append(
+        "food_id",
+        foodId
+    );
+
+    formData.append(
+        "availability",
+        availability
+    );
+
+
+    try {
+
+        const response =
+            await fetch("menu-admin.php", {
+                method: "POST",
+                body: formData
+            });
+
+
+        const result =
+            await response.json();
+
+
+        if (result.success) {
+
+            const card =
+                document.querySelector(
+                    `.food-card[data-id="${foodId}"]`
+                );
+
+
+            if (card) {
+
+                if (availability === 1) {
+
+                    card.classList.remove(
+                        "unavailable"
+                    );
+
+                } else {
+
+                    card.classList.add(
+                        "unavailable"
+                    );
+                }
+
+
+                const availableButton =
+                    card.querySelector(
+                        ".available-button"
+                    );
+
+                const unavailableButton =
+                    card.querySelector(
+                        ".unavailable-button"
+                    );
+
+
+                availableButton.classList.toggle(
+                    "selected",
+                    availability === 1
+                );
+
+                unavailableButton.classList.toggle(
+                    "selected",
+                    availability === 0
+                );
+
+
+                const imageContainer =
+                    card.querySelector(
+                        ".food-image"
+                    );
+
+
+                const existingOverlay =
+                    imageContainer.querySelector(
+                        ".unavailable-overlay"
+                    );
+
+
+                if (availability === 0) {
+
+                    if (!existingOverlay) {
+
+                        const overlay =
+                            document.createElement("div");
+
+                        overlay.className =
+                            "unavailable-overlay";
+
+                        overlay.textContent =
+                            "NOT AVAILABLE";
+
+                        imageContainer.appendChild(
+                            overlay
+                        );
+                    }
+
+                } else {
+
+                    if (existingOverlay) {
+                        existingOverlay.remove();
+                    }
+                }
+            }
+
+
+            showMessage(
+                result.message
+            );
+
+        } else {
+
+            showMessage(
+                result.message,
+                "error"
+            );
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to change food availability.",
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   DELETE FOOD
+========================================================= */
+
+function deleteItem(foodId) {
 
     const card =
-        button.closest(".food-card");
-
-
-    const name =
-        card.querySelector("h3").textContent;
-
-
-    const confirmDelete =
-        confirm(
-            `Are you sure you want to delete "${name}"?`
+        document.querySelector(
+            `.food-card[data-id="${foodId}"]`
         );
 
-
-    if (!confirmDelete) {
+    if (!card) {
         return;
     }
 
 
-    card.remove();
+    const name =
+        card.querySelector("h3")
+            .textContent
+            .trim();
 
 
-    showMessage(
-        "Menu item deleted successfully."
+    deletingFoodId =
+        foodId;
+
+
+    document.getElementById(
+        "deleteMessage"
+    ).textContent =
+        `Are you sure you want to delete "${name}"?`;
+
+
+    document.getElementById(
+        "deleteModal"
+    ).classList.add("show");
+}
+
+
+/* =========================================================
+   CLOSE DELETE MODAL
+========================================================= */
+
+function closeDeleteModal() {
+
+    deletingFoodId = null;
+
+    document.getElementById(
+        "deleteModal"
+    ).classList.remove("show");
+}
+
+
+/* =========================================================
+   CONFIRM DELETE
+========================================================= */
+
+async function confirmDelete() {
+
+    if (!deletingFoodId) {
+        return;
+    }
+
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "action",
+        "delete"
+    );
+
+    formData.append(
+        "food_id",
+        deletingFoodId
     );
 
 
-    applyFilters();
+    try {
 
+        const response =
+            await fetch("menu-admin.php", {
+                method: "POST",
+                body: formData
+            });
+
+
+        const result =
+            await response.json();
+
+
+        if (result.success) {
+
+            const card =
+                document.querySelector(
+                    `.food-card[data-id="${deletingFoodId}"]`
+                );
+
+
+            if (card) {
+                card.remove();
+            }
+
+
+            closeDeleteModal();
+
+
+            showMessage(
+                result.message
+            );
+
+
+            applyFilters();
+
+        } else {
+
+            showMessage(
+                result.message,
+                "error"
+            );
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Unable to delete the food item.",
+            "error"
+        );
+    }
 }
 
 
-/* SEARCH FOOD */
-
-function searchFood() {
-
-    applyFilters();
-
-}
-
-
-/* FILTER FOOD */
-
-function filterFood() {
-
-    applyFilters();
-
-}
-
-
-/* APPLY SEARCH + CATEGORY*/
+/* =========================================================
+   SEARCH + CATEGORY FILTER
+========================================================= */
 
 function applyFilters() {
 
     const search =
-        document
-            .getElementById("searchInput")
+        document.getElementById("searchInput")
             .value
             .toLowerCase()
             .trim();
 
 
     const category =
-        document
-            .getElementById("categoryFilter")
+        document.getElementById("categoryFilter")
             .value;
 
 
@@ -541,18 +690,14 @@ function applyFilters() {
             matchesCategory
         ) {
 
-            card.style.display =
-                "";
+            card.style.display = "";
 
             visibleCount++;
 
         } else {
 
-            card.style.display =
-                "none";
-
+            card.style.display = "none";
         }
-
     });
 
 
@@ -562,17 +707,7 @@ function applyFilters() {
         );
 
 
-    /* show "No results" when the user selected a category. */
-
-    const hasFilter =
-        search !== "" ||
-        category !== "all";
-
-
-    if (
-        visibleCount === 0 &&
-        hasFilter
-    ) {
+    if (visibleCount === 0) {
 
         noResults.style.display =
             "block";
@@ -581,62 +716,23 @@ function applyFilters() {
 
         noResults.style.display =
             "none";
-
     }
-
 }
 
 
-/* CATEGORY NAME= */
+/* =========================================================
+   MESSAGE
+========================================================= */
 
-function getCategoryName(category) {
-
-    const categories = {
-
-        meal: "Meals",
-
-        snack: "Snacks",
-
-        drink: "Drinks",
-
-        dessert: "Desserts"
-
-    };
-
-
-    return categories[category] || "Other";
-
-}
-
-
-/* ATEGORY ICON */
-
-function getCategoryIcon(category) {
-
-    const icons = {
-
-        meal: "🍗",
-
-        snack: "🍟",
-
-        drink: "🥤",
-
-        dessert: "🍰"
-
-    };
-
-
-    return icons[category] || "🍽️";
-
-}
-
-
-/* MESSAGE */
-
-function showMessage(message) {
+function showMessage(
+    message,
+    type = "success"
+) {
 
     const existing =
-        document.querySelector(".temporary-message");
+        document.querySelector(
+            ".temporary-message"
+        );
 
 
     if (existing) {
@@ -656,38 +752,11 @@ function showMessage(message) {
         message;
 
 
-    notification.style.position =
-        "fixed";
-
-    notification.style.top =
-        "25px";
-
-    notification.style.right =
-        "25px";
-
-    notification.style.background =
-        "#d1e7dd";
-
-    notification.style.color =
-        "#0f5132";
-
-    notification.style.padding =
-        "13px 18px";
-
-    notification.style.borderRadius =
-        "8px";
-
-    notification.style.fontSize =
-        "14px";
-
-    notification.style.fontWeight =
-        "bold";
-
-    notification.style.boxShadow =
-        "0 5px 20px rgba(0,0,0,0.1)";
-
-    notification.style.zIndex =
-        "3000";
+    notification.classList.add(
+        type === "error"
+            ? "message-error"
+            : "message-success"
+    );
 
 
     document.body.appendChild(
@@ -700,57 +769,84 @@ function showMessage(message) {
         notification.remove();
 
     }, 2500);
-
 }
 
 
-/* ESCAPE HTML */
+/* =========================================================
+   CLOSE MODALS WHEN CLICKING OUTSIDE
+========================================================= */
 
-function escapeHTML(text) {
+document.addEventListener(
+    "click",
+    function(event) {
 
-    const div =
-        document.createElement("div");
+        const menuModal =
+            document.getElementById(
+                "menuModal"
+            );
 
-    div.textContent =
-        text;
-
-    return div.innerHTML;
-
-}
+        const deleteModal =
+            document.getElementById(
+                "deleteModal"
+            );
 
 
-/* CLOSE WHEN CLICKING OUTSIDE */
-
-document
-    .getElementById("menuModal")
-    .addEventListener("click", function(event) {
-
-        if (event.target === this) {
+        if (
+            event.target === menuModal
+        ) {
 
             closeModal();
-
         }
 
-    });
+
+        if (
+            event.target === deleteModal
+        ) {
+
+            closeDeleteModal();
+        }
+    }
+);
 
 
-/* ESC KEY */
+/* =========================================================
+   ESC KEY
+========================================================= */
 
 document.addEventListener(
     "keydown",
     function(event) {
 
+        if (event.key !== "Escape") {
+            return;
+        }
+
+
+        const menuModal =
+            document.getElementById(
+                "menuModal"
+            );
+
+
+        const deleteModal =
+            document.getElementById(
+                "deleteModal"
+            );
+
+
         if (
-            event.key === "Escape" &&
-            document
-                .getElementById("menuModal")
-                .classList
-                .contains("show")
+            menuModal.classList.contains("show")
         ) {
 
             closeModal();
-
         }
 
+
+        if (
+            deleteModal.classList.contains("show")
+        ) {
+
+            closeDeleteModal();
+        }
     }
 );

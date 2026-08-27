@@ -1,4 +1,4 @@
-/* user-admin.css */
+        /* user-admin.css */
 * {
     margin: 0;
     padding: 0;
@@ -525,6 +525,53 @@ body {
 
 .delete-button:hover {
     background: #b91c1c;
+}
+
+/* CURRENT USER */
+
+.current-user-label {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 7px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+/* NO PERMISSION */
+
+.no-action-label {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 7px;
+    background: #f5f5f5;
+    color: #999;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+/* TEMPORARY MESSAGE */
+
+.temporary-message {
+    animation: messageSlideIn 0.25s ease;
+}
+
+
+@keyframes messageSlideIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
 }
 
 /* RESPONSIVE */

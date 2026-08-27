@@ -1,4 +1,411 @@
-<!-- user-admin.php -->
+<?php
+
+session_start();
+
+/*
+|--------------------------------------------------------------------------
+| DATABASE CONNECTION
+|--------------------------------------------------------------------------
+*/
+
+$host = "localhost";
+$db_user = "root";
+$db_password = "";
+$db_name = "canteen-system";
+
+$conn = new mysqli(
+    $host,
+    $db_user,
+    $db_password,
+    $db_name
+);
+
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| CHECK LOGIN
+|--------------------------------------------------------------------------
+|
+| IMPORTANT:
+| admin_login.php uses:
+| $_SESSION['admin_username']
+| $_SESSION['admin_role']
+|
+|--------------------------------------------------------------------------
+*/
+
+if (
+    !isset($_SESSION['admin_logged_in']) ||
+    $_SESSION['admin_logged_in'] !== true ||
+    !isset($_SESSION['admin_username']) ||
+    !isset($_SESSION['admin_role'])
+) {
+
+    header("Location: ../auth/admin_login.php");
+    exit();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LOGGED-IN USER
+|--------------------------------------------------------------------------
+*/
+
+$loggedInUsername = $_SESSION['admin_username'];
+$loggedInRole = strtolower(trim($_SESSION['admin_role']));
+
+
+/*
+|--------------------------------------------------------------------------
+| POSITION DISPLAY
+|--------------------------------------------------------------------------
+*/
+
+function getPosition($role)
+{
+    $role = strtolower(trim($role));
+
+    if ($role === "manager") {
+        return "Canteen Manager";
+    }
+
+    if ($role === "canteen_staff") {
+        return "Canteen Staff";
+    }
+
+    return ucfirst(
+        str_replace("_", " ", $role)
+    );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| INITIALS
+|--------------------------------------------------------------------------
+*/
+
+function getInitials($name)
+{
+    $name = trim($name);
+
+    if ($name === "") {
+        return "?";
+    }
+
+    $words = preg_split('/\s+/', $name);
+
+    if (count($words) === 1) {
+
+        return strtoupper(
+            substr($words[0], 0, 2)
+        );
+
+    }
+
+    return strtoupper(
+        substr($words[0], 0, 1) .
+        substr($words[count($words) - 1], 0, 1)
+    );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| HANDLE AJAX ACCOUNT ACTIONS
+|--------------------------------------------------------------------------
+*/
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    header("Content-Type: application/json");
+
+    $action = $_POST["action"] ?? "";
+    $username = trim($_POST["username"] ?? "");
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ONLY MANAGER CAN MANAGE ACCOUNTS
+    |--------------------------------------------------------------------------
+    */
+
+    if ($loggedInRole !== "manager") {
+
+        echo json_encode([
+            "success" => false,
+            "message" => "You do not have permission to manage user accounts."
+        ]);
+
+        exit();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE USER
+    |--------------------------------------------------------------------------
+    */
+
+    if ($action === "delete") {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MANAGER CANNOT DELETE OWN ACCOUNT
+        |--------------------------------------------------------------------------
+        */
+
+        if ($username === $loggedInUsername) {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "You cannot delete your own account."
+            ]);
+
+            exit();
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK TARGET ACCOUNT
+        |--------------------------------------------------------------------------
+        */
+
+        $check = $conn->prepare(
+            "SELECT id, username
+             FROM admin_register
+             WHERE username = ?
+             LIMIT 1"
+        );
+
+        $check->bind_param(
+            "s",
+            $username
+        );
+
+        $check->execute();
+
+        $result = $check->get_result();
+
+
+        if ($result->num_rows === 0) {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "User account not found."
+            ]);
+
+            exit();
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE ACCOUNT
+        |--------------------------------------------------------------------------
+        */
+
+        $delete = $conn->prepare(
+            "DELETE FROM admin_register
+             WHERE username = ?"
+        );
+
+        $delete->bind_param(
+            "s",
+            $username
+        );
+
+
+        if ($delete->execute()) {
+
+            echo json_encode([
+                "success" => true,
+                "message" => "User account deleted successfully."
+            ]);
+
+        } else {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "Unable to delete the user account."
+            ]);
+
+        }
+
+        exit();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TOGGLE STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    if ($action === "toggle_status") {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MANAGER CANNOT CHANGE OWN STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        if ($username === $loggedInUsername) {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "You cannot change your own account status."
+            ]);
+
+            exit();
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET CURRENT STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        $check = $conn->prepare(
+            "SELECT status
+             FROM admin_register
+             WHERE username = ?
+             LIMIT 1"
+        );
+
+        $check->bind_param(
+            "s",
+            $username
+        );
+
+        $check->execute();
+
+        $result = $check->get_result();
+
+
+        if ($result->num_rows === 0) {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "User account not found."
+            ]);
+
+            exit();
+        }
+
+
+        $user = $result->fetch_assoc();
+
+        $currentStatus = strtolower(
+            trim($user["status"])
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHANGE STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $currentStatus === "active" ||
+            $currentStatus === "1"
+        ) {
+
+            $newStatus = "inactive";
+
+        } else {
+
+            $newStatus = "active";
+
+        }
+
+
+        $update = $conn->prepare(
+            "UPDATE admin_register
+             SET status = ?
+             WHERE username = ?"
+        );
+
+        $update->bind_param(
+            "ss",
+            $newStatus,
+            $username
+        );
+
+
+        if ($update->execute()) {
+
+            echo json_encode([
+                "success" => true,
+                "message" => "Account status updated successfully."
+            ]);
+
+        } else {
+
+            echo json_encode([
+                "success" => false,
+                "message" => "Unable to update account status."
+            ]);
+
+        }
+
+        exit();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INVALID ACTION
+    |--------------------------------------------------------------------------
+    */
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid action."
+    ]);
+
+    exit();
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| GET ALL ADMIN ACCOUNTS
+|--------------------------------------------------------------------------
+*/
+
+$users = [];
+
+$query = "
+    SELECT username, role, status
+    FROM admin_register
+    ORDER BY username ASC
+";
+
+$result = $conn->query($query);
+
+
+if ($result) {
+
+    while ($row = $result->fetch_assoc()) {
+
+        $users[] = $row;
+
+    }
+
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,11 +418,13 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>OrderEATS - User Management</title>
+    <title>
+        OrderEATS - User Management
+    </title>
 
     <link
         rel="stylesheet"
-        href="../assests\css/user-admin.css"
+        href="../assests/css/user-admin.css"
     >
 
 </head>
@@ -26,9 +435,11 @@
 
 <div class="app-container">
 
+
     <!-- SIDEBAR -->
 
     <aside class="sidebar">
+
 
         <!-- BRAND -->
 
@@ -39,14 +450,20 @@
             </div>
 
             <span>
-                <span style="color: #F9A825;">Order</span>EATS
+
+                <span style="color: #F9A825;">
+                    Order
+                </span>EATS
+
             </span>
 
         </div>
 
+
         <!-- NAVIGATION -->
 
         <nav class="sidebar-menu">
+
 
             <a
                 href="dashboard-admin.php"
@@ -95,6 +512,7 @@
 
             </a>
 
+
             <a
                 href="categories-admin.php"
                 class="sidebar-link"
@@ -109,6 +527,7 @@
                 </span>
 
             </a>
+
 
             <a
                 href="user-admin.php"
@@ -177,26 +596,41 @@
             </div>
 
 
-            <!-- ADMIN PROFILE -->
+            <!-- LOGGED-IN USER PROFILE -->
 
             <div class="user-profile">
 
+
                 <div class="profile-icon">
-                    A
+
+                    <?= htmlspecialchars(
+                        getInitials($loggedInUsername)
+                    ) ?>
+
                 </div>
 
 
                 <div class="profile-info">
 
                     <strong>
-                        Admin
+
+                        <?= htmlspecialchars(
+                            $loggedInUsername
+                        ) ?>
+
                     </strong>
 
+
                     <span>
-                        Administrator
+
+                        <?= htmlspecialchars(
+                            getPosition($loggedInRole)
+                        ) ?>
+
                     </span>
 
                 </div>
+
 
             </div>
 
@@ -208,9 +642,11 @@
 
         <section class="user-section">
 
+
             <!-- SECTION HEADER -->
 
             <div class="section-header">
+
 
                 <div>
 
@@ -228,12 +664,15 @@
                 <div class="account-count">
 
                     <span id="accountCount">
-                        0
+
+                        <?= count($users) ?>
+
                     </span>
 
                     Accounts
 
                 </div>
+
 
             </div>
 
@@ -273,10 +712,231 @@
 
                     <tbody id="userTableBody">
 
-                        <!--
-                            User accounts are
-                            inserted using JavaScript.
-                        -->
+
+                    <?php if (count($users) === 0): ?>
+
+
+                        <tr class="empty-row">
+
+                            <td colspan="4">
+
+                                <div class="empty-icon">
+                                    👤
+                                </div>
+
+                                <strong>
+                                    No user accounts
+                                </strong>
+
+                                <span>
+                                    There are currently no admin accounts.
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+
+                    <?php else: ?>
+
+
+                        <?php foreach ($users as $user): ?>
+
+
+                            <?php
+
+                            $username = $user["username"];
+
+                            $role = strtolower(
+                                trim($user["role"])
+                            );
+
+                            $status = strtolower(
+                                trim($user["status"])
+                            );
+
+
+                            $isActive =
+                                (
+                                    $status === "active" ||
+                                    $status === "1"
+                                );
+
+
+                            $isCurrentUser =
+                                (
+                                    $username ===
+                                    $loggedInUsername
+                                );
+
+
+                            $position =
+                                getPosition($role);
+
+
+                            $initials =
+                                getInitials($username);
+
+                            ?>
+
+
+                            <tr>
+
+
+                                <!-- USER -->
+
+                                <td>
+
+                                    <div class="user-cell">
+
+
+                                        <div class="user-avatar">
+
+                                            <?= htmlspecialchars(
+                                                $initials
+                                            ) ?>
+
+                                        </div>
+
+
+                                        <span class="user-name">
+
+                                            <?= htmlspecialchars(
+                                                $username
+                                            ) ?>
+
+                                        </span>
+
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- POSITION -->
+
+                                <td>
+
+                                    <span class="position-badge">
+
+                                        <?= htmlspecialchars(
+                                            $position
+                                        ) ?>
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    <span
+                                        class="status-badge
+                                        <?= $isActive
+                                            ? 'status-active'
+                                            : 'status-inactive'
+                                        ?>"
+                                    >
+
+                                        <?= $isActive
+                                            ? "Active"
+                                            : "Inactive"
+                                        ?>
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ACTION -->
+
+                                <td>
+
+                                    <div class="action-buttons">
+
+
+                                    <?php if ($loggedInRole === "manager"): ?>
+
+
+                                        <?php if (!$isCurrentUser): ?>
+
+
+                                            <button
+                                                type="button"
+                                                class="status-toggle
+                                                <?= $isActive
+                                                    ? 'deactivate-button'
+                                                    : 'activate-button'
+                                                ?>"
+                                                onclick="toggleUserStatus(
+                                                    '<?= htmlspecialchars(
+                                                        $username,
+                                                        ENT_QUOTES
+                                                    ) ?>'
+                                                )"
+                                            >
+
+                                                <?= $isActive
+                                                    ? "Deactivate"
+                                                    : "Activate"
+                                                ?>
+
+                                            </button>
+
+
+                                            <button
+                                                type="button"
+                                                class="delete-user-button"
+                                                onclick="deleteUser(
+                                                    '<?= htmlspecialchars(
+                                                        $username,
+                                                        ENT_QUOTES
+                                                    ) ?>'
+                                                )"
+                                            >
+
+                                                Delete
+
+                                            </button>
+
+
+                                        <?php else: ?>
+
+
+                                            <span class="current-user-label">
+                                                Your Account
+                                            </span>
+
+
+                                        <?php endif; ?>
+
+
+                                    <?php else: ?>
+
+
+                                        <span class="no-action-label">
+                                            No Permission
+                                        </span>
+
+
+                                    <?php endif; ?>
+
+
+                                    </div>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        <?php endforeach; ?>
+
+
+                    <?php endif; ?>
+
 
                     </tbody>
 
@@ -294,7 +954,6 @@
 
 
 </div>
-
 
 
 <!-- DELETE MODAL -->
@@ -324,6 +983,7 @@
 
         <div class="delete-actions">
 
+
             <button
                 type="button"
                 class="cancel-button"
@@ -331,6 +991,7 @@
             >
                 Cancel
             </button>
+
 
             <button
                 type="button"
@@ -340,7 +1001,9 @@
                 Delete
             </button>
 
+
         </div>
+
 
     </div>
 
