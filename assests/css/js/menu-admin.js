@@ -1,14 +1,10 @@
-/* =========================================================
-   MENU ADMIN JAVASCRIPT
-========================================================= */
+/* MENU ADMIN JAVASCRIPT */
 
 let editingFoodId = null;
 let deletingFoodId = null;
 
 
-/* =========================================================
-   OPEN ADD MODAL
-========================================================= */
+/* OPEN ADD MODAL */
 
 function openAddModal() {
 
@@ -35,9 +31,7 @@ function openAddModal() {
 }
 
 
-/* =========================================================
-   OPEN EDIT MODAL
-========================================================= */
+/* OPEN EDIT MODAL */
 
 function openEditModal(foodId) {
 
@@ -121,9 +115,7 @@ function openEditModal(foodId) {
 }
 
 
-/* =========================================================
-   CLOSE MODAL
-========================================================= */
+/* CLOSE MODAL */
 
 function closeModal() {
 
@@ -134,9 +126,7 @@ function closeModal() {
 }
 
 
-/* =========================================================
-   SAVE FOOD
-========================================================= */
+/* SAVE FOOD */
 
 async function saveFood(event) {
 
@@ -284,9 +274,7 @@ async function saveFood(event) {
 }
 
 
-/* =========================================================
-   IMAGE PREVIEW
-========================================================= */
+/* IMAGE PREVIEW */
 
 function previewImage(event) {
 
@@ -355,9 +343,7 @@ function previewImage(event) {
 }
 
 
-/* =========================================================
-   CHANGE AVAILABILITY
-========================================================= */
+/* CHANGE AVAILABILITY */
 
 async function changeAvailability(
     foodId,
@@ -505,9 +491,7 @@ async function changeAvailability(
 }
 
 
-/* =========================================================
-   DELETE FOOD
-========================================================= */
+/* DELETE FOOD */
 
 function deleteItem(foodId) {
 
@@ -543,9 +527,7 @@ function deleteItem(foodId) {
 }
 
 
-/* =========================================================
-   CLOSE DELETE MODAL
-========================================================= */
+/* CLOSE DELETE MODAL */
 
 function closeDeleteModal() {
 
@@ -557,9 +539,7 @@ function closeDeleteModal() {
 }
 
 
-/* =========================================================
-   CONFIRM DELETE
-========================================================= */
+/* CONFIRM DELETE */
 
 async function confirmDelete() {
 
@@ -638,9 +618,7 @@ async function confirmDelete() {
 }
 
 
-/* =========================================================
-   SEARCH + CATEGORY FILTER
-========================================================= */
+/* SEARCH + CATEGORY FILTER */
 
 function applyFilters() {
 
@@ -720,9 +698,7 @@ function applyFilters() {
 }
 
 
-/* =========================================================
-   MESSAGE
-========================================================= */
+/* MESSAGE */
 
 function showMessage(
     message,
@@ -772,9 +748,7 @@ function showMessage(
 }
 
 
-/* =========================================================
-   CLOSE MODALS WHEN CLICKING OUTSIDE
-========================================================= */
+/* CLOSE MODALS WHEN CLICKING OUTSIDE */
 
 document.addEventListener(
     "click",
@@ -809,9 +783,7 @@ document.addEventListener(
 );
 
 
-/* =========================================================
-   ESC KEY
-========================================================= */
+/* ESC KEY */
 
 document.addEventListener(
     "keydown",

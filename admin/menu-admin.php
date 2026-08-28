@@ -3,12 +3,7 @@ session_start();
 
 require_once "../config/database.php";
 
-/*
-|--------------------------------------------------------------------------
-| LOGIN SESSION
-|--------------------------------------------------------------------------
-| These are the same session variables used for the admin profile.
-*/
+/* LOGIN SESSION */
 
 if (!isset($_SESSION['admin_username']) || !isset($_SESSION['admin_role'])) {
     header("Location: login.php");
@@ -18,19 +13,11 @@ if (!isset($_SESSION['admin_username']) || !isset($_SESSION['admin_role'])) {
 $loggedInName = $_SESSION['admin_username'];
 $loggedInRole = $_SESSION['admin_role'];
 
-/*
-|--------------------------------------------------------------------------
-| PROFILE INITIAL
-|--------------------------------------------------------------------------
-*/
+/* PROFILE INITIAL */
 
 $profileInitial = strtoupper(substr(trim($loggedInName), 0, 1));
 
-/*
-|--------------------------------------------------------------------------
-| FORMAT ROLE
-|--------------------------------------------------------------------------
-*/
+/* FORMAT ROLE */
 
 $displayRole = ucwords(
     str_replace(
@@ -40,11 +27,7 @@ $displayRole = ucwords(
     )
 );
 
-/*
-|--------------------------------------------------------------------------
-| DATABASE ACTIONS
-|--------------------------------------------------------------------------
-*/
+/* DATABASE ACTIONS */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
@@ -52,11 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     $action = $_POST['action'];
 
-    /*
-    |--------------------------------------------------------------------------
-    | ADD FOOD
-    |--------------------------------------------------------------------------
-    */
+    /* ADD FOOD */
 
     if ($action === 'add') {
 
@@ -187,11 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | EDIT FOOD
-    |--------------------------------------------------------------------------
-    */
+    /* EDIT FOOD */
 
     if ($action === 'edit') {
 
@@ -212,11 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | IF NEW IMAGE WAS UPLOADED
-        |--------------------------------------------------------------------------
-        */
+        /* IF NEW IMAGE WAS UPLOADED */
 
         if (
             isset($_FILES['food_picture']) &&
@@ -285,11 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         } else {
 
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE WITHOUT CHANGING IMAGE
-            |--------------------------------------------------------------------------
-            */
+            /* UPDATE WITHOUT CHANGING IMAGE */
 
             $stmt = $conn->prepare("
                 UPDATE `food-menu`
@@ -332,11 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE FOOD
-    |--------------------------------------------------------------------------
-    */
+    /* DELETE FOOD */
 
     if ($action === 'delete') {
 
@@ -438,11 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| GET CATEGORIES
-|--------------------------------------------------------------------------
-*/
+/* GET CATEGORIES */
 
 $categories = [];
 
@@ -461,11 +420,7 @@ if ($categoryResult) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| GET FOOD MENU
-|--------------------------------------------------------------------------
-*/
+/* GET FOOD MENU */
 
 $foods = [];
 

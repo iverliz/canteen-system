@@ -3,9 +3,7 @@
 require_once "../config/database.php";
 
 
-/* =========================================
-   GET CATEGORY ID
-========================================= */
+/* GET CATEGORY ID */
 
 $categoryId =
     intval(
@@ -21,9 +19,7 @@ if ($categoryId <= 0) {
 }
 
 
-/* =========================================
-   GET IMAGE FROM DATABASE
-========================================= */
+/* GET IMAGE FROM DATABASE */
 
 $stmt =
     $conn->prepare(
@@ -65,9 +61,7 @@ $stmt->fetch();
 $stmt->close();
 
 
-/* =========================================
-   CHECK IMAGE
-========================================= */
+/* CHECK IMAGE */
 
 if (
     empty($image)
@@ -79,9 +73,7 @@ if (
 }
 
 
-/* =========================================
-   DETERMINE IMAGE TYPE
-========================================= */
+/* DETERMINE IMAGE TYPE */
 
 $finfo =
     finfo_open(
@@ -99,9 +91,7 @@ $mime =
 finfo_close($finfo);
 
 
-/* =========================================
-   ALLOWED IMAGE TYPES
-========================================= */
+/* ALLOWED IMAGE TYPES*/
 
 $allowedTypes = [
 
@@ -127,9 +117,7 @@ if (
 }
 
 
-/* =========================================
-   OUTPUT IMAGE
-========================================= */
+/* OUTPUT IMAGE */
 
 header(
     "Content-Type: " . $mime

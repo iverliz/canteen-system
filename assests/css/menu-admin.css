@@ -655,9 +655,7 @@ margin-bottom: 22px;
 }
 
 
-/* =========================================================
-   FOOD AVAILABILITY
-========================================================= */
+/* FOOD AVAILABILITY */
 
 .availability-actions {
     display: flex;
@@ -692,9 +690,7 @@ margin-bottom: 22px;
 }
 
 
-/* =========================================================
-   UNAVAILABLE FOOD CARD
-========================================================= */
+/* UNAVAILABLE FOOD CARD */
 
 .food-card.unavailable {
     filter: grayscale(80%);
@@ -707,9 +703,7 @@ margin-bottom: 22px;
 }
 
 
-/* =========================================================
-   UNAVAILABLE IMAGE OVERLAY
-========================================================= */
+/* UNAVAILABLE IMAGE OVERLAY */
 
 .food-image {
     position: relative;
@@ -718,65 +712,46 @@ margin-bottom: 22px;
 .unavailable-overlay {
     position: absolute;
     inset: 0;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     background: rgba(0, 0, 0, 0.42);
-
     color: white;
-
     font-size: 15px;
     font-weight: bold;
-
     letter-spacing: 1px;
 }
 
 
-/* =========================================================
-   DELETE CONFIRMATION MODAL
-========================================================= */
+/* DELETE CONFIRMATION MODAL */
 
 .delete-modal {
     background: white;
     width: 100%;
     max-width: 400px;
-
     border-radius: 14px;
-
     padding: 30px;
-
     text-align: center;
-
     box-shadow:
         0 15px 40px rgba(0, 0, 0, 0.18);
 }
 
-
 .delete-icon {
     width: 65px;
     height: 65px;
-
     margin: 0 auto 18px;
-
     border-radius: 50%;
-
     background: #fef2f2;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-size: 30px;
 }
-
 
 .delete-modal h2 {
     font-size: 21px;
     margin-bottom: 10px;
 }
-
 
 .delete-modal p {
     color: #777;
@@ -785,69 +760,50 @@ margin-bottom: 22px;
     margin-bottom: 25px;
 }
 
-
 .delete-modal-buttons {
     display: flex;
     gap: 10px;
 }
 
-
 .delete-modal-buttons button {
     flex: 1;
 }
 
-
 .confirm-delete-button {
     border: none;
-
     background: #dc3545;
     color: white;
-
     padding: 12px;
-
     border-radius: 7px;
-
     font-weight: bold;
     font-size: 14px;
-
     cursor: pointer;
 }
-
 
 .confirm-delete-button:hover {
     background: #bb2d3b;
 }
 
 
-/* =========================================================
-   NOTIFICATION
-========================================================= */
+/* NOTIFICATION */
 
 .temporary-message {
     position: fixed;
-
     top: 25px;
     right: 25px;
-
     padding: 13px 18px;
-
     border-radius: 8px;
-
     font-size: 14px;
     font-weight: bold;
-
     box-shadow:
         0 5px 20px rgba(0, 0, 0, 0.1);
-
     z-index: 3000;
 }
-
 
 .message-success {
     background: #d1e7dd;
     color: #0f5132;
 }
-
 
 .message-error {
     background: #f8d7da;
@@ -855,14 +811,13 @@ margin-bottom: 22px;
 }
 
 
-/* =========================================================
-   DISABLED SAVE BUTTON
-========================================================= */
+/* DISABLED SAVE BUTTON */
 
 .save-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
+
 
 /* RESPONSIVE */
 

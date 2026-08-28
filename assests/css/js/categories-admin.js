@@ -1,18 +1,9 @@
 /* categories-admin.js */
 
-
-/* =========================================
-   VARIABLES
-========================================= */
-
 let editingCategoryId = null;
 
 let deletingCategoryId = null;
 
-
-/* =========================================
-   INITIALIZE
-========================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -24,9 +15,7 @@ document.addEventListener(
 );
 
 
-/* =========================================
-   SETUP EVENTS
-========================================= */
+/* SETUP EVENTS */
 
 function setupEvents() {
 
@@ -157,9 +146,7 @@ function setupEvents() {
 }
 
 
-/* =========================================
-   OPEN ADD MODAL
-========================================= */
+/* OPEN ADD MODAL */
 
 function openAddModal() {
 
@@ -189,9 +176,7 @@ function openAddModal() {
 }
 
 
-/* =========================================
-   EDIT CATEGORY
-========================================= */
+/* EDIT CATEGORY */
 
 function editCategory(
     categoryId
@@ -292,11 +277,6 @@ function editCategory(
     }
 
 
-    /*
-     * Do not force the user to
-     * upload another image.
-     */
-
     document.getElementById(
         "categoryImage"
     ).value =
@@ -312,9 +292,7 @@ function editCategory(
 }
 
 
-/* =========================================
-   SAVE CATEGORY
-========================================= */
+/* SAVE CATEGORY */
 
 async function saveCategory(
     event
@@ -365,9 +343,7 @@ async function saveCategory(
     }
 
 
-    /* =====================================
-       CREATE FORMDATA
-    ===================================== */
+    /* CREATE FORMDATA */
 
     const formData =
         new FormData();
@@ -384,10 +360,6 @@ async function saveCategory(
         description
     );
 
-
-    /*
-     * If editing, send category ID.
-     */
 
     if (
         editingCategoryId !== null
@@ -413,10 +385,6 @@ async function saveCategory(
     }
 
 
-    /*
-     * Only send image if the user
-     * selected a new image.
-     */
 
     if (
         imageInput.files.length > 0
@@ -430,9 +398,7 @@ async function saveCategory(
     }
 
 
-    /* =====================================
-       SAVE TO PHP
-    ===================================== */
+    /* SAVE TO PHP */
 
     try {
 
@@ -458,12 +424,6 @@ async function saveCategory(
                 result.message
             );
 
-
-            /*
-             * Reload the page so the
-             * category comes directly
-             * from MySQL.
-             */
 
             window.location.reload();
 
@@ -492,9 +452,7 @@ async function saveCategory(
 }
 
 
-/* =========================================
-   IMAGE PREVIEW
-========================================= */
+/* IMAGE PREVIEw */
 
 function previewImage(
     event
@@ -602,9 +560,7 @@ function previewImage(
 }
 
 
-/* =========================================
-   RESET IMAGE PREVIEW
-========================================= */
+/* RESET IMAGE PREVIEW */
 
 function resetImagePreview() {
 
@@ -640,9 +596,7 @@ function resetImagePreview() {
 }
 
 
-/* =========================================
-   CLOSE CATEGORY MODAL
-========================================= */
+/* CLOSE CATEGORY MODAL */
 
 function closeCategoryModal() {
 
@@ -659,9 +613,7 @@ function closeCategoryModal() {
 }
 
 
-/* =========================================
-   DELETE CATEGORY
-========================================= */
+/* DELETE CATEGORY */
 
 function deleteCategory(
     categoryId,
@@ -687,9 +639,7 @@ function deleteCategory(
 }
 
 
-/* =========================================
-   CONFIRM DELETE
-========================================= */
+/* CONFIRM DELETE*/
 
 async function confirmCategoryDelete() {
 
@@ -770,9 +720,7 @@ async function confirmCategoryDelete() {
 }
 
 
-/* =========================================
-   CLOSE DELETE MODAL
-========================================= */
+/* CLOSE DELETE MODAL */
 
 function closeDeleteModal() {
 

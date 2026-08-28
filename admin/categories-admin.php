@@ -6,9 +6,7 @@ session_start();
 require_once "../config/database.php";
 
 
-/* =========================================
-   CHECK ADMIN LOGIN
-========================================= */
+/* CHECK ADMIN LOGIN */
 
 if (
     !isset($_SESSION['admin_logged_in']) ||
@@ -21,9 +19,7 @@ if (
 }
 
 
-/* =========================================
-   ADMIN INFORMATION
-========================================= */
+/* ADMIN INFORMATION */
 
 $adminUsername =
     $_SESSION['admin_username'] ?? "Admin";
@@ -64,9 +60,7 @@ if ($adminRole === "canteen_staff") {
 }
 
 
-/* =========================================
-   AJAX DATABASE OPERATIONS
-========================================= */
+/* AJAX DATABASE OPERATIONS */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -76,9 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST['action'] ?? '';
 
 
-    /* =====================================
-       ADD CATEGORY
-    ===================================== */
+    /* ADD CATEGORY= */
 
     if ($action === 'add') {
 
@@ -106,9 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
 
-        /* -------------------------------
-           IMAGE
-        -------------------------------- */
+        /* IMAGE */
 
         $imageData = null;
 
@@ -180,9 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
 
-        /* -------------------------------
-           INSERT
-        -------------------------------- */
+        /* INSERT */
 
         $stmt =
             $conn->prepare(
@@ -254,9 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    /* =====================================
-       EDIT CATEGORY
-    ===================================== */
+    /* EDIT CATEGORY */
 
     if ($action === 'edit') {
 
@@ -293,9 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
 
-        /* ---------------------------------
-           CHECK IF NEW IMAGE WAS UPLOADED
-        --------------------------------- */
+        /* CHECK IF NEW IMAGE WAS UPLOADED */
 
         $hasNewImage =
             isset($_FILES['category_picture']) &&
@@ -360,9 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
 
 
-            /* -----------------------------
-               UPDATE WITH IMAGE
-            ------------------------------ */
+            /* UPDATE WITH IMAGE */
 
             $stmt =
                 $conn->prepare(
@@ -404,9 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } else {
 
-            /* -----------------------------
-               UPDATE WITHOUT NEW IMAGE
-            ------------------------------ */
+            /* UPDATE WITHOUT NEW IMAGE */
 
             $stmt =
                 $conn->prepare(
@@ -468,9 +448,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    /* =====================================
-       DELETE CATEGORY
-    ===================================== */
+    /* DELETE CATEGORY */
 
     if ($action === 'delete') {
 
@@ -556,9 +534,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-/* =========================================
-   GET CATEGORIES FROM DATABASE
-========================================= */
+/* GET CATEGORIES FROM DATABASE */
 
 $categories = [];
 
@@ -627,8 +603,7 @@ if ($result) {
 
             <span>
                 <span style="color: #F9A825;">
-                    Order
-                </span>EATS
+                    Order</span><span style="color: #f97316;">EATS</span>
             </span>
 
         </div>
@@ -936,9 +911,7 @@ if ($result) {
 </div>
 
 
-<!-- =========================================
-     ADD / EDIT MODAL
-========================================= -->
+<!-- ADD / EDIT MODAL -->
 
 <div
     class="modal-overlay"
@@ -1100,9 +1073,7 @@ if ($result) {
 </div>
 
 
-<!-- =========================================
-     DELETE MODAL
-========================================= -->
+<!-- DELETE MODAL -->
 
 <div
     class="modal-overlay"
