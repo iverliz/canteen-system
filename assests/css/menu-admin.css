@@ -819,6 +819,88 @@ margin-bottom: 22px;
 }
 
 
+/* LOGOUT CONFIRMATION MODAL */
+
+.logout-modal {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.18);
+}
+
+
+/* LOGOUT ICON */
+
+.logout-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fff7ed;
+    color: #f97316;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+
+/* LOGOUT TITLE */
+
+.logout-modal h2 {
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+
+
+/* LOGOUT MESSAGE */
+
+.logout-modal p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+
+/* LOGOUT BUTTONS */
+
+.logout-modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+
+.logout-modal-buttons button {
+    flex: 1;
+}
+
+
+/* CONFIRM LOGOUT */
+
+.confirm-logout-button {
+    border: none;
+    background: #f97316;
+    color: white;
+    padding: 12px;
+    border-radius: 7px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+
+.confirm-logout-button:hover {
+    background: #ea580c;
+}
+
+
 /* RESPONSIVE */
 
 @media (max-width: 900px) {

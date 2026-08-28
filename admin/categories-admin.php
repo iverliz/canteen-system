@@ -38,22 +38,40 @@ $profileInitial =
     );
 
 
-if ($adminRole === "canteen_staff") {
+/* ADMIN ROLE DISPLAY */
+
+$role = strtolower(
+    trim(
+        $_SESSION['admin_role'] ?? ''
+    )
+);
+
+
+if (
+    $role === 'canteen_manager' ||
+    $role === 'manager' ||
+    $role === 'admin' ||
+    $role === 'canteen manager'
+) {
+
+    $displayRole = "Canteen Manager";
+
+} elseif (
+    $role === 'canteen_staff' ||
+    $role === 'staff' ||
+    $role === 'canteen staff'
+) {
 
     $displayRole = "Canteen Staff";
-
-} elseif ($adminRole === "manager") {
-
-    $displayRole = "Manager";
 
 } else {
 
     $displayRole =
-        ucfirst(
+        ucwords(
             str_replace(
                 "_",
                 " ",
-                $adminRole
+                $role
             )
         );
 
@@ -244,208 +262,287 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     /* EDIT CATEGORY */
 
-    if ($action === 'edit') {
+        if ($action === 'edit') {
 
-        $categoryId =
-            intval(
-                $_POST['category_id'] ?? 0
-            );
+            $categoryId =
+                intval(
+                    $_POST['category_id'] ?? 0
+                );
 
-        $title =
-            trim(
-                $_POST['category_title'] ?? ''
-            );
+            $title =
+                trim(
+                    $_POST['category_title'] ?? ''
+                );
 
-        $description =
-            trim(
-                $_POST['category_description'] ?? ''
-            );
+            $description =
+                trim(
+                    $_POST['category_description'] ?? ''
+                );
 
 
-        if (
-            $categoryId <= 0 ||
-            $title === '' ||
-            $description === ''
-        ) {
+            if (
+                $categoryId <= 0 ||
+                $title === '' ||
+                $description === ''
+            ) {
 
-            echo json_encode([
-                "success" => false,
-                "message" =>
-                    "Invalid category information."
-            ]);
+                echo json_encode([
+                    "success" => false,
+                    "message" =>
+                        "Invalid category information."
+                ]);
+
+                exit();
+
+            }
+
+
+            /*
+            * CHECK IF A NEW IMAGE WAS UPLOADED
+            */
+
+            $hasNewImage =
+                isset($_FILES['category_picture']) &&
+                $_FILES['category_picture']['error'] === UPLOAD_ERR_OK;
+
+
+            if ($hasNewImage) {
+
+                $file =
+                    $_FILES['category_picture'];
+
+
+                /* MAXIMUM 2MB */
+
+                if (
+                    $file['size'] >
+                    2 * 1024 * 1024
+                ) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Image must be smaller than 2MB."
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * CHECK ACTUAL MIME TYPE
+                */
+
+                $finfo =
+                    finfo_open(
+                        FILEINFO_MIME_TYPE
+                    );
+
+
+                $mime =
+                    finfo_file(
+                        $finfo,
+                        $file['tmp_name']
+                    );
+
+
+                finfo_close($finfo);
+
+
+                $allowedTypes = [
+
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'image/webp'
+
+                ];
+
+
+                if (
+                    !in_array(
+                        $mime,
+                        $allowedTypes,
+                        true
+                    )
+                ) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Only JPG, PNG, GIF, and WEBP images are allowed."
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * READ NEW IMAGE
+                */
+
+                $imageData =
+                    file_get_contents(
+                        $file['tmp_name']
+                    );
+
+
+                if ($imageData === false) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Unable to read the uploaded image."
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * UPDATE EVERYTHING INCLUDING IMAGE
+                */
+
+                $stmt =
+                    $conn->prepare(
+                        "UPDATE `food-category`
+                        SET
+                            category_picture = ?,
+                            category_title = ?,
+                            category_description = ?
+                        WHERE category_id = ?"
+                    );
+
+
+                if (!$stmt) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Database error: " .
+                            $conn->error
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * IMPORTANT:
+                *
+                * b = BLOB
+                * s = STRING
+                * s = STRING
+                * i = INTEGER
+                */
+
+                $stmt->bind_param(
+                    "bssi",
+                    $imageData,
+                    $title,
+                    $description,
+                    $categoryId
+                );
+
+
+                /*
+                * Send the image as LONG DATA
+                */
+
+                $stmt->send_long_data(
+                    0,
+                    $imageData
+                );
+
+            } else {
+
+                /*
+                * NO NEW IMAGE
+                *
+                * Keep the existing image.
+                */
+
+                $stmt =
+                    $conn->prepare(
+                        "UPDATE `food-category`
+                        SET
+                            category_title = ?,
+                            category_description = ?
+                        WHERE category_id = ?"
+                    );
+
+
+                if (!$stmt) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Database error: " .
+                            $conn->error
+                    ]);
+
+                    exit();
+
+                }
+
+
+                $stmt->bind_param(
+                    "ssi",
+                    $title,
+                    $description,
+                    $categoryId
+                );
+
+            }
+
+
+            /*
+            * EXECUTE
+            */
+
+            if ($stmt->execute()) {
+
+                if (
+                    $stmt->affected_rows >= 0
+                ) {
+
+                    echo json_encode([
+                        "success" => true,
+                        "message" =>
+                            "Category updated successfully."
+                    ]);
+
+                } else {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Category was not updated."
+                    ]);
+
+                }
+
+            } else {
+
+                echo json_encode([
+                    "success" => false,
+                    "message" =>
+                        "Failed to update category: " .
+                        $stmt->error
+                ]);
+
+            }
+
+
+            $stmt->close();
 
             exit();
 
         }
-
-
-        /* CHECK IF NEW IMAGE WAS UPLOADED */
-
-        $hasNewImage =
-            isset($_FILES['category_picture']) &&
-            $_FILES['category_picture']['error'] === UPLOAD_ERR_OK;
-
-
-        if ($hasNewImage) {
-
-            $file =
-                $_FILES['category_picture'];
-
-
-            if ($file['size'] > 2 * 1024 * 1024) {
-
-                echo json_encode([
-                    "success" => false,
-                    "message" =>
-                        "Image must be smaller than 2MB."
-                ]);
-
-                exit();
-
-            }
-
-
-            $finfo =
-                finfo_open(FILEINFO_MIME_TYPE);
-
-            $mime =
-                finfo_file(
-                    $finfo,
-                    $file['tmp_name']
-                );
-
-            finfo_close($finfo);
-
-
-            $allowedTypes = [
-                'image/jpeg',
-                'image/png',
-                'image/gif',
-                'image/webp'
-            ];
-
-
-            if (!in_array($mime, $allowedTypes, true)) {
-
-                echo json_encode([
-                    "success" => false,
-                    "message" =>
-                        "Only JPG, PNG, GIF, and WEBP images are allowed."
-                ]);
-
-                exit();
-
-            }
-
-
-            $imageData =
-                file_get_contents(
-                    $file['tmp_name']
-                );
-
-
-            /* UPDATE WITH IMAGE */
-
-            $stmt =
-                $conn->prepare(
-                    "UPDATE `food-category`
-                     SET
-                        category_picture = ?,
-                        category_title = ?,
-                        category_description = ?
-                     WHERE category_id = ?"
-                );
-
-
-            if (!$stmt) {
-
-                echo json_encode([
-                    "success" => false,
-                    "message" =>
-                        "Database error: " . $conn->error
-                ]);
-
-                exit();
-
-            }
-
-
-            $stmt->bind_param(
-                "bssi",
-                $imageData,
-                $title,
-                $description,
-                $categoryId
-            );
-
-
-            $stmt->send_long_data(
-                0,
-                $imageData
-            );
-
-        } else {
-
-            /* UPDATE WITHOUT NEW IMAGE */
-
-            $stmt =
-                $conn->prepare(
-                    "UPDATE `food-category`
-                     SET
-                        category_title = ?,
-                        category_description = ?
-                     WHERE category_id = ?"
-                );
-
-
-            if (!$stmt) {
-
-                echo json_encode([
-                    "success" => false,
-                    "message" =>
-                        "Database error: " . $conn->error
-                ]);
-
-                exit();
-
-            }
-
-
-            $stmt->bind_param(
-                "ssi",
-                $title,
-                $description,
-                $categoryId
-            );
-
-        }
-
-
-        if ($stmt->execute()) {
-
-            echo json_encode([
-                "success" => true,
-                "message" =>
-                    "Category updated successfully."
-            ]);
-
-        } else {
-
-            echo json_encode([
-                "success" => false,
-                "message" =>
-                    "Failed to update category: " .
-                    $stmt->error
-            ]);
-
-        }
-
-
-        $stmt->close();
-
-        exit();
-
-    }
 
 
     /* DELETE CATEGORY */
@@ -663,6 +760,7 @@ if ($result) {
             <a
                 href="../auth/log_out_admin.php"
                 class="sidebar-link"
+                id="logoutButton"
             >
                 <span class="menu-icon">↪</span>
                 <span>Logout</span>
@@ -798,14 +896,14 @@ if ($result) {
                             <img
                                 src="category-image.php?id=<?php
                                     echo (int)$category['category_id'];
-                                ?>"
+                                ?>&v=<?php echo time(); ?>"
                                 alt="<?php
                                     echo htmlspecialchars(
                                         $category['category_title']
                                     );
                                 ?>"
                                 onerror="this.style.display='none';"
-                            >
+                            >  
 
                         </div>
 
@@ -1118,6 +1216,74 @@ if ($result) {
 
         </div>
 
+    </div>
+
+</div>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+
+<div
+    class="modal-overlay"
+    id="logoutModal"
+>
+
+    <div class="logout-modal">
+
+        <div class="logout-icon">
+            ↪
+        </div>
+
+        <h2>
+            Logout?
+        </h2>
+
+        <p>
+            Are you sure you want to log out of your account?
+        </p>
+
+        <div class="logout-actions">
+
+            <button
+                type="button"
+                class="cancel-button"
+                id="cancelLogout"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="logout-confirm-button"
+                id="confirmLogout"
+            >
+                Yes, Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CATEGORY NOTIFICATION -->
+
+<div
+    class="category-notification"
+    id="categoryNotification"
+>
+
+    <div
+        class="notification-icon"
+        id="notificationIcon"
+    >
+        ✓
+    </div>
+
+    <div
+        class="notification-message"
+        id="notificationMessage"
+    >
+        Category added successfully.
     </div>
 
 </div>

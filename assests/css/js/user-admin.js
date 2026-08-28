@@ -180,7 +180,47 @@ function closeDeleteModal() {
 }
 
 
-/* ETUP EVENTS */
+/* OPEN LOGOUT MODAL */
+
+function openLogoutModal() {
+
+    const modal =
+        document.getElementById(
+            "logoutModal"
+        );
+
+    if (modal) {
+
+        modal.classList.add(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* CLOSE LOGOUT MODAL */
+
+function closeLogoutModal() {
+
+    const modal =
+        document.getElementById(
+            "logoutModal"
+        );
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* SETUP EVENTS */
 
 function setupEvents() {
 
@@ -191,7 +231,6 @@ function setupEvents() {
         document.getElementById(
             "cancelDelete"
         );
-
 
     if (cancelButton) {
 
@@ -210,7 +249,6 @@ function setupEvents() {
             "confirmDelete"
         );
 
-
     if (confirmButton) {
 
         confirmButton.addEventListener(
@@ -221,13 +259,12 @@ function setupEvents() {
     }
 
 
-    /* CLICK OUTSIDE MODAL */
+    /* CLICK OUTSIDE DELETE MODAL */
 
     const modal =
         document.getElementById(
             "deleteModal"
         );
-
 
     if (modal) {
 
@@ -250,6 +287,96 @@ function setupEvents() {
     }
 
 
+    /* LOGOUT BUTTON */
+
+    const logoutButton =
+        document.getElementById(
+            "logoutButton"
+        );
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                openLogoutModal();
+
+            }
+        );
+
+    }
+
+
+    /* CANCEL LOGOUT */
+
+    const cancelLogout =
+        document.getElementById(
+            "cancelLogout"
+        );
+
+    if (cancelLogout) {
+
+        cancelLogout.addEventListener(
+            "click",
+            closeLogoutModal
+        );
+
+    }
+
+
+    /* CONFIRM LOGOUT */
+
+    const confirmLogout =
+        document.getElementById(
+            "confirmLogout"
+        );
+
+    if (confirmLogout) {
+
+        confirmLogout.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "../auth/log_out_admin.php";
+
+            }
+        );
+
+    }
+
+
+    /* CLICK OUTSIDE LOGOUT MODAL */
+
+    const logoutModal =
+        document.getElementById(
+            "logoutModal"
+        );
+
+    if (logoutModal) {
+
+        logoutModal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    this
+                ) {
+
+                    closeLogoutModal();
+
+                }
+
+            }
+        );
+
+    }
+
+
     /* ESCAPE KEY */
 
     document.addEventListener(
@@ -262,6 +389,8 @@ function setupEvents() {
             ) {
 
                 closeDeleteModal();
+
+                closeLogoutModal();
 
             }
 

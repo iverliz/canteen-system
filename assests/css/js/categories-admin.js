@@ -1,92 +1,131 @@
 /* categories-admin.js */
 
 let editingCategoryId = null;
-
 let deletingCategoryId = null;
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+/* ================================
+   PAGE LOAD
+================================ */
 
-        setupEvents();
+document.addEventListener("DOMContentLoaded", function () {
 
-    }
-);
+    setupEvents();
+
+});
 
 
-/* SETUP EVENTS */
+/* ================================
+   SETUP EVENTS
+================================ */
 
 function setupEvents() {
-
 
     /* ADD CATEGORY */
 
     document
         .getElementById("addCategoryCard")
-        .addEventListener(
-            "click",
-            openAddModal
-        );
+        .addEventListener("click", openAddModal);
 
 
-    /* CLOSE */
+    /* CLOSE CATEGORY MODAL */
 
     document
         .getElementById("closeModal")
-        .addEventListener(
-            "click",
-            closeCategoryModal
-        );
+        .addEventListener("click", closeCategoryModal);
 
 
     document
         .getElementById("cancelButton")
-        .addEventListener(
-            "click",
-            closeCategoryModal
-        );
+        .addEventListener("click", closeCategoryModal);
 
 
     /* FORM */
 
     document
         .getElementById("categoryForm")
-        .addEventListener(
-            "submit",
-            saveCategory
-        );
+        .addEventListener("submit", saveCategory);
 
 
     /* IMAGE */
 
     document
         .getElementById("categoryImage")
-        .addEventListener(
-            "change",
-            previewImage
-        );
+        .addEventListener("change", previewImage);
 
 
     /* DELETE */
 
     document
         .getElementById("cancelDelete")
-        .addEventListener(
-            "click",
-            closeDeleteModal
-        );
+        .addEventListener("click", closeDeleteModal);
 
 
     document
         .getElementById("confirmDelete")
-        .addEventListener(
+        .addEventListener("click", confirmCategoryDelete);
+
+
+    /* LOGOUT */
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
             "click",
-            confirmCategoryDelete
+            function (event) {
+
+                event.preventDefault();
+
+                openLogoutModal(
+                    logoutButton.href
+                );
+
+            }
         );
 
+    }
 
-    /* CLICK OUTSIDE */
+
+    const cancelLogout =
+        document.getElementById("cancelLogout");
+
+    if (cancelLogout) {
+
+        cancelLogout.addEventListener(
+            "click",
+            closeLogoutModal
+        );
+
+    }
+
+
+    const confirmLogout =
+        document.getElementById("confirmLogout");
+
+    if (confirmLogout) {
+
+        confirmLogout.addEventListener(
+            "click",
+            function () {
+
+                const logoutUrl =
+                    document.getElementById(
+                        "logoutButton"
+                    ).href;
+
+                window.location.href =
+                    logoutUrl;
+
+            }
+        );
+
+    }
+
+
+    /* CLICK OUTSIDE CATEGORY MODAL */
 
     document
         .getElementById("categoryModal")
@@ -94,9 +133,7 @@ function setupEvents() {
             "click",
             function (event) {
 
-                if (
-                    event.target === this
-                ) {
+                if (event.target === this) {
 
                     closeCategoryModal();
 
@@ -106,15 +143,15 @@ function setupEvents() {
         );
 
 
+    /* CLICK OUTSIDE DELETE MODAL */
+
     document
         .getElementById("deleteModal")
         .addEventListener(
             "click",
             function (event) {
 
-                if (
-                    event.target === this
-                ) {
+                if (event.target === this) {
 
                     closeDeleteModal();
 
@@ -124,19 +161,40 @@ function setupEvents() {
         );
 
 
+    /* CLICK OUTSIDE LOGOUT MODAL */
+
+    const logoutModal =
+        document.getElementById("logoutModal");
+
+    if (logoutModal) {
+
+        logoutModal.addEventListener(
+            "click",
+            function (event) {
+
+                if (event.target === this) {
+
+                    closeLogoutModal();
+
+                }
+
+            }
+        );
+
+    }
+
+
     /* ESCAPE */
 
     document.addEventListener(
         "keydown",
         function (event) {
 
-            if (
-                event.key === "Escape"
-            ) {
+            if (event.key === "Escape") {
 
                 closeCategoryModal();
-
                 closeDeleteModal();
+                closeLogoutModal();
 
             }
 
@@ -146,7 +204,82 @@ function setupEvents() {
 }
 
 
-/* OPEN ADD MODAL */
+/* ================================
+   NOTIFICATION
+================================ */
+
+function showNotification(
+    message,
+    type = "success"
+) {
+
+    const notification =
+        document.getElementById(
+            "categoryNotification"
+        );
+
+    if (!notification) {
+        return;
+    }
+
+
+    const messageElement =
+        document.getElementById(
+            "notificationMessage"
+        );
+
+
+    const icon =
+        document.getElementById(
+            "notificationIcon"
+        );
+
+
+    messageElement.textContent =
+        message;
+
+
+    notification.className =
+        "category-notification " + type;
+
+
+    if (type === "success") {
+
+        icon.textContent = "✓";
+
+    } else {
+
+        icon.textContent = "!";
+
+    }
+
+
+    notification.classList.add("show");
+
+
+    clearTimeout(
+        window.categoryNotificationTimer
+    );
+
+
+    window.categoryNotificationTimer =
+        setTimeout(
+            function () {
+
+                notification.classList.remove(
+                    "show"
+                );
+
+            },
+            3000
+        );
+
+}
+
+
+/* ================================
+   OPEN ADD MODAL
+================================ */
 
 function openAddModal() {
 
@@ -169,18 +302,16 @@ function openAddModal() {
 
     document.getElementById(
         "categoryModal"
-    ).classList.add(
-        "show"
-    );
+    ).classList.add("show");
 
 }
 
 
-/* EDIT CATEGORY */
+/* ================================
+   EDIT CATEGORY
+================================ */
 
-function editCategory(
-    categoryId
-) {
+function editCategory(categoryId) {
 
     editingCategoryId =
         categoryId;
@@ -191,11 +322,6 @@ function editCategory(
     ).textContent =
         "Edit Category";
 
-
-    /*
-     * Find the category card
-     * already rendered by PHP.
-     */
 
     const card =
         document.querySelector(
@@ -211,15 +337,21 @@ function editCategory(
 
 
     const title =
-        card.querySelector(
-            ".category-content h3"
-        ).textContent.trim();
+        card
+            .querySelector(
+                ".category-content h3"
+            )
+            .textContent
+            .trim();
 
 
     const description =
-        card.querySelector(
-            ".category-content p"
-        ).textContent.trim();
+        card
+            .querySelector(
+                ".category-content p"
+            )
+            .textContent
+            .trim();
 
 
     document.getElementById(
@@ -234,7 +366,7 @@ function editCategory(
         description;
 
 
-    /* Existing image */
+    /* EXISTING IMAGE */
 
     const image =
         card.querySelector(
@@ -242,25 +374,38 @@ function editCategory(
         );
 
 
+    const preview =
+        document.getElementById(
+            "imagePreview"
+        );
+
+
+    const placeholder =
+        document.getElementById(
+            "uploadPlaceholder"
+        );
+
+
     if (
         image &&
-        image.src
+        image.src &&
+        image.style.display !== "none"
     ) {
 
-        const preview =
-            document.getElementById(
-                "imagePreview"
-            );
-
-
-        const placeholder =
-            document.getElementById(
-                "uploadPlaceholder"
-            );
-
+        /*
+         * Add timestamp to prevent browser cache
+         * from showing the old image.
+         */
 
         preview.src =
-            image.src;
+            image.src +
+            (
+                image.src.includes("?")
+                    ? "&"
+                    : "?"
+            ) +
+            "edit=" +
+            Date.now();
 
 
         preview.style.display =
@@ -277,6 +422,12 @@ function editCategory(
     }
 
 
+    /*
+     * Important:
+     * Empty the file input because the existing
+     * database image is NOT a new upload.
+     */
+
     document.getElementById(
         "categoryImage"
     ).value =
@@ -285,32 +436,32 @@ function editCategory(
 
     document.getElementById(
         "categoryModal"
-    ).classList.add(
-        "show"
-    );
+    ).classList.add("show");
 
 }
 
 
-/* SAVE CATEGORY */
+/* ================================
+   SAVE CATEGORY
+================================ */
 
-async function saveCategory(
-    event
-) {
+async function saveCategory(event) {
 
     event.preventDefault();
 
 
     const title =
-        document.getElementById(
-            "categoryTitle"
-        ).value.trim();
+        document
+            .getElementById("categoryTitle")
+            .value
+            .trim();
 
 
     const description =
-        document.getElementById(
-            "categoryDescription"
-        ).value.trim();
+        document
+            .getElementById("categoryDescription")
+            .value
+            .trim();
 
 
     const imageInput =
@@ -319,12 +470,13 @@ async function saveCategory(
         );
 
 
-    /* Validate */
+    /* VALIDATION */
 
     if (!title) {
 
-        alert(
-            "Please enter a category title."
+        showNotification(
+            "Please enter a category title.",
+            "error"
         );
 
         return;
@@ -334,16 +486,15 @@ async function saveCategory(
 
     if (!description) {
 
-        alert(
-            "Please enter a category description."
+        showNotification(
+            "Please enter a category description.",
+            "error"
         );
 
         return;
 
     }
 
-
-    /* CREATE FORMDATA */
 
     const formData =
         new FormData();
@@ -361,9 +512,7 @@ async function saveCategory(
     );
 
 
-    if (
-        editingCategoryId !== null
-    ) {
+    if (editingCategoryId !== null) {
 
         formData.append(
             "category_id",
@@ -385,8 +534,16 @@ async function saveCategory(
     }
 
 
+    /*
+     * NEW IMAGE
+     *
+     * This is important.
+     * Only append category_picture when
+     * the user actually selected a new file.
+     */
 
     if (
+        imageInput.files &&
         imageInput.files.length > 0
     ) {
 
@@ -397,8 +554,6 @@ async function saveCategory(
 
     }
 
-
-    /* SAVE TO PHP */
 
     try {
 
@@ -416,35 +571,46 @@ async function saveCategory(
             await response.json();
 
 
-        if (
-            result.success
-        ) {
+        if (result.success) {
 
-            alert(
-                result.message
+            closeCategoryModal();
+
+
+            showNotification(
+                result.message,
+                "success"
             );
 
 
-            window.location.reload();
+            /*
+             * Give the notification a moment
+             * before refreshing the page.
+             */
+
+            setTimeout(
+                function () {
+
+                    window.location.reload();
+
+                },
+                500
+            );
+
 
         } else {
 
-            alert(
-                result.message
+            showNotification(
+                result.message,
+                "error"
             );
 
         }
 
     } catch (error) {
 
-        console.error(
-            "Save category error:",
-            error
-        );
-
-
-        alert(
-            "Unable to connect to the server."
+        showNotification(
+            "Unable to connect to the server.",
+            "error"
         );
 
     }
@@ -452,11 +618,11 @@ async function saveCategory(
 }
 
 
-/* IMAGE PREVIEw */
+/* ================================
+   IMAGE PREVIEW
+================================ */
 
-function previewImage(
-    event
-) {
+function previewImage(event) {
 
     const file =
         event.target.files[0];
@@ -469,15 +635,16 @@ function previewImage(
     }
 
 
-    /* Maximum 2MB */
+    /* MAXIMUM 2MB */
 
     if (
         file.size >
         2 * 1024 * 1024
     ) {
 
-        alert(
-            "Please select an image smaller than 2MB."
+        showNotification(
+            "Please select an image smaller than 2MB.",
+            "error"
         );
 
 
@@ -506,8 +673,9 @@ function previewImage(
         )
     ) {
 
-        alert(
-            "Only JPG, PNG, GIF, and WEBP images are allowed."
+        showNotification(
+            "Only JPG, PNG, GIF, and WEBP images are allowed.",
+            "error"
         );
 
 
@@ -553,14 +721,14 @@ function previewImage(
         };
 
 
-    reader.readAsDataURL(
-        file
-    );
+    reader.readAsDataURL(file);
 
 }
 
 
-/* RESET IMAGE PREVIEW */
+/* ================================
+   RESET IMAGE PREVIEW
+================================ */
 
 function resetImagePreview() {
 
@@ -576,8 +744,7 @@ function resetImagePreview() {
         );
 
 
-    preview.src =
-        "";
+    preview.src = "";
 
 
     preview.style.display =
@@ -590,21 +757,20 @@ function resetImagePreview() {
 
     document.getElementById(
         "categoryImage"
-    ).value =
-        "";
+    ).value = "";
 
 }
 
 
-/* CLOSE CATEGORY MODAL */
+/* ================================
+   CLOSE CATEGORY MODAL
+================================ */
 
 function closeCategoryModal() {
 
     document.getElementById(
         "categoryModal"
-    ).classList.remove(
-        "show"
-    );
+    ).classList.remove("show");
 
 
     editingCategoryId =
@@ -613,7 +779,9 @@ function closeCategoryModal() {
 }
 
 
-/* DELETE CATEGORY */
+/* ================================
+   DELETE CATEGORY
+================================ */
 
 function deleteCategory(
     categoryId,
@@ -632,14 +800,14 @@ function deleteCategory(
 
     document.getElementById(
         "deleteModal"
-    ).classList.add(
-        "show"
-    );
+    ).classList.add("show");
 
 }
 
 
-/* CONFIRM DELETE*/
+/* ================================
+   CONFIRM DELETE
+================================ */
 
 async function confirmCategoryDelete() {
 
@@ -684,35 +852,41 @@ async function confirmCategoryDelete() {
             await response.json();
 
 
-        if (
-            result.success
-        ) {
+        if (result.success) {
 
-            alert(
-                result.message
+            closeDeleteModal();
+
+
+            showNotification(
+                result.message,
+                "success"
             );
 
 
-            window.location.reload();
+            setTimeout(
+                function () {
+
+                    window.location.reload();
+
+                },
+                500
+            );
+
 
         } else {
 
-            alert(
-                result.message
+            showNotification(
+                result.message,
+                "error"
             );
 
         }
 
     } catch (error) {
 
-        console.error(
-            "Delete category error:",
-            error
-        );
-
-
-        alert(
-            "Unable to connect to the server."
+        showNotification(
+            "Unable to connect to the server.",
+            "error"
         );
 
     }
@@ -720,18 +894,49 @@ async function confirmCategoryDelete() {
 }
 
 
-/* CLOSE DELETE MODAL */
+/* ================================
+   CLOSE DELETE MODAL
+================================ */
 
 function closeDeleteModal() {
 
     document.getElementById(
         "deleteModal"
-    ).classList.remove(
-        "show"
-    );
+    ).classList.remove("show");
 
 
     deletingCategoryId =
         null;
+
+}
+
+
+/* ================================
+   LOGOUT MODAL
+================================ */
+
+function openLogoutModal() {
+
+    document.getElementById(
+        "logoutModal"
+    ).classList.add("show");
+
+}
+
+
+function closeLogoutModal() {
+
+    const modal =
+        document.getElementById(
+            "logoutModal"
+        );
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
 
 }

@@ -527,6 +527,153 @@ body {
     background: #b91c1c;
 }
 
+
+/* LOGOUT MODAL */
+
+.logout-modal {
+
+    background: white;
+
+    width: 100%;
+
+    max-width: 380px;
+
+    border-radius: 14px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.15);
+
+}
+
+
+/* LOGOUT ICON */
+
+.logout-icon {
+
+    width: 55px;
+
+    height: 55px;
+
+    border-radius: 50%;
+
+    background: #fff7ed;
+
+    color: #f97316;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin: 0 auto 15px;
+
+    font-size: 25px;
+
+    font-weight: bold;
+
+}
+
+
+.logout-modal h2 {
+
+    font-size: 19px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.logout-modal p {
+
+    color: #888;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* LOGOUT ACTIONS */
+
+.logout-actions {
+
+    display: flex;
+
+    gap: 10px;
+
+}
+
+
+.logout-cancel-button {
+
+    flex: 1;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #f5f5f5;
+
+    color: #666;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+
+}
+
+
+.logout-cancel-button:hover {
+
+    background: #eeeeee;
+
+}
+
+
+.logout-confirm-button {
+
+    flex: 1;
+
+    padding: 11px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #f97316;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+
+}
+
+
+.logout-confirm-button:hover {
+
+    background: #ea580c;
+
+}
+
+
+
 /* CURRENT USER */
 
 .current-user-label {

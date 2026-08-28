@@ -276,6 +276,116 @@ a {
 }
 
 
+/* PASSWORD WRAPPER */
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 48px;
+}
+
+
+/* PASSWORD SHOW / HIDE BUTTON */
+
+.password-toggle {
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 6px;
+
+    background: transparent;
+    cursor: pointer;
+
+    font-size: 17px;
+
+    transition: background 0.2s ease;
+}
+
+.password-toggle:hover {
+    background: #fff7ed;
+}
+
+
+/* PASSWORD MATCH MESSAGE */
+
+.password-match-message {
+    min-height: 18px;
+
+    margin-top: 6px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    transition:
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+/* PASSWORD MATCH */
+
+.password-match-message.match {
+    color: #16a34a;
+}
+
+
+/* PASSWORD NOT MATCH */
+
+.password-match-message.no-match {
+    color: #dc2626;
+}
+
+
+/* PASSWORD EMPTY */
+
+.password-match-message.empty {
+    color: #888;
+}
+
+
+/* INPUT BORDER WHEN PASSWORD MATCHES */
+
+#repeat_password.password-valid {
+    border-color: #22c55e;
+}
+
+#repeat_password.password-valid:focus {
+    border-color: #16a34a;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(34, 197, 94, 0.10);
+}
+
+
+/* INPUT BORDER WHEN PASSWORD DOES NOT MATCH */
+
+#repeat_password.password-invalid {
+    border-color: #ef4444;
+}
+
+#repeat_password.password-invalid:focus {
+    border-color: #dc2626;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(239, 68, 68, 0.10);
+}
+
+
 /* SELECT */
 
 .input-group select {
@@ -413,6 +523,36 @@ a {
     background: #fef2f2;
     border: 1px solid #fca5a5;
     color: #dc2626;
+}
+
+
+/* MESSAGE DISAPPEARING ANIMATION */
+
+.form-message.hide-message {
+    animation: hideMessage 0.4s ease forwards;
+}
+
+@keyframes hideMessage {
+
+    from {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 100px;
+        margin-bottom: 20px;
+        padding-top: 11px;
+        padding-bottom: 11px;
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-8px);
+        max-height: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        overflow: hidden;
+    }
+
 }
 
 

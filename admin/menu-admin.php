@@ -15,17 +15,42 @@ $loggedInRole = $_SESSION['admin_role'];
 
 /* PROFILE INITIAL */
 
-$profileInitial = strtoupper(substr(trim($loggedInName), 0, 1));
+$profileInitial = strtoupper(
+    substr(
+        trim($loggedInName),
+        0,
+        1
+    )
+);
 
 /* FORMAT ROLE */
 
-$displayRole = ucwords(
-    str_replace(
-        ['_', '-'],
-        ' ',
-        strtolower($loggedInRole)
-    )
-);
+$role = strtolower(trim($loggedInRole));
+
+switch ($role) {
+
+    case 'canteen manager':
+    case 'manager':
+    case 'canteen_manager':
+        $displayRole = 'Canteen Manager';
+        break;
+
+    case 'canteen staff':
+    case 'staff':
+    case 'canteen_staff':
+        $displayRole = 'Canteen Staff';
+        break;
+
+    default:
+        $displayRole = ucwords(
+            str_replace(
+                ['_', '-'],
+                ' ',
+                $role
+            )
+        );
+        break;
+}
 
 /* DATABASE ACTIONS */
 
@@ -551,8 +576,9 @@ if ($foodResult) {
         <div class="sidebar-bottom">
 
             <a
-                href="logout.php"
+                href="#"
                 class="sidebar-link"
+                onclick="openLogoutModal(event)"
             >
                 <span class="menu-icon">↪</span>
                 <span>Logout</span>
@@ -1117,6 +1143,52 @@ if ($foodResult) {
                 onclick="confirmDelete()"
             >
                 Delete
+            </button>
+
+        </div>
+
+    </div>  
+
+</div>
+
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+
+<div
+    class="modal-overlay"
+    id="logoutModal"
+>
+
+    <div class="logout-modal">
+
+        <div class="logout-icon">
+            ↪
+        </div>
+
+        <h2>
+            Logout?
+        </h2>
+
+        <p>
+            Are you sure you want to log out of your account?
+        </p>
+
+        <div class="logout-modal-buttons">
+
+            <button
+                type="button"
+                class="cancel-button"
+                onclick="closeLogoutModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="confirm-logout-button"
+                onclick="confirmLogout()"
+            >
+                Logout
             </button>
 
         </div>

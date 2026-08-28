@@ -7,12 +7,17 @@ require_once "../config/database.php";
 $message = "";
 $message_type = "";
 
+$username = "";
+$staff_id = "";
+$role = "";
+
 if (isset($_POST['register'])) {
 
-    $username = trim($_POST['username']);
-    $staff_id = trim($_POST['staff_id']);
-    $role = $_POST['role'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username'] ?? "");
+    $staff_id = trim($_POST['staff_id'] ?? "");
+    $role = $_POST['role'] ?? "";
+    $password = $_POST['password'] ?? "";
+    $repeat_password = $_POST['repeat_password'] ?? "";
 
     /* VALIDATE INPUT */
 
@@ -20,10 +25,16 @@ if (isset($_POST['register'])) {
         empty($username) ||
         empty($staff_id) ||
         empty($role) ||
-        empty($password)
+        empty($password) ||
+        empty($repeat_password)
     ) {
 
         $message = "Please fill in all fields.";
+        $message_type = "error";
+
+    } elseif ($password !== $repeat_password) {
+
+        $message = "Passwords do not match.";
         $message_type = "error";
 
     } else {
@@ -84,6 +95,7 @@ if (isset($_POST['register'])) {
                 /* Clear form values after successful registration */
                 $username = "";
                 $staff_id = "";
+                $role = "";
 
             } else {
 
@@ -174,8 +186,7 @@ if (isset($_POST['register'])) {
     >
 
 
-
-    <!--  REGISTRATION CARD -->
+    <!-- REGISTRATION CARD -->
 
     <div class="register-card">
 
@@ -189,13 +200,12 @@ if (isset($_POST['register'])) {
             </div>
 
             <span>
-                <a href="../admin/index_admin.php" >
-                <span style="color: #F9A825;">Order</span><span style="color: #F97316;">EATS</span>
+                <a href="../admin/index_admin.php">
+                    <span style="color: #F9A825;">Order</span><span style="color: #F97316;">EATS</span>
                 </a>
             </span>
 
         </div>
-
 
 
         <!-- ADMIN BADGE -->
@@ -203,7 +213,6 @@ if (isset($_POST['register'])) {
         <div class="admin-badge">
             ADMIN REGISTRATION
         </div>
-
 
 
         <!-- TITLE -->
@@ -218,9 +227,15 @@ if (isset($_POST['register'])) {
             the school canteen system.
         </p>
 
+
+        <!-- FORM MESSAGE -->
+
         <?php if (!empty($message)): ?>
 
-            <div class="form-message <?php echo $message_type; ?>">
+            <div
+                class="form-message <?php echo $message_type; ?>"
+                id="formMessage"
+            >
 
                 <?php echo htmlspecialchars($message); ?>
 
@@ -229,12 +244,12 @@ if (isset($_POST['register'])) {
         <?php endif; ?>
 
 
-
         <!-- FORM -->
 
         <form
             action="admin_register.php"
             method="POST"
+            id="registerForm"
         >
 
 
@@ -251,14 +266,14 @@ if (isset($_POST['register'])) {
                     id="username"
                     name="username"
                     placeholder="Enter username"
+                    value="<?php echo htmlspecialchars($username); ?>"
                     required
                 >
 
             </div>
 
 
-
-            <!-- ID -->
+            <!-- STAFF ID -->
 
             <div class="input-group">
 
@@ -271,11 +286,11 @@ if (isset($_POST['register'])) {
                     id="staff_id"
                     name="staff_id"
                     placeholder="Enter staff ID"
+                    value="<?php echo htmlspecialchars($staff_id); ?>"
                     required
                 >
 
             </div>
-
 
 
             <!-- ROLE -->
@@ -295,23 +310,28 @@ if (isset($_POST['register'])) {
                     <option
                         value=""
                         disabled
-                        selected
+                        <?php echo empty($role) ? "selected" : ""; ?>
                     >
                         Select role
                     </option>
 
-                    <option value="canteen_staff">
+                    <option
+                        value="canteen_staff"
+                        <?php echo $role === "canteen_staff" ? "selected" : ""; ?>
+                    >
                         Canteen Staff
                     </option>
 
-                    <option value="manager">
+                    <option
+                        value="manager"
+                        <?php echo $role === "manager" ? "selected" : ""; ?>
+                    >
                         Manager
                     </option>
 
                 </select>
 
             </div>
-
 
 
             <!-- PASSWORD -->
@@ -322,16 +342,68 @@ if (isset($_POST['register'])) {
                     Password
                 </label>
 
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter password"
-                    required
-                >
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="passwordToggle"
+                        aria-label="Show password"
+                    >
+                        👁️
+                    </button>
+
+                </div>
 
             </div>
 
+
+            <!-- REPEAT PASSWORD -->
+
+            <div class="input-group repeat-password-group">
+
+                <label for="repeat_password">
+                    Repeat Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="repeat_password"
+                        name="repeat_password"
+                        placeholder="Repeat password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        id="repeatPasswordToggle"
+                        aria-label="Show repeat password"
+                    >
+                        👁️
+                    </button>
+
+                </div>
+
+
+                <!-- PASSWORD MATCH MESSAGE -->
+
+                <div
+                    class="password-match-message"
+                    id="passwordMatchMessage"
+                ></div>
+
+            </div>
 
 
             <!-- BUTTONS -->
@@ -351,6 +423,7 @@ if (isset($_POST['register'])) {
                     type="submit"
                     name="register"
                     class="create-btn"
+                    id="createAccountButton"
                 >
                     Create Account
                 </button>
@@ -360,7 +433,6 @@ if (isset($_POST['register'])) {
 
 
         </form>
-
 
 
         <!-- LOGIN LINK -->
@@ -381,6 +453,8 @@ if (isset($_POST['register'])) {
 
 </div>
 
+
+<script src="../assests\css/js/admin_register.js"></script>
 
 </body>
 

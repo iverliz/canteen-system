@@ -764,6 +764,11 @@ document.addEventListener(
                 "deleteModal"
             );
 
+        const logoutModal =
+            document.getElementById(
+                "logoutModal"
+            );
+
 
         if (
             event.target === menuModal
@@ -778,6 +783,14 @@ document.addEventListener(
         ) {
 
             closeDeleteModal();
+        }
+
+
+        if (
+            event.target === logoutModal
+        ) {
+
+            closeLogoutModal();
         }
     }
 );
@@ -799,10 +812,14 @@ document.addEventListener(
                 "menuModal"
             );
 
-
         const deleteModal =
             document.getElementById(
                 "deleteModal"
+            );
+
+        const logoutModal =
+            document.getElementById(
+                "logoutModal"
             );
 
 
@@ -820,5 +837,42 @@ document.addEventListener(
 
             closeDeleteModal();
         }
+
+
+        if (
+            logoutModal.classList.contains("show")
+        ) {
+
+            closeLogoutModal();
+        }
     }
 );
+
+
+/* LOGOUT CONFIRMATION */
+
+function openLogoutModal(event) {
+
+    event.preventDefault();
+
+    document.getElementById("logoutModal")
+        .classList.add("show");
+}
+
+
+/* CLOSE LOGOUT MODAL */
+
+function closeLogoutModal() {
+
+    document.getElementById("logoutModal")
+        .classList.remove("show");
+}
+
+
+/* CONFIRM LOGOUT */
+
+function confirmLogout() {
+
+    window.location.href =
+        "../auth/log_out_admin.php";
+}

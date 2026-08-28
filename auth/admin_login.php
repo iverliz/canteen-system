@@ -12,8 +12,8 @@ $error = "";
 
 if (isset($_POST['login'])) {
 
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
+    $username = trim($_POST['username'] ?? "");
+    $password = $_POST['password'] ?? "";
 
 
     /* CHECK EMPTY INPUT */
@@ -23,7 +23,6 @@ if (isset($_POST['login'])) {
         $error = "Please enter your username and password.";
 
     } else {
-
 
         /* FIND ADMIN ACCOUNT */
 
@@ -50,17 +49,29 @@ if (isset($_POST['login'])) {
 
             $admin = $result->fetch_assoc();
 
+            /*
+             * CHECK ACCOUNT STATUS FIRST
+             *
+             * Only accounts with status = active
+             * are allowed to continue logging in.
+             */
 
-            /* CHECK ACCOUNT STATUS */
+            $accountStatus = strtolower(
+                trim($admin['status'] ?? "")
+            );
 
-            if ($admin['status'] !== 'active') {
 
-                $error = "This administrator account is inactive.";
+            if ($accountStatus !== "active") {
+
+                $error =
+                    "Your administrator account is inactive. Please contact the canteen manager.";
 
             }
 
-
-            /* VERIFY PASSWORD */
+            /*
+             * ACCOUNT IS ACTIVE
+             * NOW VERIFY PASSWORD
+             */
 
             elseif (
                 password_verify(
@@ -103,6 +114,10 @@ if (isset($_POST['login'])) {
 
         } else {
 
+            /*
+             * Do not reveal whether the username
+             * exists in the database.
+             */
 
             $error =
                 "Incorrect username or password.";
@@ -235,7 +250,10 @@ if (isset($_POST['login'])) {
 
         <?php if (!empty($error)): ?>
 
-            <div class="login-error">
+            <div
+                class="login-error"
+                id="loginError"
+            >
                 <?php echo htmlspecialchars($error); ?>
             </div>
 

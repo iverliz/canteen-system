@@ -1,15 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    /* SHOW / HIDE PASSWORD */
+    /* ==============================
+       SHOW / HIDE PASSWORD
+    ============================== */
 
-    const passwordButtons = document.querySelectorAll(".password-toggle");
+    const passwordButtons =
+        document.querySelectorAll(".password-toggle");
 
     passwordButtons.forEach(function (button) {
 
         button.addEventListener("click", function () {
 
-            const targetId = button.getAttribute("data-target");
-            const passwordInput = document.getElementById(targetId);
+            const targetId =
+                button.getAttribute("data-target");
+
+            const passwordInput =
+                document.getElementById(targetId);
 
             if (!passwordInput) {
                 return;
@@ -17,19 +23,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (passwordInput.type === "password") {
 
-                // SHOW PASSWORD
+                /* SHOW PASSWORD */
+
                 passwordInput.type = "text";
 
                 button.textContent = "✖️";
-                button.setAttribute("aria-label", "Hide password");
+
+                button.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
 
             } else {
 
-                // HIDE PASSWORD
+                /* HIDE PASSWORD */
+
                 passwordInput.type = "password";
 
                 button.textContent = "👁️";
-                button.setAttribute("aria-label", "Show password");
+
+                button.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
             }
 
         });
@@ -37,7 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-    /* PASSWORD MATCH CHECK */
+    /* ==============================
+       PASSWORD MATCH CHECK
+    ============================== */
 
     const newPassword =
         document.getElementById("new_password");
@@ -46,10 +65,21 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("repeat_password");
 
     const matchMessage =
-        document.getElementById("password-match-message");
+        document.getElementById(
+            "password-match-message"
+        );
 
 
     function checkPasswordMatch() {
+
+        if (
+            !newPassword ||
+            !repeatPassword ||
+            !matchMessage
+        ) {
+            return;
+        }
+
 
         if (
             repeatPassword.value === "" ||
@@ -57,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ) {
 
             matchMessage.textContent = "";
+
             repeatPassword.classList.remove(
                 "password-match",
                 "password-no-match"
@@ -66,7 +97,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        if (newPassword.value === repeatPassword.value) {
+        if (
+            newPassword.value ===
+            repeatPassword.value
+        ) {
 
             matchMessage.textContent =
                 "✓ Passwords match.";
@@ -97,60 +131,119 @@ document.addEventListener("DOMContentLoaded", function () {
             repeatPassword.classList.add(
                 "password-no-match"
             );
+
         }
 
     }
 
 
-    newPassword.addEventListener(
-        "input",
-        checkPasswordMatch
-    );
+    if (newPassword && repeatPassword) {
 
-    repeatPassword.addEventListener(
-        "input",
-        checkPasswordMatch
-    );
+        newPassword.addEventListener(
+            "input",
+            checkPasswordMatch
+        );
+
+        repeatPassword.addEventListener(
+            "input",
+            checkPasswordMatch
+        );
+
+    }
 
 
-    /* FORM SUBMISSION CHECK */
+    /* ==============================
+       AUTO HIDE SYSTEM MESSAGE
+       AFTER 4 SECONDS
+    ============================== */
+
+    const systemMessage =
+        document.querySelector(".message");
+
+
+    if (systemMessage) {
+
+        /*
+         * Wait 4 seconds before starting
+         * the fade-out animation.
+         */
+
+        setTimeout(function () {
+
+            systemMessage.classList.add(
+                "message-hide"
+            );
+
+
+            /*
+             * Completely remove the message
+             * after the 300ms CSS animation.
+             */
+
+            setTimeout(function () {
+
+                if (systemMessage) {
+                    systemMessage.remove();
+                }
+
+            }, 300);
+
+        }, 4000);
+
+    }
+
+
+    /* ==============================
+       FORM SUBMISSION CHECK
+    ============================== */
 
     const form =
-        document.getElementById("resetPasswordForm");
+        document.getElementById(
+            "resetPasswordForm"
+        );
 
 
-    form.addEventListener("submit", function (event) {
+    if (form) {
 
-        if (
-            newPassword.value !==
-            repeatPassword.value
-        ) {
+        form.addEventListener(
+            "submit",
+            function (event) {
 
-            event.preventDefault();
-            
-            alert(
-                "The new password and repeat password do not match."
-            );
+                if (
+                    newPassword.value !==
+                    repeatPassword.value
+                ) {
 
-            repeatPassword.focus();
+                    event.preventDefault();
 
-            return;
-        }
+                    alert(
+                        "The new password and repeat password do not match."
+                    );
+
+                    repeatPassword.focus();
+
+                    return;
+                }
 
 
-        if (newPassword.value.length < 6) {
+                if (
+                    newPassword.value.length < 6
+                ) {
 
-            event.preventDefault();
+                    event.preventDefault();
 
-            alert(
-                "The new password must be at least 6 characters."
-            );
+                    alert(
+                        "The new password must be at least 6 characters."
+                    );
 
-            newPassword.focus();
+                    newPassword.focus();
 
-            return;
-        }
+                    return;
+                }
 
-    });
+            }
+        );
+
+    }
 
 });

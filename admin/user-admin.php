@@ -69,19 +69,8 @@ function getInitials($name)
         return "?";
     }
 
-    $words = preg_split('/\s+/', $name);
-
-    if (count($words) === 1) {
-
-        return strtoupper(
-            substr($words[0], 0, 2)
-        );
-
-    }
-
     return strtoupper(
-        substr($words[0], 0, 1) .
-        substr($words[count($words) - 1], 0, 1)
+        substr($name, 0, 1)
     );
 }
 
@@ -473,18 +462,16 @@ if ($result) {
         <div class="sidebar-bottom">
 
             <a
-                href="../auth/log_out_admin.php"
+                href="#"
                 class="sidebar-link"
+                id="logoutButton"
             >
-
                 <span class="menu-icon">
                     ↪
                 </span>
-
                 <span>
                     Logout
                 </span>
-
             </a>
 
         </div>
@@ -928,6 +915,48 @@ if ($result) {
     </div>
 
 </div>
+
+<!-- LOGOUT MODAL -->
+<div
+    class="modal-overlay"
+    id="logoutModal"
+>
+    <div class="logout-modal">
+
+        <div class="logout-icon">
+            ↪
+        </div>
+
+        <h2>
+            Log Out?
+        </h2>
+
+        <p>
+            Are you sure you want to log out of your account?
+        </p>
+
+        <div class="logout-actions">
+
+            <button
+                type="button"
+                class="logout-cancel-button"
+                id="cancelLogout"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="logout-confirm-button"
+                id="confirmLogout"
+            >
+                Log Out
+            </button>
+
+        </div>
+
+    </div>
+</div>  
 
 
 <script src="../assests\css/js/user-admin.js"></script>

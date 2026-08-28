@@ -1,4 +1,10 @@
+/* admin_login.js */
+
 document.addEventListener("DOMContentLoaded", function () {
+
+    /* ==============================
+       SHOW / HIDE PASSWORD
+    ============================== */
 
     const passwordInput =
         document.getElementById("password");
@@ -7,37 +13,70 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("togglePassword");
 
 
-    if (!passwordInput || !togglePassword) {
-        return;
+    if (passwordInput && togglePassword) {
+
+        togglePassword.addEventListener("click", function () {
+
+            if (passwordInput.type === "password") {
+
+                passwordInput.type = "text";
+
+                togglePassword.textContent = "✖️";
+
+                togglePassword.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+            } else {
+
+                passwordInput.type = "password";
+
+                togglePassword.textContent = "👁️";
+
+                togglePassword.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+            }
+
+        });
+
     }
 
 
-    togglePassword.addEventListener("click", function () {
+    /* ==============================
+       AUTO HIDE LOGIN MESSAGE
+       AFTER 4 SECONDS
+    ============================== */
 
-        if (passwordInput.type === "password") {
+    const loginError =
+        document.getElementById("loginError");
 
-            passwordInput.type = "text";
 
-            togglePassword.textContent = "✖️";
+    if (loginError) {
 
-            togglePassword.setAttribute(
-                "aria-label",
-                "Hide password"
-            );
+        setTimeout(function () {
 
-        } else {
+            /* Fade out */
 
-            passwordInput.type = "password";
+            loginError.style.opacity = "0";
 
-            togglePassword.textContent = "👁️";
+            loginError.style.transform =
+                "translateY(-5px)";
 
-            togglePassword.setAttribute(
-                "aria-label",
-                "Show password"
-            );
 
-        }
+            /* Completely remove after animation */
 
-    });
+            setTimeout(function () {
+
+                loginError.style.display = "none";
+
+            }, 350);
+
+        }, 4000);
+
+    }
 
 });
