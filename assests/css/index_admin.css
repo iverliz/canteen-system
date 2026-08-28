@@ -82,6 +82,7 @@ a {
     justify-content: center;
     border-radius: 10px;
     background: #f97316;
+    border-radius: 50%; 
     color: white;
     font-size: 21px;
 }
@@ -250,6 +251,19 @@ a {
     max-width: 390px;
 }
 
+.icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.system-logo{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
 /* ADMIN ICON */
 

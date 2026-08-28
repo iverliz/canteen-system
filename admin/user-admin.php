@@ -337,6 +337,11 @@ if ($result) {
         href="../assests/css/user-admin.css"
     >
 
+    <link
+        rel="icon" type="image/x-icon"
+        href="../assests\css/images/OrderEats_logo.png"
+    >
+
 </head>
 
 
@@ -356,7 +361,7 @@ if ($result) {
         <div class="brand">
 
             <div class="brand-icon">
-                🍴
+                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
             </div>
 
             <span>

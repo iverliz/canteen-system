@@ -149,6 +149,11 @@ if (isset($_POST['login'])) {
         href="../assests\css/admin_login.css"
     >
 
+    <link
+        rel="icon" type="image/x-icon"
+        href="../assests\css/images/OrderEats_logo.png"
+    >
+
 </head>
 
 
@@ -214,7 +219,7 @@ if (isset($_POST['login'])) {
         <div class="logo">
 
             <div class="logo-icon">
-                🍴
+                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
             </div>
 
             <span>

@@ -182,6 +182,12 @@ a {
     background: #f97316;
     color: white;
     font-size: 19px;
+    border-radius: 50%;
+}
+.system-logo{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 

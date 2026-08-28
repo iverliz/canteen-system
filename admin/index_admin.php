@@ -21,6 +21,11 @@ session_start();
         href="../assests\css/index_admin.css"
     >
 
+    <link
+        rel="icon" type="image/x-icon"
+        href="../assests\css/images/OrderEats_logo.png"
+    >
+
 </head>
 
 
@@ -40,8 +45,8 @@ session_start();
         <div class="logo">
 
             <div class="logo-icon">
-                🍴
-            </div>
+                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
+            </div>  
 
             <span>
                 <span style="color: #F9A825;">Order</span>EATS
@@ -182,7 +187,7 @@ session_start();
                 <div class="icon-circle">
 
                     <div class="icon">
-                        🍴
+                        <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
                     </div>
 
                 </div>

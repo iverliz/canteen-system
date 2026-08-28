@@ -501,6 +501,11 @@ if ($foodResult) {
         href="../assests/css/menu-admin.css"
     >
 
+    <link
+        rel="icon" type="image/x-icon"
+        href="../assests\css/images/OrderEats_logo.png"
+    >
+
 </head>
 
 <body>
@@ -514,7 +519,7 @@ if ($foodResult) {
         <div class="brand">
 
             <div class="brand-icon">
-                🍴
+                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
             </div>
 
             <span>

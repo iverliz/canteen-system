@@ -132,6 +132,11 @@ if (isset($_POST['register'])) {
         href="../assests/css/admin_register.css"
     >
 
+    <link
+        rel="icon" type="image/x-icon"
+        href="../assests\css/images/OrderEats_logo.png"
+    >
+
 </head>
 
 
@@ -196,7 +201,7 @@ if (isset($_POST['register'])) {
         <div class="logo">
 
             <div class="logo-icon">
-                🍴
+                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
             </div>
 
             <span>

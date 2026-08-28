@@ -153,6 +153,11 @@ if (isset($_POST['confirm'])) {
         href="../assests/css/admin_forgot_password.css"
     >
 
+    <link
+        rel="icon" type="image/x-icon"
+        href="../assests\css/images/OrderEats_logo.png"
+    >
+
 </head>
 
 
@@ -223,7 +228,7 @@ if (isset($_POST['confirm'])) {
         <div class="logo">
 
             <div class="logo-icon">
-                🍴
+                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
             </div>
 
             <span>
