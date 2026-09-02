@@ -1,4 +1,665 @@
-<!-- categories-admin.php -->
+<?php
+/* categories-admin.php */
+
+session_start();
+
+require_once "../config/database.php";
+
+
+
+if (
+    !isset($_SESSION['admin_logged_in']) ||
+    $_SESSION['admin_logged_in'] !== true
+) {
+
+    header("Location: ../auth/admin_login.php");
+    exit();
+
+}
+
+
+/* ADMIN INFORMATION */
+
+$adminUsername =
+    $_SESSION['admin_username'] ?? "Admin";
+
+$adminRole =
+    $_SESSION['admin_role'] ?? "Administrator";
+
+
+$profileInitial =
+    strtoupper(
+        substr(
+            trim($adminUsername),
+            0,
+            1
+        )
+    );
+
+
+/* ADMIN ROLE DISPLAY */
+
+$role = strtolower(
+    trim(
+        $_SESSION['admin_role'] ?? ''
+    )
+);
+
+
+if (
+    $role === 'canteen_manager' ||
+    $role === 'manager' ||
+    $role === 'admin' ||
+    $role === 'canteen manager'
+) {
+
+    $displayRole = "Canteen Manager";
+
+} elseif (
+    $role === 'canteen_staff' ||
+    $role === 'staff' ||
+    $role === 'canteen staff'
+) {
+
+    $displayRole = "Canteen Staff";
+
+} else {
+
+    $displayRole =
+        ucwords(
+            str_replace(
+                "_",
+                " ",
+                $role
+            )
+        );
+
+}
+
+
+/* AJAX DATABASE OPERATIONS */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    header('Content-Type: application/json');
+
+    $action =
+        $_POST['action'] ?? '';
+
+
+    /* ADD CATEGORY= */
+
+    if ($action === 'add') {
+
+        $title =
+            trim(
+                $_POST['category_title'] ?? ''
+            );
+
+        $description =
+            trim(
+                $_POST['category_description'] ?? ''
+            );
+
+
+        if ($title === '' || $description === '') {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Category title and description are required."
+            ]);
+
+            exit();
+
+        }
+
+
+        /* IMAGE */
+
+        $imageData = null;
+
+
+        if (
+            isset($_FILES['category_picture']) &&
+            $_FILES['category_picture']['error'] === UPLOAD_ERR_OK
+        ) {
+
+            $file =
+                $_FILES['category_picture'];
+
+
+            /* Maximum 2MB */
+
+            if ($file['size'] > 2 * 1024 * 1024) {
+
+                echo json_encode([
+                    "success" => false,
+                    "message" =>
+                        "Image must be smaller than 2MB."
+                ]);
+
+                exit();
+
+            }
+
+
+            /* Check actual MIME type */
+
+            $finfo =
+                finfo_open(FILEINFO_MIME_TYPE);
+
+            $mime =
+                finfo_file(
+                    $finfo,
+                    $file['tmp_name']
+                );
+
+            finfo_close($finfo);
+
+
+            $allowedTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/webp'
+            ];
+
+
+            if (!in_array($mime, $allowedTypes, true)) {
+
+                echo json_encode([
+                    "success" => false,
+                    "message" =>
+                        "Only JPG, PNG, GIF, and WEBP images are allowed."
+                ]);
+
+                exit();
+
+            }
+
+
+            $imageData =
+                file_get_contents(
+                    $file['tmp_name']
+                );
+
+        }
+
+
+        /* INSERT */
+
+        $stmt =
+            $conn->prepare(
+                "INSERT INTO `food-category`
+                (
+                    category_picture,
+                    category_title,
+                    category_description
+                )
+                VALUES (?, ?, ?)"
+            );
+
+
+        if (!$stmt) {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Database error: " . $conn->error
+            ]);
+
+            exit();
+
+        }
+
+
+        $stmt->bind_param(
+            "bss",
+            $imageData,
+            $title,
+            $description
+        );
+
+
+        if ($imageData !== null) {
+
+            $stmt->send_long_data(
+                0,
+                $imageData
+            );
+
+        }
+
+
+        if ($stmt->execute()) {
+
+            echo json_encode([
+                "success" => true,
+                "message" =>
+                    "Category added successfully."
+            ]);
+
+        } else {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Failed to save category: " .
+                    $stmt->error
+            ]);
+
+        }
+
+
+        $stmt->close();
+
+        exit();
+
+    }
+
+
+    /* EDIT CATEGORY */
+
+        if ($action === 'edit') {
+
+            $categoryId =
+                intval(
+                    $_POST['category_id'] ?? 0
+                );
+
+            $title =
+                trim(
+                    $_POST['category_title'] ?? ''
+                );
+
+            $description =
+                trim(
+                    $_POST['category_description'] ?? ''
+                );
+
+
+            if (
+                $categoryId <= 0 ||
+                $title === '' ||
+                $description === ''
+            ) {
+
+                echo json_encode([
+                    "success" => false,
+                    "message" =>
+                        "Invalid category information."
+                ]);
+
+                exit();
+
+            }
+
+
+            /*
+            * CHECK IF A NEW IMAGE WAS UPLOADED
+            */
+
+            $hasNewImage =
+                isset($_FILES['category_picture']) &&
+                $_FILES['category_picture']['error'] === UPLOAD_ERR_OK;
+
+
+            if ($hasNewImage) {
+
+                $file =
+                    $_FILES['category_picture'];
+
+
+                /* MAXIMUM 2MB */
+
+                if (
+                    $file['size'] >
+                    2 * 1024 * 1024
+                ) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Image must be smaller than 2MB."
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * CHECK ACTUAL MIME TYPE
+                */
+
+                $finfo =
+                    finfo_open(
+                        FILEINFO_MIME_TYPE
+                    );
+
+
+                $mime =
+                    finfo_file(
+                        $finfo,
+                        $file['tmp_name']
+                    );
+
+
+                finfo_close($finfo);
+
+
+                $allowedTypes = [
+
+                    'image/jpeg',
+                    'image/png',
+                    'image/gif',
+                    'image/webp'
+
+                ];
+
+
+                if (
+                    !in_array(
+                        $mime,
+                        $allowedTypes,
+                        true
+                    )
+                ) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Only JPG, PNG, GIF, and WEBP images are allowed."
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * READ NEW IMAGE
+                */
+
+                $imageData =
+                    file_get_contents(
+                        $file['tmp_name']
+                    );
+
+
+                if ($imageData === false) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Unable to read the uploaded image."
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * UPDATE EVERYTHING INCLUDING IMAGE
+                */
+
+                $stmt =
+                    $conn->prepare(
+                        "UPDATE `food-category`
+                        SET
+                            category_picture = ?,
+                            category_title = ?,
+                            category_description = ?
+                        WHERE category_id = ?"
+                    );
+
+
+                if (!$stmt) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Database error: " .
+                            $conn->error
+                    ]);
+
+                    exit();
+
+                }
+
+
+                /*
+                * IMPORTANT:
+                *
+                * b = BLOB
+                * s = STRING
+                * s = STRING
+                * i = INTEGER
+                */
+
+                $stmt->bind_param(
+                    "bssi",
+                    $imageData,
+                    $title,
+                    $description,
+                    $categoryId
+                );
+
+
+                /*
+                * Send the image as LONG DATA
+                */
+
+                $stmt->send_long_data(
+                    0,
+                    $imageData
+                );
+
+            } else {
+
+                /*
+                * NO NEW IMAGE
+                *
+                * Keep the existing image.
+                */
+
+                $stmt =
+                    $conn->prepare(
+                        "UPDATE `food-category`
+                        SET
+                            category_title = ?,
+                            category_description = ?
+                        WHERE category_id = ?"
+                    );
+
+
+                if (!$stmt) {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Database error: " .
+                            $conn->error
+                    ]);
+
+                    exit();
+
+                }
+
+
+                $stmt->bind_param(
+                    "ssi",
+                    $title,
+                    $description,
+                    $categoryId
+                );
+
+            }
+
+
+            /*
+            * EXECUTE
+            */
+
+            if ($stmt->execute()) {
+
+                if (
+                    $stmt->affected_rows >= 0
+                ) {
+
+                    echo json_encode([
+                        "success" => true,
+                        "message" =>
+                            "Category updated successfully."
+                    ]);
+
+                } else {
+
+                    echo json_encode([
+                        "success" => false,
+                        "message" =>
+                            "Category was not updated."
+                    ]);
+
+                }
+
+            } else {
+
+                echo json_encode([
+                    "success" => false,
+                    "message" =>
+                        "Failed to update category: " .
+                        $stmt->error
+                ]);
+
+            }
+
+
+            $stmt->close();
+
+            exit();
+
+        }
+
+
+    /* DELETE CATEGORY */
+
+    if ($action === 'delete') {
+
+        $categoryId =
+            intval(
+                $_POST['category_id'] ?? 0
+            );
+
+
+        if ($categoryId <= 0) {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Invalid category ID."
+            ]);
+
+            exit();
+
+        }
+
+
+        $stmt =
+            $conn->prepare(
+                "DELETE FROM `food-category`
+                 WHERE category_id = ?"
+            );
+
+
+        if (!$stmt) {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Database error: " . $conn->error
+            ]);
+
+            exit();
+
+        }
+
+
+        $stmt->bind_param(
+            "i",
+            $categoryId
+        );
+
+
+        if ($stmt->execute()) {
+
+            echo json_encode([
+                "success" => true,
+                "message" =>
+                    "Category deleted successfully."
+            ]);
+
+        } else {
+
+            echo json_encode([
+                "success" => false,
+                "message" =>
+                    "Failed to delete category: " .
+                    $stmt->error
+            ]);
+
+        }
+
+
+        $stmt->close();
+
+        exit();
+
+    }
+
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid action."
+    ]);
+
+    exit();
+
+}
+
+
+/* GET CATEGORIES FROM DATABASE */
+
+$categories = [];
+
+
+$sql = "
+    SELECT
+        category_id,
+        category_title,
+        category_description
+    FROM `food-category`
+    ORDER BY category_id DESC
+";
+
+
+$result =
+    $conn->query($sql);
+
+
+if ($result) {
+
+    while ($row = $result->fetch_assoc()) {
+
+        $categories[] = $row;
+
+    }
+
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,11 +679,15 @@
         href="../assests\css/categories-admin.css"
     >
 
+    <link
+        rel="icon" type="image/x-icon"
+        href="../assests\css/images/OrderEats_logo.png"
+    >
+
 </head>
 
 
 <body>
-
 
 <div class="app-container">
 
@@ -31,22 +696,19 @@
 
     <aside class="sidebar">
 
-
-        <!-- BRAND -->
-
         <div class="brand">
 
             <div class="brand-icon">
-                🍴
+                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
             </div>
 
             <span>
-                <span style="color: #F9A825;">Order</span>EATS
+                <span style="color: #F9A825;">
+                    Order</span><span style="color: #f97316;">EATS</span>
             </span>
 
         </div>
 
-        <!-- NAVIGATION -->
 
         <nav class="sidebar-menu">
 
@@ -54,15 +716,8 @@
                 href="dashboard-admin.php"
                 class="sidebar-link"
             >
-
-                <span class="menu-icon">
-                    ▣
-                </span>
-
-                <span>
-                    Dashboard
-                </span>
-
+                <span class="menu-icon">▣</span>
+                <span>Dashboard</span>
             </a>
 
 
@@ -70,15 +725,8 @@
                 href="menu-admin.php"
                 class="sidebar-link"
             >
-
-                <span class="menu-icon">
-                    🍔
-                </span>
-
-                <span>
-                    Menu
-                </span>
-
+                <span class="menu-icon">🍔</span>
+                <span>Menu</span>
             </a>
 
 
@@ -86,15 +734,8 @@
                 href="orders-admin.php"
                 class="sidebar-link"
             >
-
-                <span class="menu-icon">
-                    🛒
-                </span>
-
-                <span>
-                    Orders
-                </span>
-
+                <span class="menu-icon">🛒</span>
+                <span>Orders</span>
             </a>
 
 
@@ -102,15 +743,8 @@
                 href="categories-admin.php"
                 class="sidebar-link active"
             >
-
-                <span class="menu-icon">
-                    ☷
-                </span>
-
-                <span>
-                    Categories
-                </span>
-
+                <span class="menu-icon">☷</span>
+                <span>Categories</span>
             </a>
 
 
@@ -118,56 +752,37 @@
                 href="user-admin.php"
                 class="sidebar-link"
             >
-
-                <span class="menu-icon">
-                    👤
-                </span>
-
-                <span>
-                    User
-                </span>
-
+                <span class="menu-icon">👤</span>
+                <span>User</span>
             </a>
-
-
 
         </nav>
 
-
-        <!-- SIDEBAR BOTTOM -->
 
         <div class="sidebar-bottom">
 
             <a
                 href="../auth/log_out_admin.php"
                 class="sidebar-link"
+                id="logoutButton"
             >
-
-                <span class="menu-icon">
-                    ↪
-                </span>
-
-                <span>
-                    Logout
-                </span>
-
+                <span class="menu-icon">↪</span>
+                <span>Logout</span>
             </a>
 
         </div>
 
-
     </aside>
-
 
 
     <!-- MAIN CONTENT -->
 
     <main class="main-content">
 
+
         <!-- HEADER -->
 
         <header class="top-header">
-
 
             <div class="page-heading">
 
@@ -182,28 +797,45 @@
             </div>
 
 
-            <!-- ADMIN PROFILE -->
-
             <div class="user-profile">
 
                 <div class="profile-icon">
-                    A
+
+                    <?php
+                    echo htmlspecialchars(
+                        $profileInitial
+                    );
+                    ?>
+
                 </div>
+
 
                 <div class="profile-info">
 
                     <strong>
-                        Admin
+
+                        <?php
+                        echo htmlspecialchars(
+                            $adminUsername
+                        );
+                        ?>
+
                     </strong>
 
+
                     <span>
-                        Administrator
+
+                        <?php
+                        echo htmlspecialchars(
+                            $displayRole
+                        );
+                        ?>
+
                     </span>
 
                 </div>
 
             </div>
-
 
         </header>
 
@@ -211,6 +843,7 @@
         <!-- CATEGORY SECTION -->
 
         <section class="category-section">
+
 
             <div class="section-header">
 
@@ -226,10 +859,13 @@
 
                 </div>
 
+
                 <div class="category-count">
 
                     <span id="categoryCount">
-                        0
+                        <?php
+                        echo count($categories);
+                        ?>
                     </span>
 
                     Categories
@@ -246,6 +882,107 @@
                 id="categoryGrid"
             >
 
+
+                <?php foreach ($categories as $category): ?>
+
+                    <div
+                        class="category-card category-item-card"
+                        data-id="<?php
+                            echo (int)$category['category_id'];
+                        ?>"
+                    >
+
+
+                        <!-- IMAGE -->
+
+                        <div class="category-image">
+
+                            <img
+                                src="category-image.php?id=<?php
+                                    echo (int)$category['category_id'];
+                                ?>&v=<?php echo time(); ?>"
+                                alt="<?php
+                                    echo htmlspecialchars(
+                                        $category['category_title']
+                                    );
+                                ?>"
+                                onerror="this.style.display='none';"
+                            >  
+
+                        </div>
+
+
+                        <!-- CONTENT -->
+
+                        <div class="category-content">
+
+                            <h3>
+
+                                <?php
+                                echo htmlspecialchars(
+                                    $category['category_title']
+                                );
+                                ?>
+
+                            </h3>
+
+
+                            <p>
+
+                                <?php
+                                echo htmlspecialchars(
+                                    $category['category_description']
+                                );
+                                ?>
+
+                            </p>
+
+
+                            <div class="category-actions">
+
+
+                                <button
+                                    type="button"
+                                    class="edit-button"
+                                    onclick="editCategory(
+                                        <?php
+                                        echo (int)$category['category_id'];
+                                        ?>
+                                    )"
+                                >
+                                    Edit
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="delete-card-button"
+                                    onclick="deleteCategory(
+                                        <?php
+                                        echo (int)$category['category_id'];
+                                        ?>,
+                                        '<?php
+                                        echo htmlspecialchars(
+                                            $category['category_title'],
+                                            ENT_QUOTES
+                                        );
+                                        ?>'
+                                    )"
+                                >
+                                    Delete
+                                </button>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+
+                <!-- ADD CATEGORY -->
 
                 <div
                     class="category-card add-category-card"
@@ -269,17 +1006,14 @@
 
             </div>
 
-
         </section>
 
-
     </main>
-
 
 </div>
 
 
-<!-- ADD / EDIT CATEGORY MODAL -->
+<!-- ADD / EDIT MODAL -->
 
 <div
     class="modal-overlay"
@@ -288,7 +1022,6 @@
 
     <div class="category-modal">
 
-        <!-- MODAL HEADER -->
 
         <div class="modal-header">
 
@@ -313,19 +1046,18 @@
                 ×
             </button>
 
-
         </div>
 
 
-        <!-- FORM -->
-
-        <form id="categoryForm">
+        <form
+            id="categoryForm"
+            enctype="multipart/form-data"
+        >
 
 
             <!-- PICTURE -->
 
             <div class="form-group">
-
 
                 <label>
                     Category Picture
@@ -336,7 +1068,6 @@
                     class="image-upload"
                     id="imageUpload"
                 >
-
 
                     <img
                         src=""
@@ -350,9 +1081,7 @@
                         id="uploadPlaceholder"
                     >
 
-                        <span>
-                            📷
-                        </span>
+                        <span>📷</span>
 
                         <strong>
                             Add Picture
@@ -368,11 +1097,11 @@
                     <input
                         type="file"
                         id="categoryImage"
-                        accept="image/*"
+                        name="category_picture"
+                        accept="image/jpeg,image/png,image/gif,image/webp"
                     >
 
                 </div>
-
 
             </div>
 
@@ -389,6 +1118,7 @@
                 <input
                     type="text"
                     id="categoryTitle"
+                    name="category_title"
                     placeholder="e.g. Meals"
                     required
                 >
@@ -407,6 +1137,7 @@
 
                 <textarea
                     id="categoryDescription"
+                    name="category_description"
                     rows="4"
                     placeholder="Describe this food category..."
                     required
@@ -418,7 +1149,6 @@
             <!-- BUTTONS -->
 
             <div class="form-actions">
-
 
                 <button
                     type="button"
@@ -436,18 +1166,13 @@
                     Save Category
                 </button>
 
-
             </div>
-
 
         </form>
 
-
     </div>
 
-
 </div>
-
 
 
 <!-- DELETE MODAL -->
@@ -459,10 +1184,10 @@
 
     <div class="delete-modal">
 
-
         <div class="delete-icon">
             !
         </div>
+
 
         <h2>
             Delete Category?
@@ -472,6 +1197,7 @@
         <p id="deleteMessage">
             Are you sure you want to delete this category?
         </p>
+
 
         <div class="delete-actions">
 
@@ -483,6 +1209,7 @@
                 Cancel
             </button>
 
+
             <button
                 type="button"
                 class="delete-button"
@@ -493,6 +1220,74 @@
 
         </div>
 
+    </div>
+
+</div>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+
+<div
+    class="modal-overlay"
+    id="logoutModal"
+>
+
+    <div class="logout-modal">
+
+        <div class="logout-icon">
+            ↪
+        </div>
+
+        <h2>
+            Logout?
+        </h2>
+
+        <p>
+            Are you sure you want to log out of your account?
+        </p>
+
+        <div class="logout-actions">
+
+            <button
+                type="button"
+                class="cancel-button"
+                id="cancelLogout"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="logout-confirm-button"
+                id="confirmLogout"
+            >
+                Yes, Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CATEGORY NOTIFICATION -->
+
+<div
+    class="category-notification"
+    id="categoryNotification"
+>
+
+    <div
+        class="notification-icon"
+        id="notificationIcon"
+    >
+        ✓
+    </div>
+
+    <div
+        class="notification-message"
+        id="notificationMessage"
+    >
+        Category added successfully.
     </div>
 
 </div>

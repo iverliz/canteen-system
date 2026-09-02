@@ -9,7 +9,61 @@ if (empty($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit();
 }
 
+require_once "../config/database.php";
+
 $username = $_SESSION['username'] ?? 'User';
+
+/* GET CATEGORIES */
+
+$categories = [];
+
+$categoryResult = $conn->query("
+    SELECT category_id, category_title, category_picture
+    FROM `food-category`
+    ORDER BY category_title ASC
+");
+
+if ($categoryResult) {
+    while ($row = $categoryResult->fetch_assoc()) {
+        $categories[] = [
+            'id' => $row['category_id'],
+            'title' => $row['category_title'],
+            'has_picture' => !empty($row['category_picture'])
+        ];
+    }
+}
+
+/* GET AVAILABLE FOOD ITEMS */
+
+$foods = [];
+
+$foodResult = $conn->query("
+    SELECT
+        food_id,
+        food_name,
+        food_price,
+        menu_food_category,
+        `food-description`,
+        food_picture
+    FROM `food-menu`
+    WHERE availability = 1
+    ORDER BY food_id DESC
+");
+
+if ($foodResult) {
+    while ($row = $foodResult->fetch_assoc()) {
+
+        if (!empty($row['food_picture'])) {
+            $row['food_picture'] =
+                'data:image/jpeg;base64,' .
+                base64_encode($row['food_picture']);
+        } else {
+            $row['food_picture'] = null;
+        }
+
+        $foods[] = $row;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -180,21 +234,29 @@ $username = $_SESSION['username'] ?? 'User';
                     All
                 </button>
 
-                <button type="button" class="category-button" data-category="Meals">
-                    Meals
-                </button>
+                <?php foreach ($categories as $category): ?>
 
-                <button type="button" class="category-button" data-category="Snacks">
-                    Snacks
-                </button>
+                    <button
+                        type="button"
+                        class="category-button"
+                        data-category="<?= htmlspecialchars($category['title']) ?>"
+                    >
 
-                <button type="button" class="category-button" data-category="Drinks">
-                    Drinks
-                </button>
+                        <?php if ($category['has_picture']): ?>
 
-                <button type="button" class="category-button" data-category="Desserts">
-                    Desserts
-                </button>
+                            <img
+                                src="category-image.php?id=<?= (int)$category['id'] ?>"
+                                alt="<?= htmlspecialchars($category['title']) ?>"
+                                class="category-button-icon"
+                            >
+
+                        <?php endif; ?>
+
+                        <?= htmlspecialchars($category['title']) ?>
+
+                    </button>
+
+                <?php endforeach; ?>
 
             </div>
 
@@ -215,65 +277,70 @@ $username = $_SESSION['username'] ?? 'User';
 
             <div class="food-grid" id="foodGrid">
 
-                <div class="food-card" data-category="Meals">
-                    <img src="../assests/css/images/hotdog.png" alt="Hotdog">
-                    <div class="food-card-content">
-                        <h3>Hotdog</h3>
-                        <p>Delicious canteen hotdog</p>
-                        <span class="food-price">₱50.00</span>
-                        <button type="button" class="add-order-button">Add to Order</button>
-                    </div>
-                </div>
+                <?php if (empty($foods)): ?>
 
-                <div class="food-card" data-category="Meals">
-                    <img src="../assests/css/images/burger.png" alt="Burger">
-                    <div class="food-card-content">
-                        <h3>Burger</h3>
-                        <p>Classic school canteen burger</p>
-                        <span class="food-price">₱50.00</span>
-                        <button type="button" class="add-order-button">Add to Order</button>
-                    </div>
-                </div>
+                    <p class="no-food-message">
+                        No food items available right now. Please check back later.
+                    </p>
 
-                <div class="food-card" data-category="Snacks">
-                    <img src="../assests/css/images/tacos.png" alt="French Fries">
-                    <div class="food-card-content">
-                        <h3>French Fries</h3>
-                        <p>Crispy golden fries</p>
-                        <span class="food-price">₱30.00</span>
-                        <button type="button" class="add-order-button">Add to Order</button>
-                    </div>
-                </div>
+                <?php else: ?>
 
-                <div class="food-card" data-category="Drinks">
-                    <img src="../assests/css/images/donut.png" alt="Juice">
-                    <div class="food-card-content">
-                        <h3>Juice</h3>
-                        <p>Refreshing fruit juice</p>
-                        <span class="food-price">₱25.00</span>
-                        <button type="button" class="add-order-button">Add to Order</button>
-                    </div>
-                </div>
+                    <?php foreach ($foods as $food): ?>
 
-                <div class="food-card" data-category="Desserts">
-                    <img src="../assests/css/images/donut.png" alt="Ice Cream">
-                    <div class="food-card-content">
-                        <h3>Ice Cream</h3>
-                        <p>Cold and creamy dessert</p>
-                        <span class="food-price">₱35.00</span>
-                        <button type="button" class="add-order-button">Add to Order</button>
-                    </div>
-                </div>
+                        <div
+                            class="food-card"
+                            data-category="<?= htmlspecialchars($food['menu_food_category']) ?>"
+                        >
 
-                <div class="food-card" data-category="Desserts">
-                    <img src="../assests/css/images/pizza.png" alt="Cake">
-                    <div class="food-card-content">
-                        <h3>Cake</h3>
-                        <p>Sweet chocolate cake</p>
-                        <span class="food-price">₱40.00</span>
-                        <button type="button" class="add-order-button">Add to Order</button>
-                    </div>
-                </div>
+                            <?php if ($food['food_picture']): ?>
+
+                                <img
+                                    src="<?= $food['food_picture'] ?>"
+                                    alt="<?= htmlspecialchars($food['food_name']) ?>"
+                                >
+
+                            <?php else: ?>
+
+                                <div class="food-placeholder">
+                                    🍽️
+                                </div>
+
+                            <?php endif; ?>
+
+                            <div class="food-card-content">
+
+                                <h3>
+                                    <?= htmlspecialchars($food['food_name']) ?>
+                                </h3>
+
+                                <p>
+                                    <?= htmlspecialchars(
+                                        $food['food-description'] ?: 'No description available.'
+                                    ) ?>
+                                </p>
+
+                                <span
+                                    class="food-price"
+                                    data-price="<?= htmlspecialchars($food['food_price']) ?>"
+                                >
+                                    ₱<?= number_format($food['food_price'], 2) ?>
+                                </span>
+
+                                <button
+                                    type="button"
+                                    class="add-order-button"
+                                    data-id="<?= (int)$food['food_id'] ?>"
+                                >
+                                    Add to Order
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
 
             </div>
 
@@ -407,18 +474,19 @@ document.addEventListener("DOMContentLoaded", function () {
         button.addEventListener("click", function () {
 
             const foodCard = this.closest(".food-card");
+            const foodId = this.dataset.id;
             const foodName = foodCard.querySelector("h3").textContent.trim();
-            const foodPriceText = foodCard.querySelector(".food-price").textContent.trim();
-            const foodPrice = parseFloat(foodPriceText.replace("₱", "").replace(",", ""));
+            const foodPriceEl = foodCard.querySelector(".food-price");
+            const foodPrice = parseFloat(foodPriceEl.dataset.price);
 
             const existingItem = orders.find(function (item) {
-                return item.name === foodName;
+                return item.id === foodId;
             });
 
             if (existingItem) {
                 existingItem.quantity++;
             } else {
-                orders.push({ name: foodName, price: foodPrice, quantity: 1 });
+                orders.push({ id: foodId, name: foodName, price: foodPrice, quantity: 1 });
             }
 
             updateOrder();
@@ -501,7 +569,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    
+
     if (checkoutButton) {
 
     checkoutButton.addEventListener("click", function () {

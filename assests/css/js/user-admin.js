@@ -1,44 +1,11 @@
-/* usere-admin.js */
-let users = [
+/* user-admin.js */
 
-    {
-        id: 1,
+let deletingUsername = null;
 
-        name: "Canteen Manager",
-
-        position: "Canteen Manager",
-
-        active: true
-
-    },
-
-
-    {
-        id: 2,
-
-        name: "Canteen Staff",
-
-        position: "Canteen Staff",
-
-        active: true
-
-    }
-
-];
-
-
-/* VARIABLES */
-
-let deletingUserId = null;
-
-
-/* INITIALIZE */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function() {
-
-        renderUsers();
+    function () {
 
         setupEvents();
 
@@ -46,291 +13,74 @@ document.addEventListener(
 );
 
 
-/* RENDER USERS */
+/* TOGGLE USER STATUS */
 
-function renderUsers() {
+function toggleUserStatus(username) {
 
-    const tableBody =
-        document.getElementById(
-            "userTableBody"
-        );
+    const formData = new FormData();
 
+    formData.append(
+        "action",
+        "toggle_status"
+    );
 
-    tableBody.innerHTML = "";
-
-
-    /* If no users exist. */
-
-    if (
-        users.length === 0
-    ) {
-
-        tableBody.innerHTML = `
-
-            <tr class="empty-row">
-
-                <td colspan="4">
-
-                    <div class="empty-icon">
-                        👤
-                    </div>
-
-                    <strong>
-                        No user accounts
-                    </strong>
-
-                    <span>
-                        There are currently no admin accounts.
-                    </span>
-
-                </td>
-
-            </tr>
-
-        `;
-
-
-        updateAccountCount();
-
-        return;
-
-    }
-
-
-    /* Create rows. */
-
-    users.forEach(
-        user => {
-
-            const row =
-                createUserRow(
-                    user
-                );
-
-
-            tableBody.appendChild(
-                row
-            );
-
-        }
+    formData.append(
+        "username",
+        username
     );
 
 
-    updateAccountCount();
+    fetch("user-admin.php", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.success) {
+
+            location.reload();
+
+        } else {
+
+            alert(data.message);
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(
+            "Error:",
+            error
+        );
+
+        alert(
+            "An error occurred while updating the account status."
+        );
+
+    });
 
 }
 
 
-/* CREATE USER ROW */
+/* DELETE USER */
 
-function createUserRow(
-    user
-) {
+function deleteUser(username) {
 
-    const row =
-        document.createElement(
-            "tr"
-        );
-
-
-    const avatar =
-        getInitials(
-            user.name
-        );
-
-
-    const statusClass =
-        user.active
-            ? "status-active"
-            : "status-inactive";
-
-
-    const statusText =
-        user.active
-            ? "Active"
-            : "Inactive";
-
-
-
-    const toggleClass =
-        user.active
-            ? "deactivate-button"
-            : "activate-button";
-
-
-    const toggleText =
-        user.active
-            ? "Deactivate"
-            : "Activate";
-
-
-    row.innerHTML = `
-
-        <!-- USER -->
-
-        <td>
-
-            <div class="user-cell">
-
-
-                <div class="user-avatar">
-
-                    ${avatar}
-
-                </div>
-
-
-                <span class="user-name">
-
-                    ${escapeHTML(user.name)}
-
-                </span>
-
-
-            </div>
-
-        </td>
-
-
-
-        <!-- POSITION -->
-
-        <td>
-
-            <span class="position-badge">
-
-                ${escapeHTML(user.position)}
-
-            </span>
-
-        </td>
-
-
-
-        <!-- STATUS -->
-
-        <td>
-
-            <span
-                class="status-badge ${statusClass}"
-            >
-
-                ${statusText}
-
-            </span>
-
-        </td>
-
-
-
-        <!-- ACTION -->
-
-        <td>
-
-            <div class="action-buttons">
-
-
-                <button
-                    type="button"
-                    class="status-toggle ${toggleClass}"
-                    onclick="
-                        toggleUserStatus(${user.id})
-                    "
-                >
-
-                    ${toggleText}
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="delete-user-button"
-                    onclick="
-                        deleteUser(${user.id})
-                    "
-                >
-
-                    Delete
-
-                </button>
-
-
-            </div>
-
-        </td>
-
-    `;
-
-
-    return row;
-
-}
-
-
-/* TOGGLE USER STATUS */
-
-function toggleUserStatus(
-    userId
-) {
-
-    const user =
-        users.find(
-            item =>
-                item.id ===
-                userId
-        );
-
-
-    if (!user) {
-
-        return;
-
-    }
-
-
-    /* Switch active/inactive.*/
-
-    user.active =
-        !user.active;
-
-
-    /* Refresh table. */
-
-    renderUsers();
-
-}
-
-
-/* DELETE USER*/
-
-function deleteUser(
-    userId
-) {
-
-    const user =
-        users.find(
-            item =>
-                item.id ===
-                userId
-        );
-
-
-    if (!user) {
-
-        return;
-
-    }
-
-
-    deletingUserId =
-        userId;
+    deletingUsername = username;
 
 
     document.getElementById(
         "deleteMessage"
     ).textContent =
-        `Are you sure you want to delete the account "${user.name}"?`;
+        `Are you sure you want to delete the account "${username}"?`;
 
 
     document.getElementById(
@@ -347,8 +97,7 @@ function deleteUser(
 function confirmDelete() {
 
     if (
-        deletingUserId ===
-        null
+        deletingUsername === null
     ) {
 
         return;
@@ -356,20 +105,61 @@ function confirmDelete() {
     }
 
 
-    users =
-        users.filter(
-            user =>
-                user.id !==
-                deletingUserId
+    const formData = new FormData();
+
+    formData.append(
+        "action",
+        "delete"
+    );
+
+    formData.append(
+        "username",
+        deletingUsername
+    );
+
+
+    fetch("user-admin.php", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.success) {
+
+            closeDeleteModal();
+
+            location.reload();
+
+        } else {
+
+            alert(data.message);
+
+            closeDeleteModal();
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(
+            "Error:",
+            error
         );
 
+        alert(
+            "An error occurred while deleting the account."
+        );
 
+        closeDeleteModal();
 
-    renderUsers();
-
-
-
-    closeDeleteModal();
+    });
 
 }
 
@@ -385,8 +175,47 @@ function closeDeleteModal() {
     );
 
 
-    deletingUserId =
-        null;
+    deletingUsername = null;
+
+}
+
+
+/* OPEN LOGOUT MODAL */
+
+function openLogoutModal() {
+
+    const modal =
+        document.getElementById(
+            "logoutModal"
+        );
+
+    if (modal) {
+
+        modal.classList.add(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* CLOSE LOGOUT MODAL */
+
+function closeLogoutModal() {
+
+    const modal =
+        document.getElementById(
+            "logoutModal"
+        );
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
 
 }
 
@@ -395,52 +224,164 @@ function closeDeleteModal() {
 
 function setupEvents() {
 
-    /* Cancel delete.*/
 
-    document.getElementById(
-        "cancelDelete"
-    ).addEventListener(
-        "click",
-        closeDeleteModal
-    );
+    /* CANCEL DELETE */
 
+    const cancelButton =
+        document.getElementById(
+            "cancelDelete"
+        );
 
-    /* Confirm delete.*/
+    if (cancelButton) {
 
-    document.getElementById(
-        "confirmDelete"
-    ).addEventListener(
-        "click",
-        confirmDelete
-    );
+        cancelButton.addEventListener(
+            "click",
+            closeDeleteModal
+        );
+
+    }
 
 
-    /*Click outside modal.  */
+    /* CONFIRM DELETE */
 
-    document.getElementById(
-        "deleteModal"
-    ).addEventListener(
-        "click",
-        function(event) {
+    const confirmButton =
+        document.getElementById(
+            "confirmDelete"
+        );
 
-            if (
-                event.target ===
-                this
-            ) {
+    if (confirmButton) {
 
-                closeDeleteModal();
+        confirmButton.addEventListener(
+            "click",
+            confirmDelete
+        );
+
+    }
+
+
+    /* CLICK OUTSIDE DELETE MODAL */
+
+    const modal =
+        document.getElementById(
+            "deleteModal"
+        );
+
+    if (modal) {
+
+        modal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    this
+                ) {
+
+                    closeDeleteModal();
+
+                }
 
             }
+        );
 
-        }
-    );
+    }
 
 
-    /*Escape key.*/
+    /* LOGOUT BUTTON */
+
+    const logoutButton =
+        document.getElementById(
+            "logoutButton"
+        );
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                openLogoutModal();
+
+            }
+        );
+
+    }
+
+
+    /* CANCEL LOGOUT */
+
+    const cancelLogout =
+        document.getElementById(
+            "cancelLogout"
+        );
+
+    if (cancelLogout) {
+
+        cancelLogout.addEventListener(
+            "click",
+            closeLogoutModal
+        );
+
+    }
+
+
+    /* CONFIRM LOGOUT */
+
+    const confirmLogout =
+        document.getElementById(
+            "confirmLogout"
+        );
+
+    if (confirmLogout) {
+
+        confirmLogout.addEventListener(
+            "click",
+            function () {
+
+                window.location.href =
+                    "../auth/log_out_admin.php";
+
+            }
+        );
+
+    }
+
+
+    /* CLICK OUTSIDE LOGOUT MODAL */
+
+    const logoutModal =
+        document.getElementById(
+            "logoutModal"
+        );
+
+    if (logoutModal) {
+
+        logoutModal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    this
+                ) {
+
+                    closeLogoutModal();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ESCAPE KEY */
 
     document.addEventListener(
         "keydown",
-        function(event) {
+        function (event) {
 
             if (
                 event.key ===
@@ -449,73 +390,11 @@ function setupEvents() {
 
                 closeDeleteModal();
 
+                closeLogoutModal();
+
             }
 
         }
     );
-
-}
-
-
-/* ACCOUNT COUNT */
-
-function updateAccountCount() {
-
-    document.getElementById(
-        "accountCount"
-    ).textContent =
-        users.length;
-
-}
-
-
-/* GET INITIALS */
-
-function getInitials(
-    name
-) {
-
-    const words =
-        name
-            .trim()
-            .split(" ");
-
-
-    if (
-        words.length === 1
-    ) {
-
-        return words[0]
-            .substring(0, 2)
-            .toUpperCase();
-
-    }
-
-
-    return (
-        words[0][0] +
-        words[words.length - 1][0]
-    ).toUpperCase();
-
-}
-
-
-/* ESCAPE HTML */
-
-function escapeHTML(
-    text
-) {
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-
-    div.textContent =
-        text;
-
-
-    return div.innerHTML;
 
 }

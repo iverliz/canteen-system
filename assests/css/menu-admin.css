@@ -1,4 +1,4 @@
-/* menu.css */
+        /* menu.css */
 * {
     margin: 0;
     padding: 0;
@@ -59,6 +59,12 @@ body {
     align-items: center;
     margin-right: 10px;
     font-size: 20px;
+    border-radius: 50%; 
+}
+.system-logo{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* SIDEBAR MENU */
@@ -653,6 +659,253 @@ margin-bottom: 22px;
 .save-button:hover {
     background: #146c43;
 }
+
+
+/* FOOD AVAILABILITY */
+
+.availability-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.availability-button {
+    flex: 1;
+    border:  #ddd;
+    background: #feF2F2;
+    border-radius: 7px;
+    padding: 8px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.availability-button:hover {
+    transform: scale(1.03);
+}
+
+
+.available-button.selected {
+    background: #90ffc6;
+    border-color: #198754;
+}
+ 
+.unavailable-button.selected {
+    background: #ff8e8e;
+    border-color: #dc3545;
+}
+
+
+/* UNAVAILABLE FOOD CARD */
+
+.food-card.unavailable {
+    filter: grayscale(80%);
+    opacity: 0.65;
+}
+
+.food-card.unavailable:hover {
+    filter: grayscale(80%);
+    opacity: 0.75;
+}
+
+
+/* UNAVAILABLE IMAGE OVERLAY */
+
+.food-image {
+    position: relative;
+}
+
+.unavailable-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.42);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+
+/* DELETE CONFIRMATION MODAL */
+
+.delete-modal {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.18);
+}
+
+.delete-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fef2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.delete-modal h2 {
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+
+.delete-modal p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.delete-modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.delete-modal-buttons button {
+    flex: 1;
+}
+
+.confirm-delete-button {
+    border: none;
+    background: #dc3545;
+    color: white;
+    padding: 12px;
+    border-radius: 7px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.confirm-delete-button:hover {
+    background: #bb2d3b;
+}
+
+
+/* NOTIFICATION */
+
+.temporary-message {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    padding: 13px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.1);
+    z-index: 3000;
+}
+
+.message-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.message-error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+
+/* DISABLED SAVE BUTTON */
+
+.save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* LOGOUT CONFIRMATION MODAL */
+
+.logout-modal {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.18);
+}
+
+
+/* LOGOUT ICON */
+
+.logout-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fff7ed;
+    color: #f97316;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+
+/* LOGOUT TITLE */
+
+.logout-modal h2 {
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+
+
+/* LOGOUT MESSAGE */
+
+.logout-modal p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+
+/* LOGOUT BUTTONS */
+
+.logout-modal-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+
+.logout-modal-buttons button {
+    flex: 1;
+}
+
+
+/* CONFIRM LOGOUT */
+
+.confirm-logout-button {
+    border: none;
+    background: #f97316;
+    color: white;
+    padding: 12px;
+    border-radius: 7px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+
+.confirm-logout-button:hover {
+    background: #ea580c;
+}
+
 
 /* RESPONSIVE */
 
