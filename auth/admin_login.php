@@ -1,11 +1,5 @@
 <?php
-session_start();
 
-if (isset($_POST['login'])) {
-    $_SESSION['admin_logged_in'] = true;
-    header("Location: ../admin/dashboard-admin.php");
-    exit();
-}
 ?>
 
 <!DOCTYPE html>

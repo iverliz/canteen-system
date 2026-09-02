@@ -1,7 +1,58 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Add your password reset/database logic here later.
+require_once '../database/db_connect.php';
+require_once '../database/security_helpers.php';
+
+$error = "";
+$success = "";
+$csrfToken = generate_csrf_token();
+
+if (isset($_POST['confirm'])) {
+
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = "Your session expired. Please try again.";
+    } elseif (is_ip_rate_limited()) {
+        $error = "Too many attempts. Please wait a few minutes and try again.";
+    } else {
+        record_ip_attempt();
+
+        $student_id  = trim($_POST['student_id']);
+        $new_password = $_POST['new_password'];
+
+        if ($student_id === '' || $new_password === '') {
+            $error = "Please fill in all fields.";
+        } elseif (strlen($new_password) < 6) {
+            $error = "Password must be at least 6 characters.";
+        } else {
+            $stmt = $conn->prepare("SELECT id FROM users WHERE student_id = ?");
+            $stmt->bind_param("s", $student_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows === 1) {
+                $user = $result->fetch_assoc();
+                $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+
+                $update = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                $update->bind_param("si", $hashedPassword, $user['id']);
+                $update->execute();
+                $update->close();
+
+                $success = "Password updated successfully. You can now log in.";
+            } else {
+                // Same generic message either way — don't reveal whether the ID exists
+                $success = "If that ID exists, the password has been updated.";
+            }
+
+            $stmt->close();
+        }
+    }
+
+    $csrfToken = generate_csrf_token();
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +70,6 @@ session_start();
 
     <div class="forgot-container">
 
-        <!-- Decorative food images -->
         <img src="../assests/css/images/ramen.png" class="food food-noodles-top" alt="">
         <img src="../assests/css/images/donut.png" class="food food-donut-top" alt="">
         <img src="../assests/css/images/burger.png" class="food food-burger-top" alt="">
@@ -33,9 +83,18 @@ session_start();
 
             <h1>Forgot<br>Password</h1>
 
-            <form action="forgot_password.php" method="POST">
+            <?php if ($error): ?>
+                <p class="error-message"><?= htmlspecialchars($error) ?></p>
+            <?php endif; ?>
 
-                <!-- ID -->
+            <?php if ($success): ?>
+                <p class="success-message"><?= htmlspecialchars($success) ?></p>
+            <?php endif; ?>
+
+            <form action="forgot_password.php" method="POST" autocomplete="off">
+
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+
                 <div class="input-group">
                     <label for="student_id">ID</label>
 
@@ -44,11 +103,11 @@ session_start();
                         id="student_id"
                         name="student_id"
                         placeholder="Input ID"
+                        maxlength="50"
                         required
                     >
                 </div>
 
-                <!-- New Password -->
                 <div class="input-group password-group">
                     <label for="new_password">New Password</label>
 
@@ -57,11 +116,11 @@ session_start();
                         id="new_password"
                         name="new_password"
                         placeholder="New Password"
+                        minlength="6"
                         required
                     >
                 </div>
 
-                <!-- Buttons -->
                 <div class="button-container">
 
                     <button

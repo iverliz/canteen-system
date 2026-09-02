@@ -1,5 +1,15 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Protect this page — redirect to login if not authenticated
+if (empty($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+
+$username = $_SESSION['username'] ?? 'User';
 ?>
 
 <!DOCTYPE html>
@@ -42,6 +52,10 @@ session_start();
 
             <a href="menu.php" class="menu-item active">
                 Menu
+            </a>
+
+            <a href="orders.php" class="menu-item">
+                My Orders
             </a>
 
         </nav>
@@ -100,7 +114,7 @@ session_start();
                         👤
                     </div>
 
-                    <span class="profile-name"></span>
+                    <span class="profile-name"><?= htmlspecialchars($username) ?></span>
 
                     <span class="profile-arrow">
                         ⌄
@@ -124,7 +138,7 @@ session_start();
 
                         <div>
 
-                            <strong></strong>
+                            <strong><?= htmlspecialchars($username) ?></strong>
 
                             <small>
                                 Student
@@ -138,8 +152,9 @@ session_start();
                     <div class="dropdown-divider"></div>
 
                     <a href="../auth/logout.php" class="logout-button">
-    🚪 Logout
-</a>
+                        🚪 Logout
+                    </a>
+
                 </div>
 
             </div>
@@ -161,61 +176,25 @@ session_start();
 
             <div class="category-list">
 
-
-                <!-- ALL -->
-
-                <button
-                    type="button"
-                    class="category-button active"
-                    data-category="All"
-                >
+                <button type="button" class="category-button active" data-category="All">
                     All
                 </button>
 
-
-                <!-- MEALS -->
-
-                <button
-                    type="button"
-                    class="category-button"
-                    data-category="Meals"
-                >
+                <button type="button" class="category-button" data-category="Meals">
                     Meals
                 </button>
 
-
-                <!-- SNACKS -->
-
-                <button
-                    type="button"
-                    class="category-button"
-                    data-category="Snacks"
-                >
+                <button type="button" class="category-button" data-category="Snacks">
                     Snacks
                 </button>
 
-
-                <!-- DRINKS -->
-
-                <button
-                    type="button"
-                    class="category-button"
-                    data-category="Drinks"
-                >
+                <button type="button" class="category-button" data-category="Drinks">
                     Drinks
                 </button>
 
-
-                <!-- DESSERTS -->
-
-                <button
-                    type="button"
-                    class="category-button"
-                    data-category="Desserts"
-                >
+                <button type="button" class="category-button" data-category="Desserts">
                     Desserts
                 </button>
-
 
             </div>
 
@@ -234,248 +213,67 @@ session_start();
             </h2>
 
 
-            <div
-                class="food-grid"
-                id="foodGrid"
-            >
+            <div class="food-grid" id="foodGrid">
 
-
-                <!-- =================================
-                     MEALS
-                ================================== -->
-
-                <div
-                    class="food-card"
-                    data-category="Meals"
-                >
-
-                    <img
-                        src="../assests/css/images/hotdog.png"
-                        alt="Hotdog"
-                    >
-
+                <div class="food-card" data-category="Meals">
+                    <img src="../assests/css/images/hotdog.png" alt="Hotdog">
                     <div class="food-card-content">
-
-                        <h3>
-                            Hotdog
-                        </h3>
-
-                        <p>
-                            Delicious canteen hotdog
-                        </p>
-
-                        <span class="food-price">
-                            ₱50.00
-                        </span>
-
-                        <button
-                            type="button"
-                            class="add-order-button"
-                        >
-                            Add to Order
-                        </button>
-
+                        <h3>Hotdog</h3>
+                        <p>Delicious canteen hotdog</p>
+                        <span class="food-price">₱50.00</span>
+                        <button type="button" class="add-order-button">Add to Order</button>
                     </div>
-
                 </div>
 
-
-
-                <div
-                    class="food-card"
-                    data-category="Meals"
-                >
-
-                    <img
-                        src="../assests/css/images/hotdog.png"
-                        alt="Burger"
-                    >
-
+                <div class="food-card" data-category="Meals">
+                    <img src="../assests/css/images/burger.png" alt="Burger">
                     <div class="food-card-content">
-
-                        <h3>
-                            Burger
-                        </h3>
-
-                        <p>
-                            Classic school canteen burger
-                        </p>
-
-                        <span class="food-price">
-                            ₱50.00
-                        </span>
-
-                        <button
-                            type="button"
-                            class="add-order-button"
-                        >
-                            Add to Order
-                        </button>
-
+                        <h3>Burger</h3>
+                        <p>Classic school canteen burger</p>
+                        <span class="food-price">₱50.00</span>
+                        <button type="button" class="add-order-button">Add to Order</button>
                     </div>
-
                 </div>
 
-
-
-                <!-- =================================
-                     SNACKS
-                ================================== -->
-
-                <div
-                    class="food-card"
-                    data-category="Snacks"
-                >
-
-                    <img
-                        src="../assests/css/images/hotdog.png"
-                        alt="French Fries"
-                    >
-
+                <div class="food-card" data-category="Snacks">
+                    <img src="../assests/css/images/tacos.png" alt="French Fries">
                     <div class="food-card-content">
-
-                        <h3>
-                            French Fries
-                        </h3>
-
-                        <p>
-                            Crispy golden fries
-                        </p>
-
-                        <span class="food-price">
-                            ₱30.00
-                        </span>
-
-                        <button
-                            type="button"
-                            class="add-order-button"
-                        >
-                            Add to Order
-                        </button>
-
+                        <h3>French Fries</h3>
+                        <p>Crispy golden fries</p>
+                        <span class="food-price">₱30.00</span>
+                        <button type="button" class="add-order-button">Add to Order</button>
                     </div>
-
                 </div>
 
-
-
-                <!-- =================================
-                     DRINKS
-                ================================== -->
-
-                <div
-                    class="food-card"
-                    data-category="Drinks"
-                >
-
-                    <img
-                        src="../assests/css/images/hotdog.png"
-                        alt="Juice"
-                    >
-
+                <div class="food-card" data-category="Drinks">
+                    <img src="../assests/css/images/donut.png" alt="Juice">
                     <div class="food-card-content">
-
-                        <h3>
-                            Juice
-                        </h3>
-
-                        <p>
-                            Refreshing fruit juice
-                        </p>
-
-                        <span class="food-price">
-                            ₱25.00
-                        </span>
-
-                        <button
-                            type="button"
-                            class="add-order-button"
-                        >
-                            Add to Order
-                        </button>
-
+                        <h3>Juice</h3>
+                        <p>Refreshing fruit juice</p>
+                        <span class="food-price">₱25.00</span>
+                        <button type="button" class="add-order-button">Add to Order</button>
                     </div>
-
                 </div>
 
-
-
-                <!-- =================================
-                     DESSERTS
-                ================================== -->
-
-                <div
-                    class="food-card"
-                    data-category="Desserts"
-                >
-
-                    <img
-                        src="../assests/css/images/hotdog.png"
-                        alt="Ice Cream"
-                    >
-
+                <div class="food-card" data-category="Desserts">
+                    <img src="../assests/css/images/donut.png" alt="Ice Cream">
                     <div class="food-card-content">
-
-                        <h3>
-                            Ice Cream
-                        </h3>
-
-                        <p>
-                            Cold and creamy dessert
-                        </p>
-
-                        <span class="food-price">
-                            ₱35.00
-                        </span>
-
-                        <button
-                            type="button"
-                            class="add-order-button"
-                        >
-                            Add to Order
-                        </button>
-
+                        <h3>Ice Cream</h3>
+                        <p>Cold and creamy dessert</p>
+                        <span class="food-price">₱35.00</span>
+                        <button type="button" class="add-order-button">Add to Order</button>
                     </div>
-
                 </div>
 
-
-
-                <div
-                    class="food-card"
-                    data-category="Desserts"
-                >
-
-                    <img
-                        src="../assests/css/images/hotdog.png"
-                        alt="Cake"
-                    >
-
+                <div class="food-card" data-category="Desserts">
+                    <img src="../assests/css/images/pizza.png" alt="Cake">
                     <div class="food-card-content">
-
-                        <h3>
-                            Cake
-                        </h3>
-
-                        <p>
-                            Sweet chocolate cake
-                        </p>
-
-                        <span class="food-price">
-                            ₱40.00
-                        </span>
-
-                        <button
-                            type="button"
-                            class="add-order-button"
-                        >
-                            Add to Order
-                        </button>
-
+                        <h3>Cake</h3>
+                        <p>Sweet chocolate cake</p>
+                        <span class="food-price">₱40.00</span>
+                        <button type="button" class="add-order-button">Add to Order</button>
                     </div>
-
                 </div>
-
 
             </div>
 
@@ -487,59 +285,24 @@ session_start();
 
     <aside class="right-sidebar">
 
-
         <section class="my-order-box">
 
+            <h2>My Order</h2>
 
-            <h2>
-                My Order
-            </h2>
-
-
-            <!-- FOOD ITEMS -->
-
-            <div
-                class="my-order-content"
-                id="myOrderContent"
-            >
-
-            </div>
-
-
-
-            <!-- TOTAL -->
+            <div class="my-order-content" id="myOrderContent"></div>
 
             <div class="order-total">
-
-                <span>
-                    Total
-                </span>
-
-                <strong id="orderTotal">
-                    ₱0.00
-                </strong>
-
+                <span>Total</span>
+                <strong id="orderTotal">₱0.00</strong>
             </div>
-
-
-
-            <!-- CHECKOUT -->
 
             <div class="checkout-area">
-
-                <button
-                    type="button"
-                    class="checkout-button"
-                    id="checkoutButton"
-                >
+                <button type="button" class="checkout-button" id="checkoutButton">
                     Checkout
                 </button>
-
             </div>
 
-
         </section>
-
 
     </aside>
 
@@ -554,704 +317,233 @@ session_start();
 
 <script>
 
-
-/* =========================================
-   PROFILE DROPDOWN
-========================================= */
-
 document.addEventListener("DOMContentLoaded", function () {
 
-
-    const profileBtn =
-        document.getElementById("profileBtn");
-
-
-    const profileDropdown =
-        document.getElementById("profileDropdown");
-
+    const profileBtn = document.getElementById("profileBtn");
+    const profileDropdown = document.getElementById("profileDropdown");
 
     if (profileBtn && profileDropdown) {
 
+        profileBtn.addEventListener("click", function (event) {
+            event.stopPropagation();
+            profileDropdown.classList.toggle("show");
+        });
 
-        profileBtn.addEventListener(
-            "click",
-            function (event) {
+        profileDropdown.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
 
-                event.stopPropagation();
-
-                profileDropdown.classList.toggle("show");
-
-            }
-        );
-
-
-        profileDropdown.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-            }
-        );
-
-
-        document.addEventListener(
-            "click",
-            function () {
-
-                profileDropdown.classList.remove("show");
-
-            }
-        );
+        document.addEventListener("click", function () {
+            profileDropdown.classList.remove("show");
+        });
 
     }
 
-
-
-    /* =========================================
-       CATEGORY FILTER
-    ========================================== */
-
-    const categoryButtons =
-        document.querySelectorAll(".category-button");
-
-
-    const foodCards =
-        document.querySelectorAll(".food-card");
-
+    const categoryButtons = document.querySelectorAll(".category-button");
+    const foodCards = document.querySelectorAll(".food-card");
 
     categoryButtons.forEach(function (button) {
 
+        button.addEventListener("click", function () {
 
-        button.addEventListener(
-            "click",
-            function () {
+            const selectedCategory = this.getAttribute("data-category");
 
+            categoryButtons.forEach(function (btn) {
+                btn.classList.remove("active");
+            });
 
-                /* Get selected category */
+            this.classList.add("active");
 
-                const selectedCategory =
-                    this.getAttribute("data-category");
+            foodCards.forEach(function (card) {
 
+                const foodCategory = card.getAttribute("data-category");
 
-                /* Remove active from every button */
+                if (selectedCategory === "All" || foodCategory === selectedCategory) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
 
-                categoryButtons.forEach(
-                    function (btn) {
+            });
 
-                        btn.classList.remove("active");
-
-                    }
-                );
-
-
-                /* Add active to clicked button */
-
-                this.classList.add("active");
-
-
-                /* Filter food */
-
-                foodCards.forEach(
-                    function (card) {
-
-
-                        const foodCategory =
-                            card.getAttribute("data-category");
-
-
-                        /*
-                            If All is selected,
-                            show every food.
-                        */
-
-                        if (
-                            selectedCategory === "All" ||
-                            foodCategory === selectedCategory
-                        ) {
-
-                            card.style.display = "";
-
-                        }
-
-
-                        /*
-                            Otherwise hide food
-                            that does not belong
-                            to selected category.
-                        */
-
-                        else {
-
-                            card.style.display = "none";
-
-                        }
-
-                    }
-                );
-
-            }
-        );
+        });
 
     });
 
-
-
-    /* =========================================
-       SEARCH FOOD
-    ========================================== */
-
-    const foodSearch =
-        document.getElementById("foodSearch");
-
+    const foodSearch = document.getElementById("foodSearch");
 
     if (foodSearch) {
 
+        foodSearch.addEventListener("input", function () {
 
-        foodSearch.addEventListener(
-            "input",
-            function () {
+            const searchText = this.value.toLowerCase().trim();
 
+            foodCards.forEach(function (card) {
 
-                const searchText =
-                    this.value.toLowerCase().trim();
+                const foodName = card.querySelector("h3").textContent.toLowerCase();
 
+                if (foodName.includes(searchText)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
 
-                foodCards.forEach(
-                    function (card) {
+            });
 
-
-                        const foodName =
-                            card
-                            .querySelector("h3")
-                            .textContent
-                            .toLowerCase();
-
-
-                        /*
-                            Show matching food.
-                        */
-
-                        if (
-                            foodName.includes(searchText)
-                        ) {
-
-                            card.style.display = "";
-
-                        }
-
-
-                        /*
-                            Hide food that
-                            doesn't match.
-                        */
-
-                        else {
-
-                            card.style.display = "none";
-
-                        }
-
-                    }
-                );
-
-            }
-        );
+        });
 
     }
 
-
-
-    /* =========================================
-       MY ORDER
-    ========================================== */
-
-    const myOrderContent =
-        document.getElementById("myOrderContent");
-
-
-    const orderTotal =
-        document.getElementById("orderTotal");
-
-
-    const checkoutButton =
-        document.getElementById("checkoutButton");
-
-
-    /*
-        Store all ordered food here.
-    */
+    const myOrderContent = document.getElementById("myOrderContent");
+    const orderTotal = document.getElementById("orderTotal");
+    const checkoutButton = document.getElementById("checkoutButton");
 
     let orders = [];
 
-
-
-    /* =========================================
-       ADD TO ORDER
-    ========================================== */
-
-    const addOrderButtons =
-        document.querySelectorAll(".add-order-button");
-
+    const addOrderButtons = document.querySelectorAll(".add-order-button");
 
     addOrderButtons.forEach(function (button) {
 
+        button.addEventListener("click", function () {
 
-        button.addEventListener(
-            "click",
-            function () {
+            const foodCard = this.closest(".food-card");
+            const foodName = foodCard.querySelector("h3").textContent.trim();
+            const foodPriceText = foodCard.querySelector(".food-price").textContent.trim();
+            const foodPrice = parseFloat(foodPriceText.replace("₱", "").replace(",", ""));
 
+            const existingItem = orders.find(function (item) {
+                return item.name === foodName;
+            });
 
-                /*
-                    Get the food card
-                    containing the button.
-                */
-
-                const foodCard =
-                    this.closest(".food-card");
-
-
-                /*
-                    Get food name.
-                */
-
-                const foodName =
-                    foodCard
-                    .querySelector("h3")
-                    .textContent
-                    .trim();
-
-
-                /*
-                    Get food price.
-                    Example:
-                    ₱50.00 → 50
-                */
-
-                const foodPriceText =
-                    foodCard
-                    .querySelector(".food-price")
-                    .textContent
-                    .trim();
-
-
-                const foodPrice =
-                    parseFloat(
-                        foodPriceText
-                        .replace("₱", "")
-                        .replace(",", "")
-                    );
-
-
-                /*
-                    Check if this food
-                    is already in the order.
-                */
-
-                const existingItem =
-                    orders.find(function (item) {
-
-                        return item.name === foodName;
-
-                    });
-
-
-                /*
-                    If already exists,
-                    increase quantity.
-                */
-
-                if (existingItem) {
-
-                    existingItem.quantity++;
-
-                }
-
-
-                /*
-                    Otherwise create
-                    a new order item.
-                */
-
-                else {
-
-                    orders.push({
-
-                        name: foodName,
-
-                        price: foodPrice,
-
-                        quantity: 1
-
-                    });
-
-                }
-
-
-                /*
-                    Refresh My Order.
-                */
-
-                updateOrder();
-
-
-                /*
-                    Temporary button feedback.
-                */
-
-                const originalText =
-                    this.textContent;
-
-
-                this.textContent =
-                    "Added ✓";
-
-
-                setTimeout(function () {
-
-                    button.textContent =
-                        originalText;
-
-                }, 800);
-
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                orders.push({ name: foodName, price: foodPrice, quantity: 1 });
             }
-        );
+
+            updateOrder();
+
+            const originalText = this.textContent;
+            this.textContent = "Added ✓";
+
+            setTimeout(function () {
+                button.textContent = originalText;
+            }, 800);
+
+        });
 
     });
 
-
-
-    /* =========================================
-       UPDATE MY ORDER
-    ========================================== */
-
     function updateOrder() {
 
-
-        /*
-            Clear current order display.
-        */
-
         myOrderContent.innerHTML = "";
-
-
         let total = 0;
 
-
-
-        /*
-            If there are no orders.
-        */
-
         if (orders.length === 0) {
-
-
-            myOrderContent.innerHTML = `
-
-                <div class="empty-order">
-
-                    <p>Your order is empty.</p>
-
-                </div>
-
-            `;
-
+            myOrderContent.innerHTML = `<div class="empty-order"><p>Your order is empty.</p></div>`;
         }
-
-
-
-        /*
-            Display every order item.
-        */
 
         orders.forEach(function (item, index) {
 
-
-            /*
-                Calculate item total.
-            */
-
-            const itemTotal =
-                item.price * item.quantity;
-
-
-            /*
-                Add to overall total.
-            */
-
+            const itemTotal = item.price * item.quantity;
             total += itemTotal;
 
-
-
-            /*
-                Create order item.
-            */
-
-            const orderItem =
-                document.createElement("div");
-
-
-            orderItem.className =
-                "order-item";
-
-
+            const orderItem = document.createElement("div");
+            orderItem.className = "order-item";
 
             orderItem.innerHTML = `
-
                 <div class="order-item-info">
-
-                    <strong>
-                        ${item.name}
-                    </strong>
-
-                    <span>
-                        ₱${item.price.toFixed(2)}
-                    </span>
-
+                    <strong>${item.name}</strong>
+                    <span>₱${item.price.toFixed(2)}</span>
                 </div>
-
-
                 <div class="order-item-controls">
-
-                    <button
-                        type="button"
-                        class="quantity-button decrease"
-                        data-index="${index}"
-                    >
-                        −
-                    </button>
-
-
-                    <span class="quantity">
-                        ${item.quantity}
-                    </span>
-
-
-                    <button
-                        type="button"
-                        class="quantity-button increase"
-                        data-index="${index}"
-                    >
-                        +
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="remove-button"
-                        data-index="${index}"
-                    >
-                        ×
-                    </button>
-
+                    <button type="button" class="quantity-button decrease" data-index="${index}">−</button>
+                    <span class="quantity">${item.quantity}</span>
+                    <button type="button" class="quantity-button increase" data-index="${index}">+</button>
+                    <button type="button" class="remove-button" data-index="${index}">×</button>
                 </div>
-
-
-                <div class="order-item-total">
-
-                    ₱${itemTotal.toFixed(2)}
-
-                </div>
-
+                <div class="order-item-total">₱${itemTotal.toFixed(2)}</div>
             `;
-
-
 
             myOrderContent.appendChild(orderItem);
 
         });
 
+        orderTotal.textContent = "₱" + total.toFixed(2);
 
-
-        /*
-            Update total.
-        */
-
-        orderTotal.textContent =
-            "₱" + total.toFixed(2);
-
-
-
-        /* =====================================
-           DECREASE QUANTITY
-        ===================================== */
-
-        const decreaseButtons =
-            document.querySelectorAll(".decrease");
-
-
-        decreaseButtons.forEach(function (button) {
-
-
-            button.addEventListener(
-                "click",
-                function () {
-
-
-                    const index =
-                        parseInt(
-                            this.dataset.index
-                        );
-
-
-                    /*
-                        If quantity is greater
-                        than 1, decrease it.
-                    */
-
-                    if (
-                        orders[index].quantity > 1
-                    ) {
-
-                        orders[index].quantity--;
-
-                    }
-
-
-                    /*
-                        If quantity is 1,
-                        remove the item.
-                    */
-
-                    else {
-
-                        orders.splice(index, 1);
-
-                    }
-
-
-                    updateOrder();
-
-                }
-            );
-
-        });
-
-
-
-        /* =====================================
-           INCREASE QUANTITY
-        ===================================== */
-
-        const increaseButtons =
-            document.querySelectorAll(".increase");
-
-
-        increaseButtons.forEach(function (button) {
-
-
-            button.addEventListener(
-                "click",
-                function () {
-
-
-                    const index =
-                        parseInt(
-                            this.dataset.index
-                        );
-
-
-                    orders[index].quantity++;
-
-
-                    updateOrder();
-
-                }
-            );
-
-        });
-
-
-
-        /* =====================================
-           REMOVE ITEM
-        ===================================== */
-
-        const removeButtons =
-            document.querySelectorAll(".remove-button");
-
-
-        removeButtons.forEach(function (button) {
-
-
-            button.addEventListener(
-                "click",
-                function () {
-
-
-                    const index =
-                        parseInt(
-                            this.dataset.index
-                        );
-
-
+        document.querySelectorAll(".decrease").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const index = parseInt(this.dataset.index);
+                if (orders[index].quantity > 1) {
+                    orders[index].quantity--;
+                } else {
                     orders.splice(index, 1);
-
-
-                    updateOrder();
-
                 }
-            );
+                updateOrder();
+            });
+        });
 
+        document.querySelectorAll(".increase").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const index = parseInt(this.dataset.index);
+                orders[index].quantity++;
+                updateOrder();
+            });
+        });
+
+        document.querySelectorAll(".remove-button").forEach(function (button) {
+            button.addEventListener("click", function () {
+                const index = parseInt(this.dataset.index);
+                orders.splice(index, 1);
+                updateOrder();
+            });
         });
 
     }
 
+    
+    if (checkoutButton) {
 
+    checkoutButton.addEventListener("click", function () {
 
-    /* =========================================
-       CHECKOUT
-    ========================================= */
-
-    /* =========================================
-   CHECKOUT
-========================================= */
-
-if (checkoutButton) {
-
-    checkoutButton.addEventListener(
-        "click",
-        function () {
-
-            /*
-                Don't allow empty checkout.
-            */
-
-            if (orders.length === 0) {
-
-                alert("Your order is empty.");
-
-                return;
-
-            }
-
-
-            /*
-                Save the current order
-                so checkout.php can read it.
-            */
-
-            localStorage.setItem(
-                "orderEatsOrder",
-                JSON.stringify(orders)
-            );
-
-
-            /*
-                Go to receipt page.
-            */
-
-            window.location.href =
-                "checkout.php";
-
+        if (orders.length === 0) {
+            alert("Your order is empty.");
+            return;
         }
-    );
+
+        checkoutButton.disabled = true;
+        checkoutButton.textContent = "Processing...";
+
+        fetch("checkout.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orders: orders })
+        })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+
+                if (data.success) {
+                    orders = [];
+                    updateOrder();
+                    window.location.href = "dashboard.php";
+                } else {
+                    alert(data.message || "Something went wrong.");
+                    checkoutButton.disabled = false;
+                    checkoutButton.textContent = "Checkout";
+                }
+
+            })
+            .catch(function () {
+                alert("Something went wrong. Please try again.");
+                checkoutButton.disabled = false;
+                checkoutButton.textContent = "Checkout";
+            });
+
+    });
 
 }
 
-
     updateOrder();
-
 
 });
 

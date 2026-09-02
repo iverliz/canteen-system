@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // Add your admin password reset/database logic here later.
 ?>

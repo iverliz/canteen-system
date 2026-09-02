@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // Admin registration/database logic can be added here later.
 // $_POST['role'] will be either "canteen_staff" or "manager".
