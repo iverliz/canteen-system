@@ -245,7 +245,7 @@ if ($foodResult) {
                         <?php if ($category['has_picture']): ?>
 
                             <img
-                                src="category-image.php?id=<?= (int)$category['id'] ?>"
+                                src="../admin/category-image.php?id=<?= (int)$category['id'] ?>"
                                 alt="<?= htmlspecialchars($category['title']) ?>"
                                 class="category-button-icon"
                             >
@@ -572,44 +572,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (checkoutButton) {
 
-    checkoutButton.addEventListener("click", function () {
+        checkoutButton.addEventListener("click", function () {
 
-        if (orders.length === 0) {
-            alert("Your order is empty.");
-            return;
-        }
+            if (orders.length === 0) {
+                alert("Your order is empty.");
+                return;
+            }
 
-        checkoutButton.disabled = true;
-        checkoutButton.textContent = "Processing...";
+            checkoutButton.disabled = true;
+            checkoutButton.textContent = "Processing...";
 
-        fetch("checkout.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orders: orders })
-        })
-            .then(function (res) { return res.json(); })
-            .then(function (data) {
+            fetch("checkout.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orders: orders })
+            })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
 
-                if (data.success) {
-                    orders = [];
-                    updateOrder();
-                    window.location.href = "dashboard.php";
-                } else {
-                    alert(data.message || "Something went wrong.");
+                    if (data.success) {
+                        orders = [];
+                        updateOrder();
+                        window.location.href = "dashboard.php";
+                    } else {
+                        alert(data.message || "Something went wrong.");
+                        checkoutButton.disabled = false;
+                        checkoutButton.textContent = "Checkout";
+                    }
+
+                })
+                .catch(function () {
+                    alert("Something went wrong. Please try again.");
                     checkoutButton.disabled = false;
                     checkoutButton.textContent = "Checkout";
-                }
+                });
 
-            })
-            .catch(function () {
-                alert("Something went wrong. Please try again.");
-                checkoutButton.disabled = false;
-                checkoutButton.textContent = "Checkout";
-            });
+        });
 
-    });
-
-}
+    }
 
     updateOrder();
 

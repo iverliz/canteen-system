@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 UPDATE orders SET status = 'preparing' WHERE id = ?; 
 
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
    PRIMARY KEY (`id`),
    KEY `order_id` (`order_id`),
    CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
- ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE DATABASE IF NOT EXISTS `canteen-system`;
 USE `canteen-system`;
