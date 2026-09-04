@@ -59,7 +59,7 @@
             >
 
                 <span class="menu-icon">
-                    ▣
+                    🟧
                 </span>
 
                 <span>

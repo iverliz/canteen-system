@@ -143,7 +143,7 @@
             <nav class="sidebar-menu">
 
                 <a href="dashboard-admin.php" class="sidebar-link">
-                    <span class="menu-icon">▣</span>
+                    <span class="menu-icon">🟧</span>
                     <span>Dashboard</span>
                 </a>
 

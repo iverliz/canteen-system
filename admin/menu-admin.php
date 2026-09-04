@@ -535,7 +535,7 @@ if ($foodResult) {
                 href="dashboard-admin.php"
                 class="sidebar-link"
             >
-                <span class="menu-icon">▣</span>
+                <span class="menu-icon">🟧</span>
                 <span>Dashboard</span>
             </a>
 
@@ -829,7 +829,7 @@ if ($foodResult) {
                                     onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 0)"
                                     title="Not Available"
                                 >
-                                    ❌
+                                    🚫
                                 </button>
 
                             </div>

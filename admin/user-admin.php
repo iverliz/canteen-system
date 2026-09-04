@@ -385,7 +385,7 @@ if ($result) {
             >
 
                 <span class="menu-icon">
-                    ▣
+                    🟧
                 </span>
 
                 <span>
@@ -791,8 +791,8 @@ if ($result) {
                                             >
 
                                                 <?= $isActive
-                                                    ? "Deactivate"
-                                                    : "Activate"
+                                                    ? "⛔"
+                                                    : "🟢"
                                                 ?>
 
                                             </button>
@@ -809,7 +809,7 @@ if ($result) {
                                                 )"
                                             >
 
-                                                Delete
+                                                ❌
 
                                             </button>
 

@@ -717,7 +717,7 @@ if ($result) {
                 href="dashboard-admin.php"
                 class="sidebar-link"
             >
-                <span class="menu-icon">▣</span>
+                <span class="menu-icon">🟧</span>
                 <span>Dashboard</span>
             </a>
 
