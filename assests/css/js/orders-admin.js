@@ -1,625 +1,304 @@
-/* orders-admin.js */
-let activeOrders = [
+/* =========================================================
+   orders-admin.js
+   Order Management + Order Summary Modal
+========================================================= */
 
-    {
-        id: 1,
 
-        studentId: "2026-001",
+/* =========================================================
+   DOCUMENT READY
+========================================================= */
 
-        items: [
-            {
-                name: "Chicken Meal",
-                quantity: 1,
-                price: 85
-            },
-            {
-                name: "Iced Tea",
-                quantity: 1,
-                price: 25
+document.addEventListener("DOMContentLoaded", function () {
+
+    initializeOrderRows();
+
+    initializeModal();
+
+    initializeStatusSelects();
+
+    initializeDateFilter();
+
+});
+
+
+/* =========================================================
+   INITIALIZE ORDER ROWS
+========================================================= */
+
+function initializeOrderRows() {
+
+    const orderRows =
+        document.querySelectorAll(".order-row");
+
+
+    orderRows.forEach(function (row) {
+
+        row.addEventListener("click", function (event) {
+
+            /*
+             * If the user clicked the status dropdown,
+             * do not open the order modal.
+             */
+
+            if (
+                event.target.closest(".status-select")
+            ) {
+                return;
             }
-        ],
 
-        total: 110,
 
-        status: "Pending"
+            openOrderModal(row);
 
-    },
+        });
 
-
-    {
-        id: 2,
-
-        studentId: "2026-014",
-
-        items: [
-            {
-                name: "Burger",
-                quantity: 2,
-                price: 60
-            }
-        ],
-
-        total: 120,
-
-        status: "Pending"
-
-    },
-
-
-    {
-        id: 3,
-
-        studentId: "2026-027",
-
-        items: [
-            {
-                name: "Spaghetti",
-                quantity: 1,
-                price: 70
-            },
-            {
-                name: "Juice",
-                quantity: 1,
-                price: 30
-            }
-        ],
-
-        total: 100,
-
-        status: "Pending"
-
-    }
-
-];
-
-
-/* COMPLETED ORDERS */
-
-let completedOrders = [
-
-
-    {
-        id: 101,
-
-        studentId: "2026-005",
-
-        items: [
-            {
-                name: "Chicken Meal",
-                quantity: 1,
-                price: 85
-            }
-        ],
-
-        total: 85,
-
-        status: "Done",
-
-        completedDate:
-            getToday(),
-
-        completedTime:
-            "10:35 AM"
-
-    }
-
-];
-
-
-/* STATUS ORDER */
-
-const statusFlow = [
-
-    "Pending",
-
-    "Preparing",
-
-    "Ready",
-
-    "Done"
-
-];
-
-
-/* =========================
-   INITIALIZE
-========================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        /*
-         * Set today's date.
-         */
-
-        document
-            .getElementById("logDate")
-            .value =
-            getToday();
-
-
-        renderOrders();
-
-        renderOrderLog();
-
-        updateSummary();
-
-    }
-);
-
-
-/* RENDER ACTIVE ORDERS */
-
-function renderOrders() {
-
-    const tableBody =
-        document.getElementById(
-            "ordersTableBody"
-        );
-
-
-    const emptyState =
-        document.getElementById(
-            "emptyOrders"
-        );
-
-
-    tableBody.innerHTML = "";
-
-
-    if (
-        activeOrders.length === 0
-    ) {
-
-        emptyState.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    emptyState.style.display =
-        "none";
-
-
-    activeOrders.forEach(
-        order => {
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            row.innerHTML = `
-
-                <td>
-
-                    <span class="student-id">
-                        ${escapeHTML(order.studentId)}
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    <div class="order-items">
-
-                        ${order.items
-                            .map(
-                                item => `
-                                    <div class="order-item">
-
-                                        <strong>
-                                            ${item.quantity}×
-                                        </strong>
-
-                                        ${escapeHTML(item.name)}
-
-                                    </div>
-                                `
-                            )
-                            .join("")
-                        }
-
-                    </div>
-
-                </td>
-
-
-                <td>
-
-                    <span class="order-total">
-
-                        ₱${order.total.toFixed(2)}
-
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    <button
-                        class="
-                            status-button
-                            ${getStatusClass(order.status)}
-                        "
-                        onclick="
-                            changeOrderStatus(${order.id})
-                        "
-                    >
-
-                        ${order.status}
-
-                    </button>
-
-                </td>
-
-            `;
-
-
-            
-
-            row.addEventListener(
-                "dblclick",
-                function() {
-
-                    openOrderModal(
-                        order
-                    );
-
-                }
-            );
-
-
-            tableBody.appendChild(
-                row
-            );
-
-        }
-    );
+    });
 
 }
 
 
-/* CHANGE ORDER STATUS*/
-
-function changeOrderStatus(
-    orderId
-) {
-
-    const order =
-        activeOrders.find(
-            item =>
-                item.id === orderId
-        );
-
-
-    if (!order) {
-        return;
-    }
-
-
-    const currentIndex =
-        statusFlow.indexOf(
-            order.status
-        );
-
-
-    const nextIndex =
-        currentIndex + 1;
-
-
-
-    if (
-        nextIndex >=
-        statusFlow.length
-    ) {
-
-        return;
-
-    }
-
-
-    const nextStatus =
-        statusFlow[nextIndex];
-
-
-    order.status =
-        nextStatus;
-
-
-
-    if (
-        nextStatus === "Done"
-    ) {
-
-        moveToOrderLog(
-            order
-        );
-
-    }
-
-
-    renderOrders();
-
-    renderOrderLog();
-
-    updateSummary();
-
-}
-
-
-/* MOVE TO ORDER LOG*/
-
-function moveToOrderLog(
-    order
-) {
-
-    const completedOrder = {
-
-        ...order,
-
-        completedDate:
-            getToday(),
-
-        completedTime:
-            getCurrentTime(),
-
-        status:
-            "Done"
-
-    };
-
-
-    completedOrders.push(
-        completedOrder
-    );
-
-
-    /* Remove from active orders. */
-
-    activeOrders =
-        activeOrders.filter(
-            item =>
-                item.id !== order.id
-        );
-
-}
-
-
-/* UPDATE SUMMARY */
-
-function updateSummary() {
-
-    const pending =
-        activeOrders.filter(
-            order =>
-                order.status ===
-                "Pending"
-        ).length;
-
-
-    const preparing =
-        activeOrders.filter(
-            order =>
-                order.status ===
-                "Preparing"
-        ).length;
-
-
-    const ready =
-        activeOrders.filter(
-            order =>
-                order.status ===
-                "Ready"
-        ).length;
-
-
-    document.getElementById(
-        "pendingCount"
-    ).textContent =
-        pending;
-
-
-    document.getElementById(
-        "preparingCount"
-    ).textContent =
-        preparing;
-
-
-    document.getElementById(
-        "readyCount"
-    ).textContent =
-        ready;
-
-
-    document.getElementById(
-        "completedCount"
-    ).textContent =
-        completedOrders.length;
-
-}
-
-
-/* RENDER ORDER LOG */
-
-function renderOrderLog() {
-
-    const tableBody =
-        document.getElementById(
-            "orderLogBody"
-        );
-
-
-    const emptyState =
-        document.getElementById(
-            "emptyLog"
-        );
-
-
-    const selectedDate =
-        document.getElementById(
-            "logDate"
-        ).value;
-
-
-    tableBody.innerHTML = "";
-
-
-    const filteredOrders =
-        completedOrders.filter(
-            order =>
-                order.completedDate ===
-                selectedDate
-        );
-
-
-    if (
-        filteredOrders.length === 0
-    ) {
-
-        emptyState.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    emptyState.style.display =
-        "none";
-
-
-    filteredOrders.forEach(
-        order => {
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            row.innerHTML = `
-
-                <td>
-
-                    <span class="student-id">
-                        ${escapeHTML(order.studentId)}
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    <div class="order-items">
-
-                        ${order.items
-                            .map(
-                                item => `
-                                    <div class="order-item">
-
-                                        <strong>
-                                            ${item.quantity}×
-                                        </strong>
-
-                                        ${escapeHTML(item.name)}
-
-                                    </div>
-                                `
-                            )
-                            .join("")
-                        }
-
-                    </div>
-
-                </td>
-
-
-                <td>
-
-                    <span class="order-total">
-                        ₱${order.total.toFixed(2)}
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    <span>
-                        ${order.completedTime}
-                    </span>
-
-                </td>
-
-
-                <td>
-
-                    <span class="log-status">
-                        Done
-                    </span>
-
-                </td>
-
-            `;
-
-
-            tableBody.appendChild(
-                row
-            );
-
-        }
-    );
-
-}
-
-
-/* DATE CHANGE */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        document
-            .getElementById("logDate")
-            .addEventListener(
-                "change",
-                function() {
-
-                    renderOrderLog();
-
-                }
-            );
-
-    }
-);
-
-
-/* ORDER MODAL */
-
-function openOrderModal(
-    order
-) {
+/* =========================================================
+   INITIALIZE MODAL
+========================================================= */
+
+function initializeModal() {
 
     const modal =
-        document.getElementById(
-            "orderModal"
+        document.getElementById("orderModal");
+
+
+    const closeButton =
+        document.getElementById("closeOrderModal");
+
+
+    const closeAction =
+        document.getElementById("modalCloseAction");
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    /*
+     * X button
+     */
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeOrderModal
         );
+
+    }
+
+
+    /*
+     * Close button at bottom
+     */
+
+    if (closeAction) {
+
+        closeAction.addEventListener(
+            "click",
+            closeOrderModal
+        );
+
+    }
+
+
+    /*
+     * Click outside the modal box
+     */
+
+    modal.addEventListener(
+        "click",
+        function (event) {
+
+            if (event.target === modal) {
+
+                closeOrderModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   OPEN ORDER MODAL
+========================================================= */
+
+function openOrderModal(row) {
+
+    const modal =
+        document.getElementById("orderModal");
 
 
     const details =
-        document.getElementById(
-            "orderDetails"
+        document.getElementById("orderDetails");
+
+
+    if (!modal || !details || !row) {
+
+        console.error(
+            "Order modal elements or row not found."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Get order information from the
+     * row's data attributes.
+     */
+
+    const studentId =
+        row.dataset.studentId || "N/A";
+
+
+    const status =
+        row.dataset.status || "N/A";
+
+
+    const total =
+        parseFloat(
+            row.dataset.total || "0"
         );
 
 
+    /*
+     * Get order items.
+     */
+
+    let items = [];
+
+
+    try {
+
+        items = JSON.parse(
+            row.dataset.items || "[]"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to read order items:",
+            error
+        );
+
+        items = [];
+
+    }
+
+
+    /*
+     * Build status display.
+     */
+
+    const statusText =
+        formatStatus(status);
+
+
+    const statusClass =
+        getModalStatusClass(status);
+
+
+    /*
+     * Build item list.
+     */
+
+    let itemsHTML = "";
+
+
+    if (items.length > 0) {
+
+        itemsHTML =
+            items.map(function (item) {
+
+                const quantity =
+                    parseInt(
+                        item.quantity || 0
+                    );
+
+
+                const price =
+                    parseFloat(
+                        item.price || 0
+                    );
+
+
+                const subtotal =
+                    quantity * price;
+
+
+                const foodName =
+                    escapeHTML(
+                        item.food_name || "Unknown Item"
+                    );
+
+
+                return `
+
+                    <div class="detail-item">
+
+                        <div class="detail-item-name">
+
+                            <strong>
+                                ${quantity}×
+                            </strong>
+
+                            <span>
+                                ${foodName}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-item-prices">
+
+                            <span class="item-price">
+                                ₱${price.toFixed(2)} each
+                            </span>
+
+                            <strong>
+                                ₱${subtotal.toFixed(2)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+    } else {
+
+        itemsHTML = `
+
+            <div class="no-items">
+
+                No items found for this order.
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+     * Build complete modal.
+     */
+
     details.innerHTML = `
+
+        <!-- STUDENT ID -->
 
         <div class="detail-row">
 
@@ -628,125 +307,119 @@ function openOrderModal(
             </span>
 
             <strong>
-                ${escapeHTML(order.studentId)}
+                ${escapeHTML(studentId)}
             </strong>
 
         </div>
 
 
-        <div class="detail-row">
+        <!-- ORDER ITEMS -->
+
+        <div class="detail-items">
+
+            <div class="detail-items-title">
+
+                Order Items
+
+            </div>
+
+            ${itemsHTML}
+
+        </div>
+
+
+        <!-- OVERALL TOTAL -->
+
+        <div class="detail-total">
+
+            <span>
+                Overall Total
+            </span>
+
+            <strong>
+                ₱${total.toFixed(2)}
+            </strong>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="detail-row modal-status-row">
 
             <span>
                 Status
             </span>
 
             <strong>
-                ${order.status}
+
+                <span class="modal-status ${statusClass}">
+
+                    ${statusText}
+
+                </span>
+
             </strong>
-
-        </div>
-
-
-        <div class="detail-row">
-
-            <span>
-                Total
-            </span>
-
-            <strong>
-                ₱${order.total.toFixed(2)}
-            </strong>
-
-        </div>
-
-
-        <div class="detail-items">
-
-            ${order.items
-                .map(
-                    item => `
-
-                        <div class="detail-item">
-
-                            <span>
-                                ${item.quantity}×
-                                ${escapeHTML(item.name)}
-                            </span>
-
-                            <strong>
-                                ₱${(
-                                    item.price *
-                                    item.quantity
-                                ).toFixed(2)}
-                            </strong>
-
-                        </div>
-
-                    `
-                )
-                .join("")
-            }
 
         </div>
 
     `;
 
 
-    modal.classList.add(
-        "show"
-    );
+    /*
+     * Show modal.
+     */
+
+    modal.classList.add("show");
+
+
+    /*
+     * Prevent scrolling behind modal.
+     */
+
+    document.body.style.overflow =
+        "hidden";
 
 }
 
+
+/* =========================================================
+   CLOSE ORDER MODAL
+========================================================= */
 
 function closeOrderModal() {
 
-    document
-        .getElementById("orderModal")
-        .classList.remove(
-            "show"
-        );
+    const modal =
+        document.getElementById("orderModal");
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.classList.remove("show");
+
+
+    /*
+     * Restore page scrolling.
+     */
+
+    document.body.style.overflow =
+        "";
 
 }
 
 
-/* CLOSE MODAL OUTSIDE */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        document
-            .getElementById("orderModal")
-            .addEventListener(
-                "click",
-                function(event) {
-
-                    if (
-                        event.target ===
-                        this
-                    ) {
-
-                        closeOrderModal();
-
-                    }
-
-                }
-            );
-
-    }
-);
-
-
-/* ESCAPE KEY */
+/* =========================================================
+   ESCAPE KEY
+========================================================= */
 
 document.addEventListener(
     "keydown",
-    function(event) {
+    function (event) {
 
-        if (
-            event.key === "Escape"
-        ) {
+        if (event.key === "Escape") {
 
             closeOrderModal();
 
@@ -756,82 +429,61 @@ document.addEventListener(
 );
 
 
-/* DATE */
+/* =========================================================
+   FORMAT STATUS
+========================================================= */
 
-function getToday() {
+function formatStatus(status) {
 
-    const date =
-        new Date();
+    switch (status.toLowerCase()) {
 
+        case "pending":
+            return "Pending";
 
-    const year =
-        date.getFullYear();
+        case "preparing":
+            return "Preparing";
 
+        case "ready":
+            return "Ready";
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
+        case "completed":
+            return "Completed";
 
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    return `${year}-${month}-${day}`;
-
-}
-
-
-/* TIME */
-
-function getCurrentTime() {
-
-    return new Date()
-        .toLocaleTimeString(
-            "en-US",
-            {
-                hour: "numeric",
-                minute: "2-digit"
-            }
-        );
-
-}
-
-
-/* STATUS */
-
-function getStatusClass(
-    status
-) {
-
-    switch (status) {
-
-        case "Pending":
-
-            return "status-pending";
-
-
-        case "Preparing":
-
-            return "status-preparing";
-
-
-        case "Ready":
-
-            return "status-ready";
-
+        case "cancelled":
+            return "Cancelled";
 
         default:
+            return status;
 
+    }
+
+}
+
+
+/* =========================================================
+   MODAL STATUS CLASS
+========================================================= */
+
+function getModalStatusClass(status) {
+
+    switch (status.toLowerCase()) {
+
+        case "pending":
+            return "modal-pending";
+
+        case "preparing":
+            return "modal-preparing";
+
+        case "ready":
+            return "modal-ready";
+
+        case "completed":
+            return "modal-completed";
+
+        case "cancelled":
+            return "modal-cancelled";
+
+        default:
             return "";
 
     }
@@ -839,22 +491,196 @@ function getStatusClass(
 }
 
 
-/* ESCAPE HTML */
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
-function escapeHTML(
-    text
-) {
+function escapeHTML(text) {
 
     const div =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
 
     div.textContent =
-        text;
+        text ?? "";
 
 
     return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   STATUS SELECT
+========================================================= */
+
+function initializeStatusSelects() {
+
+    const statusSelects =
+        document.querySelectorAll(
+            ".status-select"
+        );
+
+
+    statusSelects.forEach(function (select) {
+
+        select.addEventListener(
+            "change",
+            function () {
+
+                const orderId =
+                    this.dataset.orderId;
+
+
+                const newStatus =
+                    this.value;
+
+
+                updateOrderStatus(
+                    orderId,
+                    newStatus,
+                    this
+                );
+
+            }
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   UPDATE ORDER STATUS
+========================================================= */
+
+function updateOrderStatus(
+    orderId,
+    newStatus,
+    selectElement
+) {
+
+    fetch(
+        "update_order_status.php",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+
+                order_id:
+                    orderId,
+
+                status:
+                    newStatus
+
+            })
+
+        }
+    )
+
+    .then(function (response) {
+
+        return response.json();
+
+    })
+
+    .then(function (data) {
+
+        if (data.success) {
+
+            /*
+             * Reload the page so:
+             * - summary counts update
+             * - completed orders move to log
+             * - table data stays synchronized
+             */
+
+            window.location.reload();
+
+        } else {
+
+            alert(
+                data.message ||
+                "Failed to update order status."
+            );
+
+
+            /*
+             * Restore previous selection
+             * if the update failed.
+             */
+
+            if (selectElement) {
+
+                selectElement.value =
+                    selectElement.dataset.previousValue ||
+                    "pending";
+
+            }
+
+        }
+
+    })
+
+    .catch(function (error) {
+
+        console.error(
+            "Status update error:",
+            error
+        );
+
+
+        alert(
+            "Something went wrong. Please try again."
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   DATE FILTER
+========================================================= */
+
+function initializeDateFilter() {
+
+    const logDate =
+        document.getElementById(
+            "logDate"
+        );
+
+
+    if (!logDate) {
+        return;
+    }
+
+
+    logDate.addEventListener(
+        "change",
+        function () {
+
+            const selectedDate =
+                this.value;
+
+
+            if (!selectedDate) {
+                return;
+            }
+
+
+            window.location.href =
+                "orders-admin.php?log_date=" +
+                encodeURIComponent(
+                    selectedDate
+                );
+
+        }
+    );
 
 }

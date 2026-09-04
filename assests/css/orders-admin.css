@@ -445,10 +445,17 @@ body {
 .log-status {
     display: inline-flex;
     align-items: center;
+
     padding: 6px 12px;
+
     border-radius: 20px;
-    background: #dcfce7;
-    color: #15803d;
+
+    border: none;
+
+    background: #dbeafe;
+
+    color: #2563eb;
+
     font-size: 11px;
     font-weight: bold;
 }
@@ -500,6 +507,8 @@ body {
     background: white;
     width: 100%;
     max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
     border-radius: 14px;
     padding: 25px;
     box-shadow:
@@ -575,16 +584,294 @@ body {
 
 .detail-items {
     margin-top: 12px;
+
     padding: 14px;
+
     background: #fff7ed;
+
     border-radius: 8px;
 }
+
 
 .detail-item {
     display: flex;
     justify-content: space-between;
-    padding: 6px 0;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 9px 0;
+
     font-size: 13px;
+
+    border-bottom: 1px solid #f3e8dc;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+
+/* STATUS DROPDOWN */
+
+.status-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    border: none;
+    outline: none;
+
+    border-radius: 20px;
+
+    padding: 8px 32px 8px 14px;
+
+    min-width: 110px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    background-repeat: no-repeat;
+
+    background-position:
+        right 10px center;
+
+    background-size: 10px;
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease;
+}
+
+
+.status-select:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.96);
+}
+
+
+.status-select:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+
+/* PENDING */
+
+.status-select.status-pending {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+
+/* PREPARING */
+
+.status-select.status-preparing {
+    background-color: #ffedd5;
+    color: #ea580c;
+}
+
+
+/* READY */
+
+.status-select.status-ready {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+
+/* COMPLETED */
+
+.status-select.status-completed {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+
+/* CANCELLED */
+
+.status-select.status-cancelled {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+
+/* DETAIL ITEM NAME */
+
+.detail-item-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.detail-item-name strong {
+    color: #f97316;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.detail-item-name span {
+    color: #333;
+    font-size: 13px;
+}
+
+
+/* ITEM PRICES */
+
+.detail-item-prices {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: right;
+}
+
+.item-price {
+    color: #999;
+    font-size: 11px;
+}
+
+
+/* DETAIL TOTAL */
+
+.detail-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 16px;
+    padding-top: 15px;
+
+    border-top: 1px solid #eeeeee;
+}
+
+.detail-total span {
+    color: #666;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.detail-total strong {
+    color: #f97316;
+    font-size: 18px;
+}
+
+
+/* ITEMS TITLE */
+
+.detail-items-title {
+    margin-bottom: 8px;
+
+    color: #555;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+/* NO ITEMS */
+
+.no-items {
+    padding: 12px 0;
+
+    color: #999;
+
+    font-size: 12px;
+    text-align: center;
+}
+
+
+/* MODAL STATUS */
+
+.modal-status {
+    display: inline-flex;
+
+    padding: 5px 11px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+/* MODAL PENDING */
+
+.modal-pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+
+/* MODAL PREPARING */
+
+.modal-preparing {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+
+/* MODAL READY */
+
+.modal-ready {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+
+/* MODAL COMPLETED */
+
+.modal-completed {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+
+/* MODAL CANCELLED */
+
+.modal-cancelled {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+
+/* CLICKABLE ORDER ROW */
+
+.orders-table tbody tr.order-row {
+    cursor: pointer;
+}
+
+
+.orders-table tbody tr.order-row:hover {
+    background: #fffaf5;
+}
+
+/* ==========================================
+   ORDER LOG STATUS BADGE
+========================================== */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+/* COMPLETED */
+
+.status-badge.status-completed {
+    background: #dbeafe;
+    color: #2563eb;
 }
 
 /* RESPONSIVE */
