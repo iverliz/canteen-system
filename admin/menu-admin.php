@@ -6,7 +6,7 @@ require_once "../config/database.php";
 /* LOGIN SESSION */
 
 if (!isset($_SESSION['admin_username']) || !isset($_SESSION['admin_role'])) {
-    header("Location: admin_login.php");
+    header("Location: login.php");
     exit;
 }
 

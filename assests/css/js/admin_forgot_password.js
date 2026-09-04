@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "aria-label",
                     "Show password"
                 );
+
             }
 
         });
@@ -152,112 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* ==============================
-       MESSAGE FUNCTION
-    ============================== */
-
-    function showMessage(messageText, messageType) {
-
-        /*
-         * Check if a message already exists.
-         */
-
-        let message =
-            document.querySelector(".message");
-
-
-        /*
-         * If there is no message element,
-         * create one.
-         */
-
-        if (!message) {
-
-            message =
-                document.createElement("div");
-
-            message.className = "message";
-
-            /*
-             * Insert the message before
-             * the form.
-             */
-
-            const form =
-                document.getElementById(
-                    "resetPasswordForm"
-                );
-
-            form.parentNode.insertBefore(
-                message,
-                form
-            );
-        }
-
-
-        /*
-         * Set the message type.
-         */
-
-        message.className =
-            "message " + messageType;
-
-
-        /*
-         * Set the message text.
-         */
-
-        message.textContent =
-            messageText;
-
-
-        /*
-         * Make sure the message is visible.
-         */
-
-        message.classList.remove(
-            "message-hide"
-        );
-
-        message.style.display = "block";
-
-        message.style.opacity = "1";
-
-        message.style.transform =
-            "translateY(0)";
-
-
-        /*
-         * Automatically hide after
-         * 4 seconds.
-         */
-
-        setTimeout(function () {
-
-            message.classList.add(
-                "message-hide"
-            );
-
-
-            /*
-             * Remove after the
-             * 300ms animation.
-             */
-
-            setTimeout(function () {
-
-                if (message) {
-                    message.remove();
-                }
-
-            }, 300);
-
-        }, 4000);
-
-    }
-
-
-    /* ==============================
-       AUTO HIDE PHP SYSTEM MESSAGE
+       AUTO HIDE SYSTEM MESSAGE
        AFTER 4 SECONDS
     ============================== */
 
@@ -267,12 +163,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (systemMessage) {
 
+        /*
+         * Wait 4 seconds before starting
+         * the fade-out animation.
+         */
+
         setTimeout(function () {
 
             systemMessage.classList.add(
                 "message-hide"
             );
 
+
+            /*
+             * Completely remove the message
+             * after the 300ms CSS animation.
+             */
 
             setTimeout(function () {
 
@@ -303,10 +209,6 @@ document.addEventListener("DOMContentLoaded", function () {
             "submit",
             function (event) {
 
-                /*
-                 * PASSWORDS DO NOT MATCH
-                 */
-
                 if (
                     newPassword.value !==
                     repeatPassword.value
@@ -314,12 +216,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     event.preventDefault();
 
-
-                    showMessage(
-                        "The new password and repeat password do not match.",
-                        "error"
+                    alert(
+                        "The new password and repeat password do not match."
                     );
-
 
                     repeatPassword.focus();
 
@@ -327,22 +226,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                /*
-                 * PASSWORD TOO SHORT
-                 */
-
                 if (
                     newPassword.value.length < 6
                 ) {
 
                     event.preventDefault();
 
-
-                    showMessage(
-                        "The new password must be at least 6 characters.",
-                        "error"
+                    alert(
+                        "The new password must be at least 6 characters."
                     );
-
 
                     newPassword.focus();
 

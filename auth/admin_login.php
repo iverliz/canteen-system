@@ -1,12 +1,133 @@
 <!-- admin_login.php -->
 <?php
+
 session_start();
 
+require_once "../config/database.php";
+
+$error = "";
+
+
+/* LOGIN PROCESS */
+
 if (isset($_POST['login'])) {
-    $_SESSION['admin_logged_in'] = true;
-    header("Location: ../admin/dashboard-admin.php");
-    exit();
+
+    $username = trim($_POST['username'] ?? "");
+    $password = $_POST['password'] ?? "";
+
+
+    /* CHECK EMPTY INPUT */
+
+    if (empty($username) || empty($password)) {
+
+        $error = "Please enter your username and password.";
+
+    } else {
+
+        /* FIND ADMIN ACCOUNT */
+
+        $stmt = $conn->prepare(
+            "SELECT id, username, staff_id, role, password, status
+             FROM admin_register
+             WHERE username = ?
+             LIMIT 1"
+        );
+
+        $stmt->bind_param(
+            "s",
+            $username
+        );
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+
+        /* CHECK ACCOUNT */
+
+        if ($result->num_rows === 1) {
+
+            $admin = $result->fetch_assoc();
+
+            /*
+             * CHECK ACCOUNT STATUS FIRST
+             *
+             * Only accounts with status = active
+             * are allowed to continue logging in.
+             */
+
+            $accountStatus = strtolower(
+                trim($admin['status'] ?? "")
+            );
+
+
+            if ($accountStatus !== "active") {
+
+                $error =
+                    "Your administrator account is inactive. Please contact the canteen manager.";
+
+            }
+
+            /*
+             * ACCOUNT IS ACTIVE
+             * NOW VERIFY PASSWORD
+             */
+
+            elseif (
+                password_verify(
+                    $password,
+                    $admin['password']
+                )
+            ) {
+
+                /* LOGIN SUCCESSFUL */
+
+                $_SESSION['admin_logged_in'] = true;
+
+                $_SESSION['admin_id'] =
+                    $admin['id'];
+
+                $_SESSION['admin_username'] =
+                    $admin['username'];
+
+                $_SESSION['admin_staff_id'] =
+                    $admin['staff_id'];
+
+                $_SESSION['admin_role'] =
+                    $admin['role'];
+
+
+                /* REDIRECT */
+
+                header(
+                    "Location: ../admin/dashboard-admin.php"
+                );
+
+                exit();
+
+            } else {
+
+                $error =
+                    "Incorrect username or password.";
+
+            }
+
+        } else {
+
+            /*
+             * Do not reveal whether the username
+             * exists in the database.
+             */
+
+            $error =
+                "Incorrect username or password.";
+
+        }
+
+        $stmt->close();
+    }
 }
+
 ?>
 
 <!DOCTYPE html>

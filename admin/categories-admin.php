@@ -6,6 +6,7 @@ session_start();
 require_once "../config/database.php";
 
 
+/* CHECK ADMIN LOGIN */
 
 if (
     !isset($_SESSION['admin_logged_in']) ||
