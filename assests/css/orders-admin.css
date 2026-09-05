@@ -182,7 +182,7 @@ body {
 .order-summary {
     display: grid;
     grid-template-columns:
-        repeat(4, 1fr);
+        repeat(5, 1fr);
     gap: 18px;
     margin-bottom: 25px;
 }
@@ -624,7 +624,7 @@ body {
 
     border-radius: 20px;
 
-    padding: 8px 32px 8px 14px;
+    padding: 8px 14px 8px 14px;
 
     min-width: 110px;
 
@@ -872,6 +872,437 @@ body {
 .status-badge.status-completed {
     background: #dbeafe;
     color: #2563eb;
+}
+
+
+/* =========================================================
+   INDEPENDENT TABLE SCROLLING
+========================================================= */
+
+/*
+ * Current Orders
+ *
+ * Approximately 5-6 rows will be visible before
+ * the table itself starts scrolling.
+ */
+
+.current-orders-wrapper {
+    max-height: 390px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+
+/*
+ * Order Log
+ *
+ * Same idea: the log gets its own scrollbar.
+ */
+
+.order-log-wrapper {
+    max-height: 390px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+
+/*
+ * Keep table header visible while scrolling.
+ */
+
+.current-orders-wrapper .orders-table thead th,
+.order-log-wrapper .orders-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+
+/*
+ * Make the scrollbar look cleaner.
+ */
+
+.current-orders-wrapper::-webkit-scrollbar,
+.order-log-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+
+.current-orders-wrapper::-webkit-scrollbar-track,
+.order-log-wrapper::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+
+.current-orders-wrapper::-webkit-scrollbar-thumb,
+.order-log-wrapper::-webkit-scrollbar-thumb {
+    background: #d6d6d6;
+    border-radius: 10px;
+}
+
+
+.current-orders-wrapper::-webkit-scrollbar-thumb:hover,
+.order-log-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #bdbdbd;
+}
+
+
+/* =========================================================
+   LOG STATUS - CANCELLED
+========================================================= */
+
+.status-badge.status-cancelled {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   LOGOUT MODAL
+========================================================= */
+
+.logout-modal {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.18);
+    animation: logoutModalIn 0.2s ease;
+}
+
+
+@keyframes logoutModalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+.logout-icon {
+    width: 58px;
+    height: 58px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff7ed;
+
+    color: #f97316;
+
+    font-size: 28px;
+
+    font-weight: bold;
+}
+
+
+.logout-modal h2 {
+    font-size: 21px;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+
+.logout-modal p {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   LOGOUT BUTTONS
+========================================================= */
+
+.logout-actions {
+    display: flex;
+    gap: 10px;
+}
+
+
+.logout-actions button {
+    flex: 1;
+
+    padding: 11px 15px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+/* CANCEL */
+
+.logout-cancel {
+    border: 1px solid #e5e5e5;
+
+    background: #ffffff;
+
+    color: #666;
+}
+
+
+.logout-cancel:hover {
+    background: #f5f5f5;
+}
+
+
+/* CONFIRM */
+
+.logout-confirm {
+    border: none;
+
+    background: #f97316;
+
+    color: white;
+}
+
+
+.logout-confirm:hover {
+    background: #ea580c;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   DISABLED STATUS SELECT
+========================================================= */
+
+.status-select:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+
+/* =========================================================
+   NEW ORDER NOTIFICATION
+========================================================= */
+
+.new-order-notification {
+    position: fixed;
+
+    top: 25px;
+    right: 30px;
+
+    width: 360px;
+
+    background: #ffffff;
+
+    border: 1px solid #fed7aa;
+
+    border-left: 5px solid #f97316;
+
+    border-radius: 12px;
+
+    padding: 15px 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(0, 0, 0, 0.15);
+
+    z-index: 2000;
+
+    /*
+     * Hidden by default.
+     */
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateX(120%);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        visibility 0.3s ease;
+}
+
+
+/* =========================================================
+   SHOW NOTIFICATION
+========================================================= */
+
+.new-order-notification.show {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateX(0);
+
+}
+
+
+/* =========================================================
+   NOTIFICATION ICON
+========================================================= */
+
+.notification-icon {
+
+    width: 45px;
+    height: 45px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #fff7ed;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+
+}
+
+
+/* =========================================================
+   NOTIFICATION CONTENT
+========================================================= */
+
+.notification-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    flex: 1;
+
+}
+
+
+.notification-content strong {
+
+    font-size: 14px;
+
+    color: #222;
+
+}
+
+
+.notification-content span {
+
+    font-size: 12px;
+
+    color: #888;
+
+    line-height: 1.4;
+
+}
+
+
+/* =========================================================
+   NOTIFICATION CLOSE
+========================================================= */
+
+.notification-close {
+
+    width: 28px;
+    height: 28px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #999;
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+.notification-close:hover {
+
+    background: #f5f5f5;
+
+    color: #333;
+
+}
+
+
+/* =========================================================
+   CANCELLED SUMMARY ICON
+========================================================= */
+
+.summary-icon.cancelled {
+
+    background: #fef2f2;
+
+    color: #dc2626;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE NOTIFICATION
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .new-order-notification {
+
+        top: 15px;
+
+        right: 15px;
+
+        left: 85px;
+
+        width: auto;
+
+    }
+
 }
 
 /* RESPONSIVE */
