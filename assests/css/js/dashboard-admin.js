@@ -9,6 +9,21 @@
 
 let noteToDelete = null;
 
+/* =========================================================
+   GET RESPONSIVE DATE LABEL
+========================================================= */
+
+function getResponsiveDateLabel(label) {
+
+    if (window.innerWidth <= 830) {
+
+        return label.split(" ")[0];
+
+    }
+
+    return label;
+
+}
 
 /* =========================================================
    LOAD DASHBOARD STATISTICS
@@ -129,7 +144,7 @@ async function loadSalesReport() {
    RENDER SALES CHART
 ========================================================= */
 
-function renderSalesChart(days) {
+function renderSalesChart(days) {   
 
     const yAxis =
         document.getElementById(
@@ -361,13 +376,15 @@ function renderSalesChart(days) {
 
 
             const dateLabel =
-                document.createElement(
-                    "small"
-                );
+            document.createElement(
+                "small"
+            );
 
 
-            dateLabel.textContent =
-                day.label;
+        dateLabel.textContent =
+            getResponsiveDateLabel(
+                day.label
+            );
 
 
             column.appendChild(
@@ -1085,6 +1102,19 @@ document.addEventListener(
                 "click",
                 confirmDeleteNote
             );
+
+    }
+);
+
+/* =========================================================
+   RESPONSIVE GRAPH LABEL
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        loadSalesReport();
 
     }
 );

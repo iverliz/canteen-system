@@ -105,7 +105,7 @@ function toggleUserStatus(username) {
                     location.reload();
 
                 },
-                400
+                700
             );
 
         } else {

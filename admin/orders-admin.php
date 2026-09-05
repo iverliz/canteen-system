@@ -106,7 +106,8 @@ $completedStmt->close();
 
 
 /* =========================================================
-   CANCELLED ORDERS FOR SELECTED DATE
+   CANCELLED FOR CURRENT DAY
+   This is independent from the Order Log date.
 ========================================================= */
 
 $cancelledStmt = $conn->prepare("
@@ -116,12 +117,23 @@ $cancelledStmt = $conn->prepare("
     AND DATE(updated_at) = ?
 ");
 
-$cancelledStmt->bind_param("s", $logDate);
+$cancelledStmt->bind_param(
+    "s",
+    $today
+);
+
 $cancelledStmt->execute();
 
-$cancelledResult = $cancelledStmt->get_result()->fetch_assoc();
+$cancelledResult =
+    $cancelledStmt
+        ->get_result()
+        ->fetch_assoc();
 
-$counts['cancelled'] = (int)($cancelledResult['total'] ?? 0);
+$counts['cancelled'] =
+    (int)(
+        $cancelledResult['total']
+        ?? 0
+    );
 
 $cancelledStmt->close();
 

@@ -143,7 +143,8 @@ $completedStmt->close();
 
 
 /* =========================================================
-   CANCELLED FOR SELECTED DATE
+   CANCELLED FOR CURRENT DAY
+   This is independent from the Order Log date.
 ========================================================= */
 
 $cancelledStmt = $conn->prepare("
@@ -155,7 +156,7 @@ $cancelledStmt = $conn->prepare("
 
 $cancelledStmt->bind_param(
     "s",
-    $logDate
+    $today
 );
 
 $cancelledStmt->execute();
