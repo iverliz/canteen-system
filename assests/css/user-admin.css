@@ -1,9 +1,13 @@
-        /* user-admin.css */
+/* =========================================================
+   USER ADMIN CSS
+   ========================================================= */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 
 /* BODY */
 
@@ -13,6 +17,7 @@ body {
     background: #f5f7f6;
 }
 
+
 /* APP CONTAINER */
 
 .app-container {
@@ -20,7 +25,10 @@ body {
     min-height: 100vh;
 }
 
-/* SIDEBAR */
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 .sidebar {
     width: 245px;
@@ -34,6 +42,7 @@ body {
     flex-direction: column;
     z-index: 100;
 }
+
 
 /* BRAND */
 
@@ -54,19 +63,21 @@ body {
     height: 38px;
     background: #f97316;
     color: white;
-    border-radius: 10px;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-right: 10px;
     font-size: 20px;
-    border-radius: 50%;
 }
-.system-logo{
+
+
+.system-logo {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
 
 /* SIDEBAR MENU */
 
@@ -76,6 +87,7 @@ body {
     flex-direction: column;
     gap: 15px;
 }
+
 
 .sidebar-link {
     display: flex;
@@ -88,24 +100,26 @@ body {
     transition: all 0.2s ease;
 }
 
+
 .sidebar-link:hover {
     background: #fff7ed;
     color: #f97316;
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
+
 
 .sidebar-link.active {
     background: #fff7ed;
     color: #f97316;
     font-weight: bold;
     font-size: 28px;
-
 }
+
 
 .menu-icon {
     width: 30px;
     font-size: 17px;
 }
+
 
 /* SIDEBAR BOTTOM */
 
@@ -115,7 +129,10 @@ body {
     border-top: 1px solid #eeeeee;
 }
 
-/* MAIN CONTENT */
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
 
 .main-content {
     margin-left: 245px;
@@ -125,7 +142,10 @@ body {
     background: #f5f7f6;
 }
 
-/* HEADER */
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .top-header {
     display: flex;
@@ -134,15 +154,18 @@ body {
     margin-bottom: 30px;
 }
 
+
 .page-heading h1 {
     font-size: 28px;
     margin-bottom: 5px;
 }
 
+
 .page-heading p {
     color: #777;
     font-size: 14px;
 }
+
 
 /* PROFILE */
 
@@ -151,6 +174,7 @@ body {
     align-items: center;
     gap: 10px;
 }
+
 
 .profile-icon {
     width: 42px;
@@ -164,35 +188,40 @@ body {
     font-weight: bold;
 }
 
+
 .profile-info {
     display: flex;
     flex-direction: column;
     gap: 3px;
 }
 
+
 .profile-info strong {
     font-size: 14px;
 }
+
 
 .profile-info span {
     color: #888;
     font-size: 12px;
 }
 
-/* USER SECTION= */
+
+/* =========================================================
+   USER SECTION
+   ========================================================= */
 
 .user-section {
-    background:
-        rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.94);
     border: 1px solid #f0e5d9;
     border-radius: 12px;
     padding: 25px;
     box-shadow:
-        0 4px 15px
-        rgba(0, 0, 0, 0.03);
+        0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
-/* SECTION HEADER= */
+
+/* SECTION HEADER */
 
 .section-header {
     display: flex;
@@ -201,15 +230,18 @@ body {
     margin-bottom: 25px;
 }
 
+
 .section-header h2 {
     font-size: 19px;
     margin-bottom: 5px;
 }
 
+
 .section-header p {
     color: #888;
     font-size: 13px;
 }
+
 
 .account-count {
     background: #fff7ed;
@@ -221,19 +253,68 @@ body {
     font-weight: bold;
 }
 
+
 .account-count span {
     margin-right: 4px;
 }
 
-/* TABLE CONTAINER */
+
+/* =========================================================
+   TABLE CONTAINER
+   ========================================================= */
+
+/*
+   Desktop:
+   Table becomes vertically scrollable after about 10 rows.
+
+   Mobile/smaller screens:
+   Table becomes vertically scrollable after about 7 rows.
+
+   The header remains visible while scrolling.
+*/
 
 .table-container {
     width: 100%;
+
+    max-height: 620px;
+
     overflow-x: auto;
+    overflow-y: auto;
+
     border: 1px solid #eeeeee;
     border-radius: 10px;
+
     background: white;
+
+    scrollbar-width: thin;
+    scrollbar-color: #f97316 #fff7ed;
 }
+
+
+/* CUSTOM SCROLLBAR */
+
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+
+.table-container::-webkit-scrollbar-track {
+    background: #fff7ed;
+    border-radius: 10px;
+}
+
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #f97316;
+    border-radius: 10px;
+}
+
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #ea580c;
+}
+
 
 /* TABLE */
 
@@ -243,11 +324,26 @@ body {
     min-width: 700px;
 }
 
+
 /* TABLE HEADER */
 
 .user-table thead {
     background: #fff7ed;
 }
+
+
+/*
+   Keeps table header visible while
+   the user list is scrolling.
+*/
+
+.user-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #fff7ed;
+}
+
 
 .user-table th {
     padding: 15px 18px;
@@ -260,6 +356,7 @@ body {
     letter-spacing: 0.3px;
 }
 
+
 /* TABLE BODY */
 
 .user-table td {
@@ -270,25 +367,32 @@ body {
     vertical-align: middle;
 }
 
+
 .user-table tbody tr:last-child td {
     border-bottom: none;
 }
+
 
 .user-table tbody tr {
     transition: background 0.2s ease;
 }
 
+
 .user-table tbody tr:hover {
     background: #fffaf5;
 }
 
-/* USER NAME */
+
+/* =========================================================
+   USER NAME
+   ========================================================= */
 
 .user-cell {
     display: flex;
     align-items: center;
     gap: 12px;
 }
+
 
 .user-avatar {
     width: 40px;
@@ -303,13 +407,17 @@ body {
     font-size: 14px;
 }
 
+
 .user-name {
     font-weight: bold;
     color: #333;
     font-size: 13px;
 }
 
-/* POSITION */
+
+/* =========================================================
+   POSITION
+   ========================================================= */
 
 .position-badge {
     display: inline-block;
@@ -322,45 +430,107 @@ body {
     font-weight: bold;
 }
 
-/* STATUS */
+
+/* =========================================================
+   STATUS
+   ========================================================= */
 
 .status-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+
     padding: 6px 10px;
+
     border-radius: 20px;
+
     font-size: 11px;
     font-weight: bold;
+
+    white-space: nowrap;
 }
+
 
 .status-badge::before {
     content: "";
+
     width: 7px;
     height: 7px;
+
     border-radius: 50%;
+
     display: block;
 }
+
+
+/* ACTIVE */
 
 .status-active {
     background: #ecfdf5;
     color: #16a34a;
 }
 
+
 .status-active::before {
     background: #22c55e;
 }
+
+
+/* INACTIVE */
 
 .status-inactive {
     background: #fef2f2;
     color: #dc2626;
 }
 
+
 .status-inactive::before {
     background: #ef4444;
 }
 
-/* ACTIONS */
+
+/* =========================================================
+   CLICKABLE STATUS
+   ========================================================= */
+
+.status-clickable {
+    border: none;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.status-clickable:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08);
+
+    opacity: 0.9;
+}
+
+
+.status-clickable:active {
+    transform: scale(0.96);
+}
+
+
+.status-clickable:focus {
+    outline: 2px solid #f97316;
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 
 .action-buttons {
     display: flex;
@@ -368,36 +538,6 @@ body {
     gap: 8px;
 }
 
-/* ACTIVATE / DEACTIVATE */
-
-.status-toggle {
-    border: none;
-    border-radius: 7px;
-    padding: 8px 12px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.deactivate-button {
-    background: #fef2f2;
-
-    color: #f97316;
-}
-
-.deactivate-button:hover {
-    background: #fee2e2;
-}
-
-.activate-button {
-    background: #ecfdf5;
-    color: #16a34a;
-}
-
-.activate-button:hover {
-    background: #dcfce7;
-}
 
 /* DELETE */
 
@@ -405,21 +545,29 @@ body {
     border: none;
     background: #fef2f2;
     color: #dc2626;
+
     border-radius: 7px;
+
     padding: 8px 12px;
+
     font-size: 15px;
     font-weight: bold;
+
     cursor: pointer;
+
     transition: 0.2s ease;
 }
 
+
 .delete-user-button:hover {
     background: #fee2e2;
-
     color: #b91c1c;
 }
 
-/* EMPTY TABLE */
+
+/* =========================================================
+   EMPTY TABLE
+   ========================================================= */
 
 .empty-row td {
     text-align: center;
@@ -427,10 +575,12 @@ body {
     color: #999;
 }
 
+
 .empty-icon {
     font-size: 35px;
     margin-bottom: 10px;
 }
+
 
 .empty-row strong {
     display: block;
@@ -438,63 +588,86 @@ body {
     margin-bottom: 5px;
 }
 
-/* DELETE MODAL */
+
+/* =========================================================
+   DELETE MODAL
+   ========================================================= */
 
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background:
-        rgba(0, 0, 0, 0.45);
+
+    background: rgba(0, 0, 0, 0.45);
+
     display: none;
+
     justify-content: center;
     align-items: center;
+
     padding: 20px;
+
     z-index: 1000;
 }
+
 
 .modal-overlay.show {
     display: flex;
 }
 
+
 .delete-modal {
     background: white;
+
     width: 100%;
     max-width: 380px;
+
     border-radius: 14px;
+
     padding: 30px;
+
     text-align: center;
+
     box-shadow:
-        0 20px 50px
-        rgba(0, 0, 0, 0.15);
+        0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
-/* DELETE ICON */
 
 .delete-icon {
     width: 55px;
     height: 55px;
+
     border-radius: 50%;
+
     background: #fef2f2;
     color: #dc2626;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
     margin: 0 auto 15px;
+
     font-size: 25px;
     font-weight: bold;
 }
+
 
 .delete-modal h2 {
     font-size: 19px;
     margin-bottom: 8px;
 }
 
+
 .delete-modal p {
     color: #888;
+
     font-size: 13px;
+
     line-height: 1.5;
+
     margin-bottom: 20px;
 }
+
 
 /* DELETE ACTIONS */
 
@@ -503,45 +676,67 @@ body {
     gap: 10px;
 }
 
+
 .cancel-button {
     flex: 1;
+
     padding: 11px;
+
     border: none;
+
     border-radius: 7px;
+
     background: #f5f5f5;
     color: #666;
+
     font-weight: bold;
+
     cursor: pointer;
 }
+
 
 .cancel-button:hover {
     background: #eeeeee;
 }
 
+
 .delete-button {
     flex: 1;
+
     padding: 11px;
+
     border: none;
+
     border-radius: 7px;
+
     background: #dc2626;
     color: white;
+
     font-weight: bold;
+
     cursor: pointer;
 }
+
 
 .delete-button:hover {
     background: #b91c1c;
 }
 
 
-/* LOGOUT MODAL */
+.delete-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   LOGOUT MODAL
+   ========================================================= */
 
 .logout-modal {
-
     background: white;
 
     width: 100%;
-
     max-width: 380px;
 
     border-radius: 14px;
@@ -551,52 +746,37 @@ body {
     text-align: center;
 
     box-shadow:
-        0 20px 50px
-        rgba(0, 0, 0, 0.15);
-
+        0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
 
-/* LOGOUT ICON */
-
 .logout-icon {
-
     width: 55px;
-
     height: 55px;
 
     border-radius: 50%;
 
     background: #fff7ed;
-
     color: #f97316;
 
     display: flex;
-
     justify-content: center;
-
     align-items: center;
 
     margin: 0 auto 15px;
 
     font-size: 25px;
-
     font-weight: bold;
-
 }
 
 
 .logout-modal h2 {
-
     font-size: 19px;
-
     margin-bottom: 8px;
-
 }
 
 
 .logout-modal p {
-
     color: #888;
 
     font-size: 13px;
@@ -604,23 +784,18 @@ body {
     line-height: 1.5;
 
     margin-bottom: 20px;
-
 }
 
 
 /* LOGOUT ACTIONS */
 
 .logout-actions {
-
     display: flex;
-
     gap: 10px;
-
 }
 
 
 .logout-cancel-button {
-
     flex: 1;
 
     padding: 11px;
@@ -630,7 +805,6 @@ body {
     border-radius: 7px;
 
     background: #f5f5f5;
-
     color: #666;
 
     font-weight: bold;
@@ -638,19 +812,15 @@ body {
     cursor: pointer;
 
     transition: 0.2s ease;
-
 }
 
 
 .logout-cancel-button:hover {
-
     background: #eeeeee;
-
 }
 
 
 .logout-confirm-button {
-
     flex: 1;
 
     padding: 11px;
@@ -660,7 +830,6 @@ body {
     border-radius: 7px;
 
     background: #f97316;
-
     color: white;
 
     font-weight: bold;
@@ -668,48 +837,88 @@ body {
     cursor: pointer;
 
     transition: 0.2s ease;
-
 }
 
 
 .logout-confirm-button:hover {
-
     background: #ea580c;
-
 }
 
 
-
-/* CURRENT USER */
+/* =========================================================
+   CURRENT USER
+   ========================================================= */
 
 .current-user-label {
     display: inline-block;
+
     padding: 8px 12px;
+
     border-radius: 7px;
+
     background: #f8fafc;
     color: #64748b;
+
     font-size: 11px;
     font-weight: bold;
 }
 
 
-/* NO PERMISSION */
+/* =========================================================
+   NO PERMISSION
+   ========================================================= */
 
 .no-action-label {
     display: inline-block;
+
     padding: 8px 12px;
+
     border-radius: 7px;
+
     background: #f5f5f5;
     color: #999;
+
     font-size: 11px;
     font-weight: bold;
 }
 
 
-/* TEMPORARY MESSAGE */
+/* =========================================================
+   TEMPORARY MESSAGE
+   ========================================================= */
 
 .temporary-message {
-    animation: messageSlideIn 0.25s ease;
+    position: fixed;
+
+    top: 25px;
+    right: 25px;
+
+    padding: 13px 18px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.1);
+
+    z-index: 3000;
+
+    animation:
+        messageSlideIn 0.25s ease;
+}
+
+
+.message-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+
+.message-error {
+    background: #f8d7da;
+    color: #842029;
 }
 
 
@@ -727,7 +936,10 @@ body {
 
 }
 
-/* RESPONSIVE */
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
 
 @media (max-width: 900px) {
 
@@ -735,15 +947,32 @@ body {
         width: 210px;
     }
 
+
     .main-content {
         margin-left: 210px;
+
         width:
             calc(100% - 210px);
+
         padding: 25px;
+    }
+
+
+    /*
+       Smaller desktop/tablet:
+       scrollbar after roughly 7-8 rows.
+    */
+
+    .table-container {
+        max-height: 500px;
     }
 
 }
 
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+   ========================================================= */
 
 @media (max-width: 650px) {
 
@@ -751,56 +980,94 @@ body {
         width: 70px;
     }
 
+
     .brand {
         justify-content: center;
         padding: 0;
     }
 
+
     .brand span {
         display: none;
     }
 
+
     .brand-icon {
         margin: 0;
     }
+
 
     .sidebar-link {
         justify-content: center;
         padding: 13px 5px;
     }
 
+
     .sidebar-link > span:not(.menu-icon) {
         display: none;
     }
+
 
     .menu-icon {
         width: auto;
     }
 
+
     .main-content {
         margin-left: 70px;
+
         width:
             calc(100% - 70px);
+
         padding: 20px;
     }
+
 
     .profile-info {
         display: none;
     }
 
+
     .section-header {
         flex-direction: column;
+
         align-items: flex-start;
+
         gap: 12px;
+    }
+
+
+    /*
+       MOBILE:
+       approximately 7 rows before vertical scrolling.
+    */
+
+    .table-container {
+        max-height: 475px;
+    }
+
+
+    .user-table th,
+    .user-table td {
+        padding: 14px;
     }
 
 }
 
 
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
 @media (max-width: 450px) {
 
     .user-section {
         padding: 18px;
+    }
+
+
+    .table-container {
+        max-height: 450px;
     }
 
 }

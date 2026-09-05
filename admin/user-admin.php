@@ -21,6 +21,8 @@ if ($conn->connect_error) {
 }
 
 
+/* LOGIN SESSION */
+
 if (
     !isset($_SESSION['admin_logged_in']) ||
     $_SESSION['admin_logged_in'] !== true ||
@@ -75,6 +77,8 @@ function getInitials($name)
 }
 
 
+/* DATABASE ACTIONS */
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     header("Content-Type: application/json");
@@ -96,7 +100,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    /* DELETE USER */
+    /* =========================================================
+       DELETE USER
+       ========================================================= */
 
     if ($action === "delete") {
 
@@ -177,7 +183,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    /* TOGGLE STATUS */
+    /* =========================================================
+       TOGGLE STATUS
+       Clicking the status badge calls this action.
+       ========================================================= */
 
     if ($action === "toggle_status") {
 
@@ -248,6 +257,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
 
+        /* UPDATE STATUS */
+
         $update = $conn->prepare(
             "UPDATE admin_register
              SET status = ?
@@ -265,7 +276,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             echo json_encode([
                 "success" => true,
-                "message" => "Account status updated successfully."
+                "message" =>
+                    $newStatus === "active"
+                        ? "Account activated successfully."
+                        : "Account deactivated successfully.",
+                "status" => $newStatus
             ]);
 
         } else {
@@ -292,7 +307,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 
-/* GET ALL ADMIN ACCOUNTS */
+/* =========================================================
+   GET ALL ADMIN ACCOUNTS
+   ========================================================= */
 
 $users = [];
 
@@ -338,8 +355,9 @@ if ($result) {
     >
 
     <link
-        rel="icon" type="image/x-icon"
-        href="../assests\css/images/OrderEats_logo.png"
+        rel="icon"
+        type="image/x-icon"
+        href="../assests/css/images/OrderEats_logo.png"
     >
 
 </head>
@@ -361,13 +379,23 @@ if ($result) {
         <div class="brand">
 
             <div class="brand-icon">
-                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
+
+                <img
+                    src="../assests/css/images/OrderEats_logo.png"
+                    class="system-logo"
+                >
+
             </div>
 
             <span>
 
                 <span style="color: #F9A825;">
-                    Order</span><span style="color: #f97316;">EATS</span>
+                    Order
+                </span>
+
+                <span style="color: #f97316;">
+                    EATS
+                </span>
 
             </span>
 
@@ -471,12 +499,15 @@ if ($result) {
                 class="sidebar-link"
                 id="logoutButton"
             >
+
                 <span class="menu-icon">
                     ↪
                 </span>
+
                 <span>
                     Logout
                 </span>
+
             </a>
 
         </div>
@@ -614,7 +645,7 @@ if ($result) {
                             </th>
 
                             <th>
-                                Action
+                                
                             </th>
 
                         </tr>
@@ -744,20 +775,71 @@ if ($result) {
 
                                 <td>
 
-                                    <span
-                                        class="status-badge
-                                        <?= $isActive
-                                            ? 'status-active'
-                                            : 'status-inactive'
-                                        ?>"
-                                    >
+                                    <?php if ($isCurrentUser): ?>
 
-                                        <?= $isActive
-                                            ? "Active"
-                                            : "Inactive"
-                                        ?>
+                                        <!-- CURRENT USER STATUS -->
 
-                                    </span>
+                                        <span
+                                            class="status-badge
+                                            <?= $isActive
+                                                ? 'status-active'
+                                                : 'status-inactive'
+                                            ?>"
+                                            title="Your account status cannot be changed"
+                                        >
+
+                                            <?= $isActive
+                                                ? "Active"
+                                                : "Inactive"
+                                            ?>
+
+                                        </span>
+
+                                    <?php elseif ($loggedInRole === "manager"): ?>
+
+                                        <!-- CLICKABLE STATUS -->
+
+                                        <button
+                                            type="button"
+                                            class="status-badge status-clickable
+                                            <?= $isActive
+                                                ? 'status-active'
+                                                : 'status-inactive'
+                                            ?>"
+                                            data-username="<?= htmlspecialchars(
+                                                $username,
+                                                ENT_QUOTES
+                                            ) ?>"
+                                            title="Click to change account status"
+                                        >
+
+                                            <?= $isActive
+                                                ? "Active"
+                                                : "Inactive"
+                                            ?>
+
+                                        </button>
+
+                                    <?php else: ?>
+
+                                        <!-- STAFF CANNOT CHANGE STATUS -->
+
+                                        <span
+                                            class="status-badge
+                                            <?= $isActive
+                                                ? 'status-active'
+                                                : 'status-inactive'
+                                            ?>"
+                                        >
+
+                                            <?= $isActive
+                                                ? "Active"
+                                                : "Inactive"
+                                            ?>
+
+                                        </span>
+
+                                    <?php endif; ?>
 
                                 </td>
 
@@ -775,28 +857,7 @@ if ($result) {
                                         <?php if (!$isCurrentUser): ?>
 
 
-                                            <button
-                                                type="button"
-                                                class="status-toggle
-                                                <?= $isActive
-                                                    ? 'deactivate-button'
-                                                    : 'activate-button'
-                                                ?>"
-                                                onclick="toggleUserStatus(
-                                                    '<?= htmlspecialchars(
-                                                        $username,
-                                                        ENT_QUOTES
-                                                    ) ?>'
-                                                )"
-                                            >
-
-                                                <?= $isActive
-                                                    ? "⛔"
-                                                    : "🟢"
-                                                ?>
-
-                                            </button>
-
+                                            <!-- DELETE ONLY -->
 
                                             <button
                                                 type="button"
@@ -807,6 +868,7 @@ if ($result) {
                                                         ENT_QUOTES
                                                     ) ?>'
                                                 )"
+                                                title="Delete account"
                                             >
 
                                                 ❌
@@ -921,11 +983,14 @@ if ($result) {
 
 </div>
 
+
 <!-- LOGOUT MODAL -->
+
 <div
     class="modal-overlay"
     id="logoutModal"
 >
+
     <div class="logout-modal">
 
         <div class="logout-icon">
@@ -961,10 +1026,11 @@ if ($result) {
         </div>
 
     </div>
-</div>  
+
+</div>
 
 
-<script src="../assests\css/js/user-admin.js"></script>
+<script src="../assests/css/js/user-admin.js"></script>
 
 </body>
 

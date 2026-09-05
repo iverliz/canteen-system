@@ -1,68 +1,53 @@
-/* user-admin.js */
+/* =========================================================
+   USER ADMIN JAVASCRIPT
+   ========================================================= */
 
 let deletingUsername = null;
 
+
+/* =========================================================
+   DOM READY
+   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
         setupEvents();
+        setupStatusBadges();
 
     }
 );
 
 
-/* TOGGLE USER STATUS */
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
 
-function toggleUserStatus(username) {
+function setupStatusBadges() {
 
-    const formData = new FormData();
-
-    formData.append(
-        "action",
-        "toggle_status"
-    );
-
-    formData.append(
-        "username",
-        username
-    );
-
-
-    fetch("user-admin.php", {
-
-        method: "POST",
-
-        body: formData
-
-    })
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        if (data.success) {
-
-            location.reload();
-
-        } else {
-
-            alert(data.message);
-
-        }
-
-    })
-
-    .catch(error => {
-
-        console.error(
-            "Error:",
-            error
+    const statusBadges =
+        document.querySelectorAll(
+            ".status-clickable"
         );
 
-        alert(
-            "An error occurred while updating the account status."
+
+    statusBadges.forEach(function (badge) {
+
+        badge.addEventListener(
+            "click",
+            function () {
+
+                const username =
+                    this.dataset.username;
+
+                if (!username) {
+                    return;
+                }
+
+                toggleUserStatus(username);
+
+            }
         );
 
     });
@@ -70,11 +55,95 @@ function toggleUserStatus(username) {
 }
 
 
-/* DELETE USER */
+/* =========================================================
+   TOGGLE USER STATUS
+   ========================================================= */
+
+function toggleUserStatus(username) {
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "action",
+        "toggle_status"
+    );
+
+
+    formData.append(
+        "username",
+        username
+    );
+
+
+    fetch(
+        "user-admin.php",
+        {
+            method: "POST",
+            body: formData
+        }
+    )
+
+    .then(function (response) {
+
+        return response.json();
+
+    })
+
+    .then(function (data) {
+
+        if (data.success) {
+
+            showMessage(
+                data.message
+            );
+
+            setTimeout(
+                function () {
+
+                    location.reload();
+
+                },
+                400
+            );
+
+        } else {
+
+            showMessage(
+                data.message,
+                "error"
+            );
+
+        }
+
+    })
+
+    .catch(function (error) {
+
+        console.error(
+            "Error:",
+            error
+        );
+
+        showMessage(
+            "An error occurred while updating the account status.",
+            "error"
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   DELETE USER
+   ========================================================= */
 
 function deleteUser(username) {
 
-    deletingUsername = username;
+    deletingUsername =
+        username;
 
 
     document.getElementById(
@@ -92,7 +161,9 @@ function deleteUser(username) {
 }
 
 
-/* CONFIRM DELETE */
+/* =========================================================
+   CONFIRM DELETE
+   ========================================================= */
 
 function confirmDelete() {
 
@@ -105,12 +176,15 @@ function confirmDelete() {
     }
 
 
-    const formData = new FormData();
+    const formData =
+        new FormData();
+
 
     formData.append(
         "action",
         "delete"
     );
+
 
     formData.append(
         "username",
@@ -118,27 +192,58 @@ function confirmDelete() {
     );
 
 
-    fetch("user-admin.php", {
+    const confirmButton =
+        document.getElementById(
+            "confirmDelete"
+        );
 
-        method: "POST",
 
-        body: formData
+    confirmButton.disabled =
+        true;
+
+    confirmButton.textContent =
+        "Deleting...";
+
+
+    fetch(
+        "user-admin.php",
+        {
+            method: "POST",
+            body: formData
+        }
+    )
+
+    .then(function (response) {
+
+        return response.json();
 
     })
 
-    .then(response => response.json())
-
-    .then(data => {
+    .then(function (data) {
 
         if (data.success) {
 
             closeDeleteModal();
 
-            location.reload();
+            showMessage(
+                data.message
+            );
+
+            setTimeout(
+                function () {
+
+                    location.reload();
+
+                },
+                400
+            );
 
         } else {
 
-            alert(data.message);
+            showMessage(
+                data.message,
+                "error"
+            );
 
             closeDeleteModal();
 
@@ -146,41 +251,65 @@ function confirmDelete() {
 
     })
 
-    .catch(error => {
+    .catch(function (error) {
 
         console.error(
             "Error:",
             error
         );
 
-        alert(
-            "An error occurred while deleting the account."
+        showMessage(
+            "An error occurred while deleting the account.",
+            "error"
         );
 
         closeDeleteModal();
+
+    })
+
+    .finally(function () {
+
+        confirmButton.disabled =
+            false;
+
+        confirmButton.textContent =
+            "Delete";
 
     });
 
 }
 
 
-/* CLOSE DELETE MODAL */
+/* =========================================================
+   CLOSE DELETE MODAL
+   ========================================================= */
 
 function closeDeleteModal() {
 
-    document.getElementById(
-        "deleteModal"
-    ).classList.remove(
-        "show"
-    );
+    const modal =
+        document.getElementById(
+            "deleteModal"
+        );
 
 
-    deletingUsername = null;
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    deletingUsername =
+        null;
 
 }
 
 
-/* OPEN LOGOUT MODAL */
+/* =========================================================
+   OPEN LOGOUT MODAL
+   ========================================================= */
 
 function openLogoutModal() {
 
@@ -188,6 +317,7 @@ function openLogoutModal() {
         document.getElementById(
             "logoutModal"
         );
+
 
     if (modal) {
 
@@ -200,7 +330,9 @@ function openLogoutModal() {
 }
 
 
-/* CLOSE LOGOUT MODAL */
+/* =========================================================
+   CLOSE LOGOUT MODAL
+   ========================================================= */
 
 function closeLogoutModal() {
 
@@ -208,6 +340,7 @@ function closeLogoutModal() {
         document.getElementById(
             "logoutModal"
         );
+
 
     if (modal) {
 
@@ -220,17 +353,97 @@ function closeLogoutModal() {
 }
 
 
-/* SETUP EVENTS */
+/* =========================================================
+   SHOW MESSAGE
+   ========================================================= */
+
+function showMessage(
+    message,
+    type = "success"
+) {
+
+    const existing =
+        document.querySelector(
+            ".temporary-message"
+        );
+
+
+    if (existing) {
+
+        existing.remove();
+
+    }
+
+
+    const notification =
+        document.createElement(
+            "div"
+        );
+
+
+    notification.className =
+        "temporary-message";
+
+
+    notification.textContent =
+        message;
+
+
+    if (type === "error") {
+
+        notification.classList.add(
+            "message-error"
+        );
+
+    } else {
+
+        notification.classList.add(
+            "message-success"
+        );
+
+    }
+
+
+    document.body.appendChild(
+        notification
+    );
+
+
+    setTimeout(
+        function () {
+
+            if (
+                notification &&
+                notification.parentNode
+            ) {
+
+                notification.remove();
+
+            }
+
+        },
+        2500
+    );
+
+}
+
+
+/* =========================================================
+   SETUP EVENTS
+   ========================================================= */
 
 function setupEvents() {
 
 
-    /* CANCEL DELETE */
+    /* -----------------------------------------------------
+       CANCEL DELETE
+       ----------------------------------------------------- */
 
     const cancelButton =
         document.getElementById(
             "cancelDelete"
         );
+
 
     if (cancelButton) {
 
@@ -242,12 +455,15 @@ function setupEvents() {
     }
 
 
-    /* CONFIRM DELETE */
+    /* -----------------------------------------------------
+       CONFIRM DELETE
+       ----------------------------------------------------- */
 
     const confirmButton =
         document.getElementById(
             "confirmDelete"
         );
+
 
     if (confirmButton) {
 
@@ -259,22 +475,25 @@ function setupEvents() {
     }
 
 
-    /* CLICK OUTSIDE DELETE MODAL */
+    /* -----------------------------------------------------
+       CLICK OUTSIDE DELETE MODAL
+       ----------------------------------------------------- */
 
-    const modal =
+    const deleteModal =
         document.getElementById(
             "deleteModal"
         );
 
-    if (modal) {
 
-        modal.addEventListener(
+    if (deleteModal) {
+
+        deleteModal.addEventListener(
             "click",
             function (event) {
 
                 if (
                     event.target ===
-                    this
+                    deleteModal
                 ) {
 
                     closeDeleteModal();
@@ -287,12 +506,15 @@ function setupEvents() {
     }
 
 
-    /* LOGOUT BUTTON */
+    /* -----------------------------------------------------
+       LOGOUT BUTTON
+       ----------------------------------------------------- */
 
     const logoutButton =
         document.getElementById(
             "logoutButton"
         );
+
 
     if (logoutButton) {
 
@@ -310,12 +532,15 @@ function setupEvents() {
     }
 
 
-    /* CANCEL LOGOUT */
+    /* -----------------------------------------------------
+       CANCEL LOGOUT
+       ----------------------------------------------------- */
 
     const cancelLogout =
         document.getElementById(
             "cancelLogout"
         );
+
 
     if (cancelLogout) {
 
@@ -327,12 +552,15 @@ function setupEvents() {
     }
 
 
-    /* CONFIRM LOGOUT */
+    /* -----------------------------------------------------
+       CONFIRM LOGOUT
+       ----------------------------------------------------- */
 
     const confirmLogout =
         document.getElementById(
             "confirmLogout"
         );
+
 
     if (confirmLogout) {
 
@@ -349,12 +577,15 @@ function setupEvents() {
     }
 
 
-    /* CLICK OUTSIDE LOGOUT MODAL */
+    /* -----------------------------------------------------
+       CLICK OUTSIDE LOGOUT MODAL
+       ----------------------------------------------------- */
 
     const logoutModal =
         document.getElementById(
             "logoutModal"
         );
+
 
     if (logoutModal) {
 
@@ -364,7 +595,7 @@ function setupEvents() {
 
                 if (
                     event.target ===
-                    this
+                    logoutModal
                 ) {
 
                     closeLogoutModal();
@@ -377,22 +608,26 @@ function setupEvents() {
     }
 
 
-    /* ESCAPE KEY */
+    /* -----------------------------------------------------
+       ESCAPE KEY
+       ----------------------------------------------------- */
 
     document.addEventListener(
         "keydown",
         function (event) {
 
             if (
-                event.key ===
+                event.key !==
                 "Escape"
             ) {
 
-                closeDeleteModal();
-
-                closeLogoutModal();
+                return;
 
             }
+
+
+            closeDeleteModal();
+            closeLogoutModal();
 
         }
     );
