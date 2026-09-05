@@ -819,17 +819,17 @@ if ($foodResult) {
                                         onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 1)"
                                         title="Available"
                                     >
-                                        ✅
+                                        ✔
                                     </button>
 
 
                                     <button
                                         type="button"
-                                        class="availability-button unavailable-button <?= !$food['availability'] ? 'selected' : '' ?>"
+                                        class="unavailability-button unavailable-button <?= !$food['availability'] ? 'selected' : '' ?>"
                                         onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 0)"
                                         title="Not Available"
                                     >
-                                        🚫
+                                        ⃠
                                     </button>
 
                                 </div>

@@ -381,13 +381,13 @@ body {
 }
 
 .deactivate-button {
-    background: #fff7ed;
+    background: #fef2f2;
 
     color: #f97316;
 }
 
 .deactivate-button:hover {
-    background: #ffedd5;
+    background: #fee2e2;
 }
 
 .activate-button {
