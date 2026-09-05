@@ -808,29 +808,31 @@ if ($foodResult) {
                                     ) ?>
                                 </span>
 
-                            </div>
+
+                                <!-- AVAILABILITY -->
+
+                                <div class="availability-actions">
+
+                                    <button
+                                        type="button"
+                                        class="availability-button available-button <?= $food['availability'] ? 'selected' : '' ?>"
+                                        onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 1)"
+                                        title="Available"
+                                    >
+                                        ✅
+                                    </button>
 
 
-                            <!-- AVAILABILITY -->
+                                    <button
+                                        type="button"
+                                        class="availability-button unavailable-button <?= !$food['availability'] ? 'selected' : '' ?>"
+                                        onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 0)"
+                                        title="Not Available"
+                                    >
+                                        🚫
+                                    </button>
 
-                            <div class="availability-actions">
-
-                                <button
-                                    class="availability-button available-button <?= $food['availability'] ? 'selected' : '' ?>"
-                                    onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 1)"
-                                    title="Available"
-                                >
-                                    ✅
-                                </button>
-
-
-                                <button
-                                    class="availability-button unavailable-button <?= !$food['availability'] ? 'selected' : '' ?>"
-                                    onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 0)"
-                                    title="Not Available"
-                                >
-                                    🚫
-                                </button>
+                                </div>
 
                             </div>
 

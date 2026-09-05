@@ -401,7 +401,11 @@ margin-bottom: 22px;
 }
 
 .food-bottom {
-    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .price {
@@ -665,17 +669,22 @@ margin-bottom: 22px;
 
 .availability-actions {
     display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
 .availability-button {
-    flex: 1;
-    border:  #ddd;
-    background: #feF2F2;
-    border-radius: 7px;
-    padding: 8px;
-    font-size: 17px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid #ddd;
+    background: #fef2f2;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
     cursor: pointer;
     transition: 0.2s;
 }
@@ -687,7 +696,7 @@ margin-bottom: 22px;
 
 .available-button.selected {
     background: #90ffc6;
-    border-color: #198754;
+    border-color: #2ee992;
 }
  
 .unavailable-button.selected {
