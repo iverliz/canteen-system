@@ -876,3 +876,38 @@ function confirmLogout() {
     window.location.href =
         "../auth/log_out_admin.php";
 }
+
+/* =========================================================
+   BACK TO TOP BUTTON
+   ========================================================= */
+
+const backToTopButton =
+    document.getElementById("backToTopButton");
+
+
+/* SHOW / HIDE BUTTON WHEN SCROLLING */
+
+window.addEventListener("scroll", function () {
+
+    if (window.scrollY > 300) {
+
+        backToTopButton.classList.add("show");
+
+    } else {
+
+        backToTopButton.classList.remove("show");
+    }
+
+});
+
+
+/* SCROLL TO TOP */
+
+backToTopButton.addEventListener("click", function () {
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});

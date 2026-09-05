@@ -897,7 +897,17 @@ if ($foodResult) {
 
 </div>
 
+<!-- BACK TO TOP BUTTON -->
 
+<button
+    type="button"
+    id="backToTopButton"
+    class="back-to-top-button"
+    aria-label="Back to top"
+    title="Back to top"
+>
+    ⮝
+</button>
 
 <!-- ADD / EDIT MODAL -->
 

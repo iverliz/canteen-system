@@ -934,6 +934,108 @@ margin-bottom: 22px;
     background: #ea580c;
 }
 
+/* =========================================================
+   BACK TO TOP BUTTON
+   ========================================================= */
+
+.back-to-top-button {
+    position: fixed;
+
+    left: 50%;
+    bottom: 10px;
+
+    transform: translateX(-50%) translateY(20px);
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #f97316;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 27px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 25px rgba(249, 115, 22, 0.30);
+
+    opacity: 0;
+    visibility: hidden;
+
+    z-index: 900;
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease,
+        visibility 0.25s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* SHOW BUTTON */
+
+.back-to-top-button.show {
+
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+
+/* HOVER */
+
+.back-to-top-button:hover {
+
+    background: #ea580c;
+
+    box-shadow:
+        0 10px 30px rgba(249, 115, 22, 0.40);
+
+    transform:
+        translateX(-50%)
+        translateY(-3px);
+}
+
+
+/* CLICK */
+
+.back-to-top-button:active {
+
+    transform:
+        translateX(-50%)
+        translateY(0)
+        scale(0.95);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .back-to-top-button {
+
+        width: 32px;
+        height: 32px;
+
+        bottom: 10px;
+
+        font-size: 17px;
+    }
+
+}
+
 
 /* RESPONSIVE */
 
