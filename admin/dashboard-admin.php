@@ -1,4 +1,255 @@
-<!-- dashboard-admin.php -->
+<?php
+session_start();
+
+require_once "../config/database.php";
+
+/* =========================================================
+   LOGIN SESSION
+========================================================= */
+
+if (
+    !isset($_SESSION['admin_username']) ||
+    !isset($_SESSION['admin_role'])
+) {
+    header("Location: ../auth/login.php");
+    exit;
+}
+
+$loggedInName = $_SESSION['admin_username'];
+$loggedInRole = $_SESSION['admin_role'];
+
+
+/* =========================================================
+   PROFILE INITIAL
+========================================================= */
+
+$profileInitial = strtoupper(
+    substr(
+        trim($loggedInName),
+        0,
+        1
+    )
+);
+
+
+/* =========================================================
+   FORMAT ROLE
+========================================================= */
+
+$role = strtolower(trim($loggedInRole));
+
+switch ($role) {
+
+    case 'canteen manager':
+    case 'manager':
+    case 'canteen_manager':
+
+        $displayRole = 'Canteen Manager';
+
+        break;
+
+
+    case 'canteen staff':
+    case 'staff':
+    case 'canteen_staff':
+
+        $displayRole = 'Canteen Staff';
+
+        break;
+
+
+    default:
+
+        $displayRole = ucwords(
+            str_replace(
+                ['_', '-'],
+                ' ',
+                $role
+            )
+        );
+
+        break;
+}
+
+
+/* =========================================================
+   DASHBOARD AJAX ACTIONS
+========================================================= */
+
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['action'])
+) {
+
+    header('Content-Type: application/json');
+
+    $action = $_POST['action'];
+
+
+    /* =====================================================
+       ADD NOTE
+    ===================================================== */
+
+    if ($action === 'add_note') {
+
+        $title = trim(
+            $_POST['note_title'] ?? ''
+        );
+
+        $description = trim(
+            $_POST['note_description'] ?? ''
+        );
+
+
+        if (
+            $title === '' ||
+            $description === ''
+        ) {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Please complete all fields.'
+            ]);
+
+            exit;
+        }
+
+
+        $stmt = $conn->prepare("
+            INSERT INTO dashboard_notes
+            (
+                note_title,
+                note_description
+            )
+            VALUES (?, ?)
+        ");
+
+
+        $stmt->bind_param(
+            "ss",
+            $title,
+            $description
+        );
+
+
+        if ($stmt->execute()) {
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Note added successfully.',
+                'note' => [
+                    'note_id' => $stmt->insert_id,
+                    'note_title' => $title,
+                    'note_description' => $description
+                ]
+            ]);
+
+        } else {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to add note.'
+            ]);
+        }
+
+
+        $stmt->close();
+
+        exit;
+    }
+
+
+    /* =====================================================
+       DELETE NOTE
+    ===================================================== */
+
+    if ($action === 'delete_note') {
+
+        $noteId = intval(
+            $_POST['note_id'] ?? 0
+        );
+
+
+        if ($noteId <= 0) {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid note.'
+            ]);
+
+            exit;
+        }
+
+
+        $stmt = $conn->prepare("
+            DELETE FROM dashboard_notes
+            WHERE note_id = ?
+        ");
+
+
+        $stmt->bind_param(
+            "i",
+            $noteId
+        );
+
+
+        if ($stmt->execute()) {
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Note deleted successfully.'
+            ]);
+
+        } else {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to delete note.'
+            ]);
+        }
+
+
+        $stmt->close();
+
+        exit;
+    }
+}
+
+
+/* =========================================================
+   GET NOTES
+========================================================= */
+
+$notes = [];
+
+$notesResult = $conn->query("
+    SELECT
+        note_id,
+        note_title,
+        note_description,
+        created_at
+    FROM dashboard_notes
+    ORDER BY created_at DESC
+");
+
+
+if ($notesResult) {
+
+    while ($row = $notesResult->fetch_assoc()) {
+
+        $notes[] = $row;
+    }
+}
+
+
+/* =========================================================
+   DEFAULT MONTH
+========================================================= */
+
+$currentMonth = date('Y-m');
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,14 +264,17 @@
 
     <title>OrderEATS - Dashboard</title>
 
-    <link
-        rel="stylesheet"
-        href="../assests\css/dashboard-admin.css"
-    >
 
     <link
-        rel="icon" type="image/x-icon"
-        href="../assests\css/images/OrderEats_logo.png"
+        rel="stylesheet"
+        href="../assests/css/dashboard-admin.css"
+    >
+
+
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="../assests/css/images/OrderEats_logo.png"
     >
 
 </head>
@@ -30,28 +284,38 @@
 
 <div class="app-container">
 
-    <!-- SIDEBAR -->
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
     <aside class="sidebar">
-
-        <!-- BRAND -->
 
         <div class="brand">
 
             <div class="brand-icon">
-                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
+
+                <img
+                    src="../assests/css/images/OrderEats_logo.png"
+                    class="system-logo"
+                >
+
             </div>
 
+
             <span>
-                <span style="color: #F9A825;">Order</span>EATS
+
+                <span style="color: #F9A825;">
+                    Order
+                </span>EATS
+
             </span>
 
         </div>
 
 
-        <!-- NAVIGATION -->
-
         <nav class="sidebar-menu">
+
 
             <a
                 href="dashboard-admin.php"
@@ -135,14 +399,14 @@
         </nav>
 
 
-
-        <!-- SIDEBAR BOTTOM -->
+        <!-- SIDEBAR LOGOUT -->
 
         <div class="sidebar-bottom">
 
             <a
-                href="../auth/log_out_admin.php"
+                href="#"
                 class="sidebar-link"
+                id="logoutButton"
             >
 
                 <span class="menu-icon">
@@ -161,7 +425,9 @@
 
 
 
-    <!--MAIN CONTENT -->
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
 
     <main class="main-content">
 
@@ -188,28 +454,33 @@
             <div class="user-profile">
 
                 <div class="profile-icon">
-                    A
+
+                    <?= htmlspecialchars($profileInitial) ?>
+
                 </div>
+
 
                 <div class="profile-info">
 
                     <strong>
-                        Admin
+                        <?= htmlspecialchars($loggedInName) ?>
                     </strong>
 
                     <span>
-                        Administrator
+                        <?= htmlspecialchars($displayRole) ?>
                     </span>
 
                 </div>
-
 
             </div>
 
         </header>
 
 
-        <!-- STATISTICS -->
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
 
         <section class="stats-grid">
 
@@ -237,6 +508,7 @@
             </div>
 
 
+
             <!-- TOTAL SALES -->
 
             <div class="stat-card">
@@ -260,6 +532,7 @@
             </div>
 
 
+
             <!-- PENDING ORDERS -->
 
             <div class="stat-card">
@@ -280,15 +553,18 @@
 
                 </div>
 
-
             </div>
 
         </section>
 
 
-        <!-- SALES REPORT -->
+
+        <!-- =================================================
+             SALES REPORT
+        ================================================== -->
 
         <section class="dashboard-card sales-report">
+
 
             <div class="card-header">
 
@@ -304,42 +580,98 @@
 
                 </div>
 
-                <div class="report-label">
-                    This Week
+
+                <!-- MONTH + WEEK SELECTOR -->
+
+                <div class="report-filters">
+
+
+                    <select
+                        id="monthSelector"
+                        class="report-select"
+                    >
+
+                        <?php
+
+                        for ($i = 0; $i < 12; $i++) {
+
+                            $monthValue = date(
+                                'Y-m',
+                                strtotime("-$i months")
+                            );
+
+                            $monthLabel = date(
+                                'F Y',
+                                strtotime($monthValue . '-01')
+                            );
+
+                            ?>
+
+                            <option
+                                value="<?= $monthValue ?>"
+                                <?= $monthValue === $currentMonth ? 'selected' : '' ?>
+                            >
+                                <?= $monthLabel ?>
+                            </option>
+
+                            <?php
+
+                        }
+
+                        ?>
+
+                    </select>
+
+
+                    <select
+                        id="weekSelector"
+                        class="report-select"
+                    >
+
+                        <option value="1">
+                            Week 1
+                        </option>
+
+                        <option value="2">
+                            Week 2
+                        </option>
+
+                        <option value="3">
+                            Week 3
+                        </option>
+
+                        <option value="4">
+                            Week 4
+                        </option>
+
+                        <option value="5">
+                            Week 5
+                        </option>
+
+                        <option value="6">
+                            Week 6
+                        </option>
+
+                    </select>
+
+
                 </div>
 
             </div>
+
 
 
             <!-- GRAPH -->
 
             <div class="chart-container">
 
-                <div class="y-axis">
 
-                    <span>
-                        ₱1,000
-                    </span>
+                <div
+                    class="y-axis"
+                    id="yAxis"
+                >
 
-                    <span>
-                        ₱800
-                    </span>
-
-                    <span>
-                        ₱600
-                    </span>
-
-                    <span>
-                        ₱400
-                    </span>
-
-                    <span>
-                        ₱200
-                    </span>
-
-                    <span>
-                        ₱0
-                    </span>
+                    <!-- GENERATED BY JAVASCRIPT -->
 
                 </div>
 
@@ -349,178 +681,26 @@
 
                     <!-- GRID -->
 
-                    <div class="chart-grid">
+                    <div
+                        class="chart-grid"
+                        id="chartGrid"
+                    >
 
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                        <!-- GENERATED BY JAVASCRIPT -->
 
                     </div>
 
 
                     <!-- BARS -->
 
-                    <div class="bars">
+                    <div
+                        class="bars"
+                        id="salesBars"
+                    >
 
-                        <!-- MONDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-mon"
-                                style="height: 45%;"
-                            >
-
-                                <span>
-                                    ₱450
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Mon
-                            </small>
-
-                        </div>
-
-
-                        <!-- TUESDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-tue"
-                                style="height: 65%;"
-                            >
-
-                                <span>
-                                    ₱650
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Tue
-                            </small>
-
-                        </div>
-
-
-                        <!-- WEDNESDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-wed"
-                                style="height: 55%;"
-                            >
-
-                                <span>
-                                    ₱550
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Wed
-                            </small>
-
-                        </div>
-
-
-                        <!-- THURSDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-thu"
-                                style="height: 80%;"
-                            >
-
-                                <span>
-                                    ₱800
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Thu
-                            </small>
-
-                        </div>
-
-
-                        <!-- FRIDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-fri"
-                                style="height: 95%;"
-                            >
-
-                                <span>
-                                    ₱950
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Fri
-                            </small>
-
-                        </div>
-
-
-                        <!-- SATURDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-sat"
-                                style="height: 70%;"
-                            >
-
-                                <span>
-                                    ₱700
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Sat
-                            </small>
-
-                        </div>
-
-
-                        <!-- SUNDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-sun"
-                                style="height: 35%;"
-                            >
-
-                                <span>
-                                    ₱350
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Sun
-                            </small>
-
-                        </div>
-
+                        <!-- GENERATED BY JAVASCRIPT -->
 
                     </div>
-
 
                 </div>
 
@@ -529,9 +709,13 @@
         </section>
 
 
-        <!-- NOTES -->
+
+        <!-- =================================================
+             NOTES
+        ================================================== -->
 
         <section class="dashboard-card notes-card">
+
 
             <div class="card-header">
 
@@ -547,7 +731,9 @@
 
                 </div>
 
+
                 <button
+                    type="button"
                     class="add-note-button"
                     onclick="openNoteModal()"
                 >
@@ -563,6 +749,7 @@
             </div>
 
 
+
             <!-- NOTES LIST -->
 
             <div
@@ -570,83 +757,90 @@
                 id="notesList"
             >
 
-                <!-- DUMMY NOTE -->
+                <?php if (empty($notes)): ?>
 
-                <div class="note-item">
+                    <div
+                        class="empty-notes"
+                        id="emptyNotes"
+                    >
 
-                    <div class="note-icon">
-                        !
-                    </div>
-
-                    <div class="note-content">
+                        <div>
+                            📝
+                        </div>
 
                         <h3>
-                            Check food stock
+                            No notes yet
                         </h3>
 
                         <p>
-                            Make sure all ingredients
-                            are available before opening.
+                            Add a note or reminder for the canteen.
                         </p>
 
                     </div>
 
-                    <button
-                        class="delete-note"
-                        onclick="deleteNote(this)"
-                    >
-                        ×
-                    </button>
-
-                </div>
+                <?php else: ?>
 
 
-                <div class="note-item">
+                    <?php foreach ($notes as $note): ?>
 
-                    <div class="note-icon">
-                        !
-                    </div>
+                        <div
+                            class="note-item"
+                            data-note-id="<?= (int)$note['note_id'] ?>"
+                        >
 
-
-                    <div class="note-content">
-
-                        <h3>
-                            Prepare tomorrow's menu
-                        </h3>
-
-                        <p>
-                            Review the available food
-                            items for tomorrow.
-                        </p>
-
-                    </div>
+                            <div class="note-icon">
+                                !
+                            </div>
 
 
-                    <button
-                        class="delete-note"
-                        onclick="deleteNote(this)"
-                    >
-                        ×
-                    </button>
+                            <div class="note-content">
+
+                                <h3>
+                                    <?= htmlspecialchars(
+                                        $note['note_title']
+                                    ) ?>
+                                </h3>
 
 
-                </div>
+                                <p>
+                                    <?= htmlspecialchars(
+                                        $note['note_description']
+                                    ) ?>
+                                </p>
 
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="delete-note"
+                                onclick="deleteNote(<?= (int)$note['note_id'] ?>)"
+                                title="Delete note"
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+
+                <?php endif; ?>
 
             </div>
-
 
         </section>
 
 
     </main>
 
-
 </div>
 
 
 
-<!-- ADD NOTE MODAL -->
+<!-- =========================================================
+     ADD NOTE MODAL
+========================================================= -->
 
 <div
     class="modal-overlay"
@@ -655,8 +849,8 @@
 
     <div class="note-modal">
 
-        <div class="modal-header">
 
+        <div class="modal-header">
 
             <div>
 
@@ -672,6 +866,7 @@
 
 
             <button
+                type="button"
                 class="close-button"
                 onclick="closeNoteModal()"
             >
@@ -685,6 +880,7 @@
             id="noteForm"
             onsubmit="addNote(event)"
         >
+
 
             <div class="form-group">
 
@@ -722,7 +918,6 @@
 
             <div class="modal-buttons">
 
-
                 <button
                     type="button"
                     class="cancel-button"
@@ -739,20 +934,131 @@
                     Add Note
                 </button>
 
-
             </div>
 
 
         </form>
 
-
     </div>
-
 
 </div>
 
 
-<script src="../assests\css/js/dashboard-admin.js"></script>
+
+<!-- =========================================================
+     DELETE NOTE CONFIRMATION MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="deleteNoteModal"
+>
+
+    <div class="delete-note-modal">
+
+
+        <div class="delete-note-icon">
+            🗑️
+        </div>
+
+
+        <h2>
+            Delete Note?
+        </h2>
+
+
+        <p>
+            Are you sure you want to delete this note?
+            This action cannot be undone.
+        </p>
+
+
+        <div class="modal-buttons">
+
+
+            <button
+                type="button"
+                class="cancel-button"
+                onclick="closeDeleteNoteModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="confirm-delete-button"
+                id="confirmDeleteNoteButton"
+            >
+                Delete
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     LOGOUT CONFIRMATION MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="logoutModal"
+>
+
+    <div class="logout-modal">
+
+
+        <div class="logout-icon">
+            ↪
+        </div>
+
+
+        <h2>
+            Logout?
+        </h2>
+
+
+        <p>
+            Are you sure you want to log out of your account?
+        </p>
+
+
+        <div class="modal-buttons">
+
+
+            <button
+                type="button"
+                class="cancel-button"
+                onclick="closeLogoutModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="confirm-logout-button"
+                onclick="confirmLogout()"
+            >
+                Logout
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script src="../assests/css/js/dashboard-admin.js"></script>
 
 </body>
 

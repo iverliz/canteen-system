@@ -287,21 +287,36 @@ body {
     font-size: 13px;
 }
 
-.report-label {
+/* REPORT FILTERS */
+
+.report-filters {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-select {
+    height: 36px;
+    padding: 0 30px 0 10px;
+    border: 1px solid #fed7aa;
+    border-radius: 7px;
     background: #fff7ed;
     color: #f97316;
-    border: 1px solid #fed7aa;
-    padding: 7px 12px;
-    border-radius: 20px;
     font-size: 12px;
     font-weight: bold;
+    outline: none;
+    cursor: pointer;
+}
+
+.report-select:focus {
+    border-color: #f97316;
 }
 
 /* CHART */
 
 .chart-container {
-    display: flex;
-    height: 330px;
+    display: flex;  
+    height: 350px;
     padding-top: 10px;
 }
 
@@ -430,9 +445,11 @@ body {
 
 .bar-column small {
     position: absolute;
-    bottom: -25px;
+    bottom: -38px;
     color: #777;
-    font-size: 11px;
+    font-size: 10px;
+    white-space: nowrap;
+    text-align: center;
 }
 
 /* NOTES */
@@ -468,6 +485,169 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    /*
+     * Five notes can be displayed normally.
+     * More than five creates a scrollbar.
+     */
+    max-height: 340px;
+    overflow-y: auto;
+
+    padding-right: 5px;
+}
+
+.notes-list::-webkit-scrollbar {
+    width: 7px;
+}
+
+.notes-list::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+.notes-list::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+.notes-list::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}
+
+.empty-notes {
+    padding: 35px 20px;
+    text-align: center;
+    color: #888;
+}
+
+.empty-notes div {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.empty-notes h3 {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.empty-notes p {
+    font-size: 12px;
+    color: #999;
+}
+
+/* =========================================================
+   DELETE NOTE CONFIRMATION
+========================================================= */
+
+.delete-note-modal {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.18);
+}
+
+.delete-note-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fef2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+}
+
+.delete-note-modal h2 {
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+
+.delete-note-modal p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.confirm-delete-button {
+    flex: 1;
+    border: none;
+    background: #dc3545;
+    color: white;
+    padding: 12px;
+    border-radius: 7px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.confirm-delete-button:hover {
+    background: #bb2d3b;
+}
+
+/* =========================================================
+   LOGOUT CONFIRMATION
+========================================================= */
+
+.logout-modal {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.18);
+}
+
+.logout-icon {
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #fff7ed;
+    color: #f97316;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.logout-modal h2 {
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+
+.logout-modal p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.confirm-logout-button {
+    flex: 1;
+    border: none;
+    background: #f97316;
+    color: white;
+    padding: 12px;
+    border-radius: 7px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.confirm-logout-button:hover {
+    background: #ea580c;
 }
 
 .note-item {
@@ -740,6 +920,14 @@ body {
         width: 28px;
     }
 
+    .report-filters {
+        width: 100%;
+    }
+
+    .report-select {
+        flex: 1;
+    }
+
 }
 
 
@@ -772,6 +960,15 @@ body {
 
     .bar {
         width: 20px;
+    }
+
+    .report-filters {
+    width: 100%;
+    flex-direction: column;
+    }
+
+    .report-select {
+    width: 100%;
     }
 
 }

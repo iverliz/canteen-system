@@ -1,39 +1,424 @@
-/* dashboard-admin.js */
-const dashboardData = {
-
-    completedOrders: 0,
-    totalSales: 0,
-    pendingOrders: 0
-
-};
+/* =========================================================
+   dashboard-admin.js
+========================================================= */
 
 
-/* LOAD DASHBOARD DATA */
+/* =========================================================
+   VARIABLES
+========================================================= */
 
-function loadDashboard() {
-
-    document.getElementById(
-        "completedOrders"
-    ).textContent =
-        dashboardData.completedOrders;
+let noteToDelete = null;
 
 
-    document.getElementById(
-        "totalSales"
-    ).textContent =
-        "₱" +
-        dashboardData.totalSales.toFixed(2);
+/* =========================================================
+   LOAD DASHBOARD STATISTICS
+========================================================= */
+
+async function loadDashboardStats() {
+
+    try {
+
+        const response = await fetch(
+            "dashboard-data.php"
+        );
+
+        const data = await response.json();
 
 
-    document.getElementById(
-        "pendingOrders"
-    ).textContent =
-        dashboardData.pendingOrders;
+        if (!data.success) {
+            return;
+        }
+
+
+        document.getElementById(
+            "completedOrders"
+        ).textContent =
+            data.completedOrders;
+
+
+        document.getElementById(
+            "pendingOrders"
+        ).textContent =
+            data.pendingOrders;
+
+
+        document.getElementById(
+            "totalSales"
+        ).textContent =
+            "₱" +
+            Number(data.totalSales).toLocaleString(
+                "en-PH",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load dashboard statistics:",
+            error
+        );
+
+    }
 
 }
 
 
-/* OPEN NOTE MODAL*/
+/* =========================================================
+   LOAD SALES REPORT
+========================================================= */
+
+async function loadSalesReport() {
+
+    const month =
+        document.getElementById(
+            "monthSelector"
+        ).value;
+
+
+    const week =
+        document.getElementById(
+            "weekSelector"
+        ).value;
+
+
+    try {
+
+        const response = await fetch(
+            "sales-report.php?month=" +
+            encodeURIComponent(month) +
+            "&week=" +
+            encodeURIComponent(week)
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            console.error(
+                data.message
+            );
+
+            return;
+        }
+
+
+        renderSalesChart(
+            data.days
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load sales report:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER SALES CHART
+========================================================= */
+
+function renderSalesChart(days) {
+
+    const yAxis =
+        document.getElementById(
+            "yAxis"
+        );
+
+
+    const chartGrid =
+        document.getElementById(
+            "chartGrid"
+        );
+
+
+    const salesBars =
+        document.getElementById(
+            "salesBars"
+        );
+
+
+    yAxis.innerHTML = "";
+
+    chartGrid.innerHTML = "";
+
+    salesBars.innerHTML = "";
+
+
+    /* -----------------------------------------------------
+       FIND HIGHEST VALUE
+    ----------------------------------------------------- */
+
+    let highestValue = 0;
+
+
+    days.forEach(
+        day => {
+
+            const sales =
+                Number(day.sales);
+
+
+            if (
+                sales >
+                highestValue
+            ) {
+
+                highestValue =
+                    sales;
+
+            }
+
+        }
+    );
+
+
+    /* -----------------------------------------------------
+       DYNAMIC Y-AXIS
+    ----------------------------------------------------- */
+
+    let maxValue;
+
+
+    if (highestValue <= 0) {
+
+        maxValue = 1000;
+
+    } else {
+
+        maxValue =
+            Math.ceil(
+                highestValue / 100
+            ) * 100;
+
+
+        /*
+         * If sales are exactly 1000,
+         * keep the maximum at 1000.
+         */
+
+        if (maxValue < 1000) {
+            maxValue = 1000;
+        }
+
+    }
+
+
+    const steps = 5;
+
+    const stepValue =
+        maxValue / steps;
+
+
+    for (
+        let i = steps;
+        i >= 0;
+        i--
+    ) {
+
+        const value =
+            stepValue * i;
+
+
+        const label =
+            document.createElement(
+                "span"
+            );
+
+
+        label.textContent =
+            "₱" +
+            Number(value).toLocaleString(
+                "en-PH",
+                {
+                    maximumFractionDigits: 0
+                }
+            );
+
+
+        yAxis.appendChild(
+            label
+        );
+
+
+        const gridLine =
+            document.createElement(
+                "span"
+            );
+
+
+        chartGrid.appendChild(
+            gridLine
+        );
+
+    }
+
+
+    /* -----------------------------------------------------
+       CREATE BARS
+    ----------------------------------------------------- */
+
+    days.forEach(
+        day => {
+
+            const column =
+                document.createElement(
+                    "div"
+                );
+
+
+            column.className =
+                "bar-column";
+
+
+            const bar =
+                document.createElement(
+                    "div"
+                );
+
+
+            bar.className =
+                "bar";
+
+
+            const sales =
+                Number(day.sales);
+
+
+            let height = 0;
+
+
+            if (
+                maxValue > 0
+            ) {
+
+                height =
+                    (
+                        sales /
+                        maxValue
+                    ) * 100;
+
+            }
+
+
+            /*
+             * Do not make zero-sales
+             * bars visible.
+             */
+
+            if (sales > 0) {
+
+                height =
+                    Math.max(
+                        height,
+                        2
+                    );
+
+            }
+
+
+            bar.style.height =
+                height + "%";
+
+
+            bar.style.background =
+                getBarColor(
+                    day.dayIndex
+                );
+
+
+            const amount =
+                document.createElement(
+                    "span"
+                );
+
+
+            amount.textContent =
+                "₱" +
+                sales.toLocaleString(
+                    "en-PH",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+
+            bar.appendChild(
+                amount
+            );
+
+
+            const dateLabel =
+                document.createElement(
+                    "small"
+                );
+
+
+            dateLabel.textContent =
+                day.label;
+
+
+            column.appendChild(
+                bar
+            );
+
+
+            column.appendChild(
+                dateLabel
+            );
+
+
+            salesBars.appendChild(
+                column
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BAR COLORS
+========================================================= */
+
+function getBarColor(index) {
+
+    const colors = [
+
+        "#f97316",
+        "#fb923c",
+        "#f59e0b",
+        "#eab308",
+        "#84cc16",
+        "#22c55e",
+        "#14b8a6"
+
+    ];
+
+
+    return colors[
+        index % colors.length
+    ];
+
+}
+
+
+/* =========================================================
+   OPEN NOTE MODAL
+========================================================= */
 
 function openNoteModal() {
 
@@ -46,10 +431,24 @@ function openNoteModal() {
         .getElementById("noteForm")
         .reset();
 
+
+    setTimeout(
+        function() {
+
+            document
+                .getElementById("noteTitle")
+                .focus();
+
+        },
+        100
+    );
+
 }
 
 
-/* CLOSE NOTE MODAL */
+/* =========================================================
+   CLOSE NOTE MODAL
+========================================================= */
 
 function closeNoteModal() {
 
@@ -60,9 +459,11 @@ function closeNoteModal() {
 }
 
 
-/* ADD NOTE */
+/* =========================================================
+   ADD NOTE
+========================================================= */
 
-function addNote(event) {
+async function addNote(event) {
 
     event.preventDefault();
 
@@ -76,17 +477,100 @@ function addNote(event) {
 
     const description =
         document
-            .getElementById("noteDescription")
+            .getElementById(
+                "noteDescription"
+            )
             .value
             .trim();
 
 
-    if (!title || !description) {
+    if (
+        !title ||
+        !description
+    ) {
 
         return;
 
     }
 
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "action",
+        "add_note"
+    );
+
+
+    formData.append(
+        "note_title",
+        title
+    );
+
+
+    formData.append(
+        "note_description",
+        description
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "dashboard-admin.php",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(
+                data.message ||
+                "Failed to add note."
+            );
+
+            return;
+        }
+
+
+        closeNoteModal();
+
+
+        addNoteToList(
+            data.note
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+        alert(
+            "Something went wrong while adding the note."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ADD NOTE TO UI
+========================================================= */
+
+function addNoteToList(note) {
 
     const noteList =
         document.getElementById(
@@ -94,37 +578,56 @@ function addNote(event) {
         );
 
 
-    const note =
-        document.createElement("div");
+    const emptyNotes =
+        document.getElementById(
+            "emptyNotes"
+        );
 
 
-    note.className =
+    if (emptyNotes) {
+
+        emptyNotes.remove();
+
+    }
+
+
+    const noteElement =
+        document.createElement(
+            "div"
+        );
+
+
+    noteElement.className =
         "note-item";
 
 
-    note.innerHTML = `
+    noteElement.dataset.noteId =
+        note.note_id;
+
+
+    noteElement.innerHTML = `
 
         <div class="note-icon">
             !
         </div>
 
-
         <div class="note-content">
 
             <h3>
-                ${escapeHTML(title)}
+                ${escapeHTML(note.note_title)}
             </h3>
 
             <p>
-                ${escapeHTML(description)}
+                ${escapeHTML(note.note_description)}
             </p>
 
         </div>
 
-
         <button
+            type="button"
             class="delete-note"
-            onclick="deleteNote(this)"
+            onclick="deleteNote(${note.note_id})"
+            title="Delete note"
         >
             ×
         </button>
@@ -132,49 +635,249 @@ function addNote(event) {
     `;
 
 
-    noteList.appendChild(note);
+    /*
+     * Newest note appears first.
+     */
 
-
-    closeNoteModal();
+    noteList.prepend(
+        noteElement
+    );
 
 }
 
 
-/* DELETE NOTE */
+/* =========================================================
+   DELETE NOTE - OPEN CONFIRMATION
+========================================================= */
 
-function deleteNote(button) {
+function deleteNote(noteId) {
 
-    const note =
-        button.closest(".note-item");
+    noteToDelete =
+        noteId;
 
 
-    if (!note) {
+    document
+        .getElementById(
+            "deleteNoteModal"
+        )
+        .classList.add("show");
+
+}
+
+
+/* =========================================================
+   CLOSE DELETE NOTE MODAL
+========================================================= */
+
+function closeDeleteNoteModal() {
+
+    noteToDelete = null;
+
+
+    document
+        .getElementById(
+            "deleteNoteModal"
+        )
+        .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   CONFIRM DELETE NOTE
+========================================================= */
+
+async function confirmDeleteNote() {
+
+    if (!noteToDelete) {
+
         return;
+
     }
 
 
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this note?"
+    const noteId =
+        noteToDelete;
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "action",
+        "delete_note"
+    );
+
+
+    formData.append(
+        "note_id",
+        noteId
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "dashboard-admin.php",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            alert(
+                data.message ||
+                "Failed to delete note."
+            );
+
+            return;
+        }
+
+
+        const note =
+            document.querySelector(
+                `.note-item[data-note-id="${noteId}"]`
+            );
+
+
+        if (note) {
+
+            note.remove();
+
+        }
+
+
+        closeDeleteNoteModal();
+
+
+        checkEmptyNotes();
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+        alert(
+            "Something went wrong while deleting the note."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CHECK EMPTY NOTES
+========================================================= */
+
+function checkEmptyNotes() {
+
+    const noteList =
+        document.getElementById(
+            "notesList"
         );
 
 
-    if (!confirmed) {
-        return;
+    const notes =
+        noteList.querySelectorAll(
+            ".note-item"
+        );
+
+
+    if (
+        notes.length === 0
+    ) {
+
+        noteList.innerHTML = `
+
+            <div
+                class="empty-notes"
+                id="emptyNotes"
+            >
+
+                <div>
+                    📝
+                </div>
+
+                <h3>
+                    No notes yet
+                </h3>
+
+                <p>
+                    Add a note or reminder for the canteen.
+                </p>
+
+            </div>
+
+        `;
+
     }
-
-
-    note.remove();
 
 }
 
 
-/* ESCAPE HTML */
+/* =========================================================
+   LOGOUT MODAL
+========================================================= */
+
+function openLogoutModal(event) {
+
+    if (event) {
+
+        event.preventDefault();
+
+    }
+
+
+    document
+        .getElementById(
+            "logoutModal"
+        )
+        .classList.add("show");
+
+}
+
+
+function closeLogoutModal() {
+
+    document
+        .getElementById(
+            "logoutModal"
+        )
+        .classList.remove("show");
+
+}
+
+
+function confirmLogout() {
+
+    window.location.href =
+        "../auth/log_out_admin.php";
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
 function escapeHTML(text) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     div.textContent =
@@ -186,37 +889,58 @@ function escapeHTML(text) {
 }
 
 
-/* CLICK OUTSIDE MODAL */
-
-document
-    .getElementById("noteModal")
-    .addEventListener(
-        "click",
-        function(event) {
-
-            if (
-                event.target === this
-            ) {
-
-                closeNoteModal();
-
-            }
-
-        }
-    );
-
-
-/* ESC KEY */
+/* =========================================================
+   MODAL CLICK OUTSIDE
+========================================================= */
 
 document.addEventListener(
-    "keydown",
+    "click",
     function(event) {
 
+        const noteModal =
+            document.getElementById(
+                "noteModal"
+            );
+
+
+        const deleteModal =
+            document.getElementById(
+                "deleteNoteModal"
+            );
+
+
+        const logoutModal =
+            document.getElementById(
+                "logoutModal"
+            );
+
+
         if (
-            event.key === "Escape"
+            event.target ===
+            noteModal
         ) {
 
             closeNoteModal();
+
+        }
+
+
+        if (
+            event.target ===
+            deleteModal
+        ) {
+
+            closeDeleteNoteModal();
+
+        }
+
+
+        if (
+            event.target ===
+            logoutModal
+        ) {
+
+            closeLogoutModal();
 
         }
 
@@ -224,13 +948,143 @@ document.addEventListener(
 );
 
 
-/* INITIALIZE */
+/* =========================================================
+   ESC KEY
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key !==
+            "Escape"
+        ) {
+
+            return;
+
+        }
+
+
+        const noteModal =
+            document.getElementById(
+                "noteModal"
+            );
+
+
+        const deleteModal =
+            document.getElementById(
+                "deleteNoteModal"
+            );
+
+
+        const logoutModal =
+            document.getElementById(
+                "logoutModal"
+            );
+
+
+        if (
+            noteModal.classList.contains(
+                "show"
+            )
+        ) {
+
+            closeNoteModal();
+
+        }
+
+
+        if (
+            deleteModal.classList.contains(
+                "show"
+            )
+        ) {
+
+            closeDeleteNoteModal();
+
+        }
+
+
+        if (
+            logoutModal.classList.contains(
+                "show"
+            )
+        ) {
+
+            closeLogoutModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-        loadDashboard();
+
+        /* LOAD STATISTICS */
+
+        loadDashboardStats();
+
+
+        /* LOAD GRAPH */
+
+        loadSalesReport();
+
+
+        /* MONTH CHANGE */
+
+        document
+            .getElementById(
+                "monthSelector"
+            )
+            .addEventListener(
+                "change",
+                loadSalesReport
+            );
+
+
+        /* WEEK CHANGE */
+
+        document
+            .getElementById(
+                "weekSelector"
+            )
+            .addEventListener(
+                "change",
+                loadSalesReport
+            );
+
+
+        /* LOGOUT */
+
+        document
+            .getElementById(
+                "logoutButton"
+            )
+            .addEventListener(
+                "click",
+                openLogoutModal
+            );
+
+
+        /* CONFIRM DELETE */
+
+        document
+            .getElementById(
+                "confirmDeleteNoteButton"
+            )
+            .addEventListener(
+                "click",
+                confirmDeleteNote
+            );
 
     }
 );
