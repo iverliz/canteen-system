@@ -565,7 +565,7 @@ if ($result) {
                     aria-label="Toggle dark mode"
                     title="Toggle dark mode"
                 >
-                    <span id="darkModeIcon">🌑</span>
+                    <span id="darkModeIcon">☀️</span>
                 </button>
 
 

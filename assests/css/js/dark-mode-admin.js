@@ -28,13 +28,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         root.classList.add("dark-mode");
 
-        darkModeButton.textContent = "☀️";
+        darkModeButton.textContent = "🌑";
 
     } else {
 
         root.classList.remove("dark-mode");
 
-        darkModeButton.textContent = "🌑";
+        darkModeButton.textContent = "☀️";
 
     }
 
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "enabled"
                 );
 
-                darkModeButton.textContent = "☀️";
+                darkModeButton.textContent = "🌑";
 
 
             /* =============================================
@@ -76,11 +76,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     "disabled"
                 );
 
-                darkModeButton.textContent = "🌑";
+                darkModeButton.textContent = "☀️";
 
             }
 
         }
     );
+
+        /* =====================================================
+       HOVER TOOLTIP CHANGE
+    ===================================================== */
+    darkModeButton.addEventListener("mouseenter", function () {
+        if (darkModeButton.textContent === "🌑") {
+            darkModeButton.title = "Toggle to light mode";
+        } else {
+            darkModeButton.title = "Toggle to dark mode";
+        }
+    });
+
+    darkModeButton.addEventListener("mouseleave", function () {
+        darkModeButton.title = "Toggle dark mode";
+    });
+
 
 });

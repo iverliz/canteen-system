@@ -480,7 +480,7 @@ $currentMonth = date('Y-m');
                     title="Toggle Dark Mode"
                     aria-label="Toggle Dark Mode"
                 >
-                    🌑
+                    ☀️
                 </button>
 
 

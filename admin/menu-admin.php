@@ -647,7 +647,7 @@ if ($foodResult) {
                     aria-label="Toggle dark mode"
                     title="Toggle dark mode"
                 >
-                    🌑
+                    ☀️
                 </button>
 
 
