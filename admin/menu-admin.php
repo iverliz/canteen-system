@@ -496,14 +496,33 @@ if ($foodResult) {
 
     <title>OrderEATS - Menu</title>
 
+
+    <!-- =====================================================
+         LOAD DARK MODE BEFORE PAGE RENDERS
+    ====================================================== -->
+
+    <script>
+        if (localStorage.getItem("adminDarkMode") === "enabled") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
+
     <link
         rel="stylesheet"
         href="../assests/css/menu-admin.css"
     >
 
     <link
-        rel="icon" type="image/x-icon"
-        href="../assests\css/images/OrderEats_logo.png"
+        rel="stylesheet"
+        href="../assests/css/dark-mode-admin.css"
+    >
+
+
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="../assests/css/images/OrderEats_logo.png"
     >
 
 </head>
@@ -615,23 +634,42 @@ if ($foodResult) {
             </div>
 
 
-            <!-- USER PROFILE -->
+            <!-- HEADER RIGHT -->
 
-            <div class="user-profile">
+            <div class="header-right">
 
-                <div class="profile-icon">
-                    <?= htmlspecialchars($profileInitial) ?>
-                </div>
+                <!-- DARK MODE TOGGLE -->
 
-                <div class="profile-info">
+                <button
+                    type="button"
+                    class="dark-mode-toggle"
+                    id="darkModeToggle"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    🌑
+                </button>
 
-                    <strong>
-                        <?= htmlspecialchars($loggedInName) ?>
-                    </strong>
 
-                    <span>
-                        <?= htmlspecialchars($displayRole) ?>
-                    </span>
+                <!-- USER PROFILE -->
+
+                <div class="user-profile">
+
+                    <div class="profile-icon">
+                        <?= htmlspecialchars($profileInitial) ?>
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong>
+                            <?= htmlspecialchars($loggedInName) ?>
+                        </strong>
+
+                        <span>
+                            <?= htmlspecialchars($displayRole) ?>
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -1217,6 +1255,7 @@ if ($foodResult) {
 
 
 <script src="../assests\css/js/menu-admin.js"></script>
+<script src="../assests\css/js/dark-mode-admin.js"></script>
 
 </body>
 

@@ -265,9 +265,26 @@ $currentMonth = date('Y-m');
     <title>OrderEATS - Dashboard</title>
 
 
+    <!-- =====================================================
+         LOAD DARK MODE BEFORE PAGE RENDERS
+    ====================================================== -->
+
+    <script>
+        if (localStorage.getItem("adminDarkMode") === "enabled") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
+
     <link
         rel="stylesheet"
         href="../assests/css/dashboard-admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assests/css/dark-mode-admin.css"
+        id="darkModeStylesheet"
     >
 
 
@@ -449,28 +466,49 @@ $currentMonth = date('Y-m');
             </div>
 
 
-            <!-- ADMIN PROFILE -->
+            <!-- HEADER RIGHT -->
 
-            <div class="user-profile">
+            <div class="header-right">
 
-                <div class="profile-icon">
 
-                    <?= htmlspecialchars($profileInitial) ?>
+                <!-- DARK MODE BUTTON -->
+
+                <button
+                    type="button"
+                    class="dark-mode-toggle"
+                    id="darkModeToggle"
+                    title="Toggle Dark Mode"
+                    aria-label="Toggle Dark Mode"
+                >
+                    🌑
+                </button>
+
+
+                <!-- ADMIN PROFILE -->
+
+                <div class="user-profile">
+
+                    <div class="profile-icon">
+
+                        <?= htmlspecialchars($profileInitial) ?>
+
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <strong>
+                            <?= htmlspecialchars($loggedInName) ?>
+                        </strong>
+
+                        <span>
+                            <?= htmlspecialchars($displayRole) ?>
+                        </span>
+
+                    </div>
 
                 </div>
 
-
-                <div class="profile-info">
-
-                    <strong>
-                        <?= htmlspecialchars($loggedInName) ?>
-                    </strong>
-
-                    <span>
-                        <?= htmlspecialchars($displayRole) ?>
-                    </span>
-
-                </div>
 
             </div>
 
@@ -1059,6 +1097,7 @@ $currentMonth = date('Y-m');
 
 
 <script src="../assests/css/js/dashboard-admin.js"></script>
+<script src="../assests/css/js/dark-mode-admin.js"></script>
 
 </body>
 

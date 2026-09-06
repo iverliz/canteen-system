@@ -349,9 +349,24 @@ if ($result) {
         OrderEATS - User Management
     </title>
 
+    <!-- =====================================================
+         LOAD DARK MODE BEFORE PAGE RENDERS
+    ====================================================== -->
+
+    <script>
+        if (localStorage.getItem("adminDarkMode") === "enabled") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
     <link
         rel="stylesheet"
         href="../assests/css/user-admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assests/css/dark-mode-admin.css"
     >
 
     <link
@@ -539,41 +554,56 @@ if ($result) {
             </div>
 
 
-            <!-- LOGGED-IN USER PROFILE -->
+            <!-- DARK MODE + LOGGED-IN USER PROFILE -->
 
-            <div class="user-profile">
+            <div class="header-right">
 
-
-                <div class="profile-icon">
-
-                    <?= htmlspecialchars(
-                        getInitials($loggedInUsername)
-                    ) ?>
-
-                </div>
-
-
-                <div class="profile-info">
-
-                    <strong>
-
-                        <?= htmlspecialchars(
-                            $loggedInUsername
-                        ) ?>
-
-                    </strong>
+                <button
+                    type="button"
+                    class="dark-mode-toggle"
+                    id="darkModeToggle"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    <span id="darkModeIcon">🌑</span>
+                </button>
 
 
-                    <span>
+                <div class="user-profile">
+
+
+                    <div class="profile-icon">
 
                         <?= htmlspecialchars(
-                            getPosition($loggedInRole)
+                            getInitials($loggedInUsername)
                         ) ?>
 
-                    </span>
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <strong>
+
+                            <?= htmlspecialchars(
+                                $loggedInUsername
+                            ) ?>
+
+                        </strong>
+
+
+                        <span>
+
+                            <?= htmlspecialchars(
+                                getPosition($loggedInRole)
+                            ) ?>
+
+                        </span>
+
+                    </div>
+
 
                 </div>
-
 
             </div>
 
@@ -1031,6 +1061,7 @@ if ($result) {
 
 
 <script src="../assests/css/js/user-admin.js"></script>
+<script src="../assests\css/js/dark-mode-admin.js"></script>
 
 </body>
 

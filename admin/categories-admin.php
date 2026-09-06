@@ -675,9 +675,24 @@ if ($result) {
 
     <title>OrderEATS - Categories</title>
 
+    <!-- =====================================================
+         LOAD DARK MODE BEFORE PAGE RENDERS
+    ====================================================== -->
+
+    <script>
+        if (localStorage.getItem("adminDarkMode") === "enabled") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
     <link
         rel="stylesheet"
         href="../assests\css/categories-admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assests/css/dark-mode-admin.css"
     >
 
     <link
@@ -798,41 +813,56 @@ if ($result) {
             </div>
 
 
-            <div class="user-profile">
+            <div class="header-right">
 
-                <div class="profile-icon">
-
-                    <?php
-                    echo htmlspecialchars(
-                        $profileInitial
-                    );
-                    ?>
-
-                </div>
-
-
-                <div class="profile-info">
-
-                    <strong>
-
-                        <?php
-                        echo htmlspecialchars(
-                            $adminUsername
-                        );
-                        ?>
-
-                    </strong>
+                <button
+                    type="button"
+                    class="dark-mode-toggle"
+                    id="darkModeToggle"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    <span id="darkModeIcon">🌑</span>
+                </button>
 
 
-                    <span>
+                <div class="user-profile">
+
+                    <div class="profile-icon">
 
                         <?php
                         echo htmlspecialchars(
-                            $displayRole
+                            $profileInitial
                         );
                         ?>
 
-                    </span>
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <strong>
+
+                            <?php
+                            echo htmlspecialchars(
+                                $adminUsername
+                            );
+                            ?>
+
+                        </strong>
+
+
+                        <span>
+
+                            <?php
+                            echo htmlspecialchars(
+                                $displayRole
+                            );
+                            ?>
+
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -1295,6 +1325,7 @@ if ($result) {
 
 
 <script src="../assests\css/js/categories-admin.js"></script>
+<script src="../assests\css/js/dark-mode-admin.js"></script>
 
 </body>
 

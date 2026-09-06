@@ -258,9 +258,20 @@ unset($log);
 
     <title>OrderEATS - Orders</title>
 
+    <script>
+        if (localStorage.getItem("adminDarkMode") === "enabled") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
     <link
         rel="stylesheet"
         href="../assests/css/orders-admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assests/css/dark-mode-admin.css"
     >
 
     <link
@@ -402,32 +413,51 @@ unset($log);
             </div>
 
 
-            <div class="user-profile">
+            <div class="header-right">
 
-                <div class="profile-icon">
+                <!-- DARK MODE TOGGLE -->
 
-                    <?= htmlspecialchars(
-                        strtoupper(
-                            substr($adminUsername, 0, 1)
-                        )
-                    ) ?>
+                    <button
+                        type="button"
+                        class="dark-mode-toggle"
+                        id="darkModeToggle"
+                        aria-label="Toggle dark mode"
+                        title="Toggle dark mode"
+                    >
+                        <span id="darkModeIcon">🌑</span>
+                    </button>
+
+
+                    <!-- USER PROFILE -->
+
+                    <div class="user-profile">
+
+                        <div class="profile-icon">
+
+                            <?= htmlspecialchars(
+                                strtoupper(
+                                    substr($adminUsername, 0, 1)
+                                )
+                            ) ?>
+
+                        </div>
+
+
+                        <div class="profile-info">
+
+                            <strong>
+                                <?= htmlspecialchars($adminUsername) ?>
+                            </strong>
+
+                            <span>
+                                <?= htmlspecialchars($adminRoleDisplay) ?>
+                            </span>
+
+                        </div>
+
+                    </div>
 
                 </div>
-
-
-                <div class="profile-info">
-
-                    <strong>
-                        <?= htmlspecialchars($adminUsername) ?>
-                    </strong>
-
-                    <span>
-                        <?= htmlspecialchars($adminRoleDisplay) ?>
-                    </span>
-
-                </div>
-
-            </div>
 
         </header>
 
@@ -1036,6 +1066,7 @@ unset($log);
 ========================================================= -->
 
 <script src="../assests\css/js/orders-admin.js"></script>
+<script src="../assests\css/js/dark-mode-admin.js"></script>
 
 </body>
 
