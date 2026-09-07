@@ -13,6 +13,7 @@ let noteToDelete = null;
    GET RESPONSIVE DATE LABEL
 ========================================================= */
 
+
 function getResponsiveDateLabel(label) {
 
     if (window.innerWidth <= 830) {
@@ -1045,42 +1046,105 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
+        /* =================================================
+           GET SELECTORS
+        ================================================= */
 
-        /* LOAD STATISTICS */
+        const monthSelector =
+            document.getElementById(
+                "monthSelector"
+            );
+
+        const weekSelector =
+            document.getElementById(
+                "weekSelector"
+            );
+
+
+        /* =================================================
+           SET CURRENT MONTH
+           AND CURRENT WEEK
+        ================================================= */
+
+        const currentMonth =
+            monthSelector.dataset.currentMonth;
+
+        const currentWeek =
+            monthSelector
+                .parentElement
+                .querySelector(
+                    "#weekSelector"
+                )
+                .dataset.currentWeek;
+
+
+        /*
+         * Explicitly select the current month.
+         */
+        if (currentMonth) {
+
+            monthSelector.value =
+                currentMonth;
+
+        }
+
+
+        /*
+         * Explicitly select the current week.
+         */
+        if (currentWeek) {
+
+            weekSelector.value =
+                currentWeek;
+
+        }
+
+
+        /* =================================================
+           LOAD STATISTICS
+        ================================================= */
 
         loadDashboardStats();
 
 
-        /* LOAD GRAPH */
+        /* =================================================
+           LOAD GRAPH
+        ================================================= */
 
         loadSalesReport();
 
 
-        /* MONTH CHANGE */
+        /* =================================================
+           MONTH CHANGE
+        ================================================= */
 
-        document
-            .getElementById(
-                "monthSelector"
-            )
-            .addEventListener(
-                "change",
-                loadSalesReport
-            );
+        monthSelector.addEventListener(
+            "change",
+            function() {
 
+                loadSalesReport();
 
-        /* WEEK CHANGE */
-
-        document
-            .getElementById(
-                "weekSelector"
-            )
-            .addEventListener(
-                "change",
-                loadSalesReport
-            );
+            }
+        );
 
 
-        /* LOGOUT */
+        /* =================================================
+           WEEK CHANGE
+        ================================================= */
+
+        weekSelector.addEventListener(
+            "change",
+            function() {
+
+                loadSalesReport();
+
+            }
+        );
+
+
+        /* =================================================
+           LOGOUT
+        ================================================= */
 
         document
             .getElementById(
@@ -1092,7 +1156,9 @@ document.addEventListener(
             );
 
 
-        /* CONFIRM DELETE */
+        /* =================================================
+           CONFIRM DELETE
+        ================================================= */
 
         document
             .getElementById(

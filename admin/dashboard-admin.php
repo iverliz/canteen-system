@@ -243,10 +243,91 @@ if ($notesResult) {
 
 
 /* =========================================================
-   DEFAULT MONTH
+   DEFAULT MONTH AND CURRENT WEEK
 ========================================================= */
 
-$currentMonth = date('Y-m');
+/*
+ * Use Philippines time for the dashboard date.
+ */
+date_default_timezone_set('Asia/Manila');
+
+
+/*
+ * CURRENT DATE
+ */
+$todayDate = new DateTime('now');
+
+$currentMonth =
+    $todayDate->format('Y-m');
+
+$currentYear =
+    (int)$todayDate->format('Y');
+
+$currentMonthNumber =
+    (int)$todayDate->format('m');
+
+$currentDayOfMonth =
+    (int)$todayDate->format('j');
+
+
+/*
+ * FIRST DAY OF CURRENT MONTH
+ */
+$currentMonthFirstDay = new DateTime(
+    sprintf(
+        '%04d-%02d-01',
+        $currentYear,
+        $currentMonthNumber
+    )
+);
+
+
+/*
+ * DAY OF WEEK
+ *
+ * N = 1 Monday
+ * N = 2 Tuesday
+ * ...
+ * N = 7 Sunday
+ */
+$firstDayOfWeek =
+    (int)$currentMonthFirstDay->format('N');
+
+
+/*
+ * CALCULATE CURRENT WEEK OF THE MONTH
+ *
+ * Week starts on Monday.
+ *
+ * Example:
+ *
+ * September 2026
+ *
+ * Week 1 = August 31 - September 6
+ * Week 2 = September 7 - September 13
+ * Week 3 = September 14 - September 20
+ * Week 4 = September 21 - September 27
+ * Week 5 = September 28 - October 4
+ */
+$currentWeek = (int)floor(
+    (
+        $currentDayOfMonth +
+        $firstDayOfWeek -
+        2
+    ) / 7
+) + 1;
+
+
+/*
+ * LIMIT TO AVAILABLE OPTIONS
+ */
+$currentWeek = max(
+    1,
+    min(
+        6,
+        $currentWeek
+    )
+);
 
 ?>
 
@@ -627,6 +708,7 @@ $currentMonth = date('Y-m');
                     <select
                         id="monthSelector"
                         class="report-select"
+                        data-current-month="<?= htmlspecialchars($currentMonth) ?>"
                     >
 
                         <?php
@@ -664,31 +746,19 @@ $currentMonth = date('Y-m');
                     <select
                         id="weekSelector"
                         class="report-select"
+                        data-current-week="<?= $currentWeek ?>"
                     >
 
-                        <option value="1">
-                            Week 1
-                        </option>
+                        <?php for ($week = 1; $week <= 6; $week++): ?>
 
-                        <option value="2">
-                            Week 2
-                        </option>
+                            <option
+                                value="<?= $week ?>"
+                                <?= $week === $currentWeek ? 'selected' : '' ?>
+                            >
+                                Week <?= $week ?>
+                            </option>
 
-                        <option value="3">
-                            Week 3
-                        </option>
-
-                        <option value="4">
-                            Week 4
-                        </option>
-
-                        <option value="5">
-                            Week 5
-                        </option>
-
-                        <option value="6">
-                            Week 6
-                        </option>
+                        <?php endfor; ?>
 
                     </select>
 
