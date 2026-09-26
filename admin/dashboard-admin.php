@@ -1,4 +1,336 @@
-<!-- dashboard-admin.php -->
+<?php
+session_start();
+
+require_once "../config/database.php";
+
+/* =========================================================
+   LOGIN SESSION
+========================================================= */
+
+if (
+    !isset($_SESSION['admin_username']) ||
+    !isset($_SESSION['admin_role'])
+) {
+    header("Location: ../auth/login.php");
+    exit;
+}
+
+$loggedInName = $_SESSION['admin_username'];
+$loggedInRole = $_SESSION['admin_role'];
+
+
+/* =========================================================
+   PROFILE INITIAL
+========================================================= */
+
+$profileInitial = strtoupper(
+    substr(
+        trim($loggedInName),
+        0,
+        1
+    )
+);
+
+
+/* =========================================================
+   FORMAT ROLE
+========================================================= */
+
+$role = strtolower(trim($loggedInRole));
+
+switch ($role) {
+
+    case 'canteen manager':
+    case 'manager':
+    case 'canteen_manager':
+
+        $displayRole = 'Canteen Manager';
+
+        break;
+
+
+    case 'canteen staff':
+    case 'staff':
+    case 'canteen_staff':
+
+        $displayRole = 'Canteen Staff';
+
+        break;
+
+
+    default:
+
+        $displayRole = ucwords(
+            str_replace(
+                ['_', '-'],
+                ' ',
+                $role
+            )
+        );
+
+        break;
+}
+
+
+/* =========================================================
+   DASHBOARD AJAX ACTIONS
+========================================================= */
+
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_POST['action'])
+) {
+
+    header('Content-Type: application/json');
+
+    $action = $_POST['action'];
+
+
+    /* =====================================================
+       ADD NOTE
+    ===================================================== */
+
+    if ($action === 'add_note') {
+
+        $title = trim(
+            $_POST['note_title'] ?? ''
+        );
+
+        $description = trim(
+            $_POST['note_description'] ?? ''
+        );
+
+
+        if (
+            $title === '' ||
+            $description === ''
+        ) {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Please complete all fields.'
+            ]);
+
+            exit;
+        }
+
+
+        $stmt = $conn->prepare("
+            INSERT INTO dashboard_notes
+            (
+                note_title,
+                note_description
+            )
+            VALUES (?, ?)
+        ");
+
+
+        $stmt->bind_param(
+            "ss",
+            $title,
+            $description
+        );
+
+
+        if ($stmt->execute()) {
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Note added successfully.',
+                'note' => [
+                    'note_id' => $stmt->insert_id,
+                    'note_title' => $title,
+                    'note_description' => $description
+                ]
+            ]);
+
+        } else {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to add note.'
+            ]);
+        }
+
+
+        $stmt->close();
+
+        exit;
+    }
+
+
+    /* =====================================================
+       DELETE NOTE
+    ===================================================== */
+
+    if ($action === 'delete_note') {
+
+        $noteId = intval(
+            $_POST['note_id'] ?? 0
+        );
+
+
+        if ($noteId <= 0) {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid note.'
+            ]);
+
+            exit;
+        }
+
+
+        $stmt = $conn->prepare("
+            DELETE FROM dashboard_notes
+            WHERE note_id = ?
+        ");
+
+
+        $stmt->bind_param(
+            "i",
+            $noteId
+        );
+
+
+        if ($stmt->execute()) {
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Note deleted successfully.'
+            ]);
+
+        } else {
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to delete note.'
+            ]);
+        }
+
+
+        $stmt->close();
+
+        exit;
+    }
+}
+
+
+/* =========================================================
+   GET NOTES
+========================================================= */
+
+$notes = [];
+
+$notesResult = $conn->query("
+    SELECT
+        note_id,
+        note_title,
+        note_description,
+        created_at
+    FROM dashboard_notes
+    ORDER BY created_at DESC
+");
+
+
+if ($notesResult) {
+
+    while ($row = $notesResult->fetch_assoc()) {
+
+        $notes[] = $row;
+    }
+}
+
+
+/* =========================================================
+   DEFAULT MONTH AND CURRENT WEEK
+========================================================= */
+
+/*
+ * Use Philippines time for the dashboard date.
+ */
+date_default_timezone_set('Asia/Manila');
+
+
+/*
+ * CURRENT DATE
+ */
+$todayDate = new DateTime('now');
+
+$currentMonth =
+    $todayDate->format('Y-m');
+
+$currentYear =
+    (int)$todayDate->format('Y');
+
+$currentMonthNumber =
+    (int)$todayDate->format('m');
+
+$currentDayOfMonth =
+    (int)$todayDate->format('j');
+
+
+/*
+ * FIRST DAY OF CURRENT MONTH
+ */
+$currentMonthFirstDay = new DateTime(
+    sprintf(
+        '%04d-%02d-01',
+        $currentYear,
+        $currentMonthNumber
+    )
+);
+
+
+/*
+ * DAY OF WEEK
+ *
+ * N = 1 Monday
+ * N = 2 Tuesday
+ * ...
+ * N = 7 Sunday
+ */
+$firstDayOfWeek =
+    (int)$currentMonthFirstDay->format('N');
+
+
+/*
+ * CALCULATE CURRENT WEEK OF THE MONTH
+ *
+ * Week starts on Monday.
+ *
+ * Example:
+ *
+ * September 2026
+ *
+ * Week 1 = August 31 - September 6
+ * Week 2 = September 7 - September 13
+ * Week 3 = September 14 - September 20
+ * Week 4 = September 21 - September 27
+ * Week 5 = September 28 - October 4
+ */
+$currentWeek = (int)floor(
+    (
+        $currentDayOfMonth +
+        $firstDayOfWeek -
+        2
+    ) / 7
+) + 1;
+
+
+/*
+ * LIMIT TO AVAILABLE OPTIONS
+ */
+$currentWeek = max(
+    1,
+    min(
+        6,
+        $currentWeek
+    )
+);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,14 +345,34 @@
 
     <title>OrderEATS - Dashboard</title>
 
+
+    <!-- =====================================================
+         LOAD DARK MODE BEFORE PAGE RENDERS
+    ====================================================== -->
+
+    <script>
+        if (localStorage.getItem("adminDarkMode") === "enabled") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
+
     <link
         rel="stylesheet"
-        href="../assests\css/dashboard-admin.css"
+        href="../assests/css/dashboard-admin.css"
     >
 
     <link
-        rel="icon" type="image/x-icon"
-        href="../assests\css/images/OrderEats_logo.png"
+        rel="stylesheet"
+        href="../assests/css/dark-mode-admin.css"
+        id="darkModeStylesheet"
+    >
+
+
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="../assests/css/images/OrderEats_logo.png"
     >
 
 </head>
@@ -30,28 +382,38 @@
 
 <div class="app-container">
 
-    <!-- SIDEBAR -->
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
     <aside class="sidebar">
-
-        <!-- BRAND -->
 
         <div class="brand">
 
             <div class="brand-icon">
-                <img src="../assests\css/images/OrderEats_logo.png" class="system-logo">
+
+                <img
+                    src="../assests/css/images/OrderEats_logo.png"
+                    class="system-logo"
+                >
+
             </div>
 
+
             <span>
-                <span style="color: #F9A825;">Order</span>EATS
+
+                <span style="color: #F9A825;">
+                    Order
+                </span>EATS
+
             </span>
 
         </div>
 
 
-        <!-- NAVIGATION -->
-
         <nav class="sidebar-menu">
+
 
             <a
                 href="dashboard-admin.php"
@@ -59,7 +421,7 @@
             >
 
                 <span class="menu-icon">
-                    ▣
+                    🟧
                 </span>
 
                 <span>
@@ -135,14 +497,14 @@
         </nav>
 
 
-
-        <!-- SIDEBAR BOTTOM -->
+        <!-- SIDEBAR LOGOUT -->
 
         <div class="sidebar-bottom">
 
             <a
-                href="../auth/log_out_admin.php"
+                href="#"
                 class="sidebar-link"
+                id="logoutButton"
             >
 
                 <span class="menu-icon">
@@ -161,7 +523,9 @@
 
 
 
-    <!--MAIN CONTENT -->
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
 
     <main class="main-content">
 
@@ -183,23 +547,46 @@
             </div>
 
 
-            <!-- ADMIN PROFILE -->
+            <!-- HEADER RIGHT -->
 
-            <div class="user-profile">
+            <div class="header-right">
 
-                <div class="profile-icon">
-                    A
-                </div>
 
-                <div class="profile-info">
+                <!-- DARK MODE BUTTON -->
 
-                    <strong>
-                        Admin
-                    </strong>
+                <button
+                    type="button"
+                    class="dark-mode-toggle"
+                    id="darkModeToggle"
+                    title="Toggle Dark Mode"
+                    aria-label="Toggle Dark Mode"
+                >
+                    ☀️
+                </button>
 
-                    <span>
-                        Administrator
-                    </span>
+
+                <!-- ADMIN PROFILE -->
+
+                <div class="user-profile">
+
+                    <div class="profile-icon">
+
+                        <?= htmlspecialchars($profileInitial) ?>
+
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <strong>
+                            <?= htmlspecialchars($loggedInName) ?>
+                        </strong>
+
+                        <span>
+                            <?= htmlspecialchars($displayRole) ?>
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -209,7 +596,10 @@
         </header>
 
 
-        <!-- STATISTICS -->
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
 
         <section class="stats-grid">
 
@@ -237,6 +627,7 @@
             </div>
 
 
+
             <!-- TOTAL SALES -->
 
             <div class="stat-card">
@@ -260,6 +651,7 @@
             </div>
 
 
+
             <!-- PENDING ORDERS -->
 
             <div class="stat-card">
@@ -280,15 +672,18 @@
 
                 </div>
 
-
             </div>
 
         </section>
 
 
-        <!-- SALES REPORT -->
+
+        <!-- =================================================
+             SALES REPORT
+        ================================================== -->
 
         <section class="dashboard-card sales-report">
+
 
             <div class="card-header">
 
@@ -304,42 +699,87 @@
 
                 </div>
 
-                <div class="report-label">
-                    This Week
+
+                <!-- MONTH + WEEK SELECTOR -->
+
+                <div class="report-filters">
+
+
+                    <select
+                        id="monthSelector"
+                        class="report-select"
+                        data-current-month="<?= htmlspecialchars($currentMonth) ?>"
+                    >
+
+                        <?php
+
+                        for ($i = 0; $i < 12; $i++) {
+
+                            $monthValue = date(
+                                'Y-m',
+                                strtotime("-$i months")
+                            );
+
+                            $monthLabel = date(
+                                'F Y',
+                                strtotime($monthValue . '-01')
+                            );
+
+                            ?>
+
+                            <option
+                                value="<?= $monthValue ?>"
+                                <?= $monthValue === $currentMonth ? 'selected' : '' ?>
+                            >
+                                <?= $monthLabel ?>
+                            </option>
+
+                            <?php
+
+                        }
+
+                        ?>
+
+                    </select>
+
+
+                    <select
+                        id="weekSelector"
+                        class="report-select"
+                        data-current-week="<?= $currentWeek ?>"
+                    >
+
+                        <?php for ($week = 1; $week <= 6; $week++): ?>
+
+                            <option
+                                value="<?= $week ?>"
+                                <?= $week === $currentWeek ? 'selected' : '' ?>
+                            >
+                                Week <?= $week ?>
+                            </option>
+
+                        <?php endfor; ?>
+
+                    </select>
+
+
                 </div>
 
             </div>
+
 
 
             <!-- GRAPH -->
 
             <div class="chart-container">
 
-                <div class="y-axis">
 
-                    <span>
-                        ₱1,000
-                    </span>
+                <div
+                    class="y-axis"
+                    id="yAxis"
+                >
 
-                    <span>
-                        ₱800
-                    </span>
-
-                    <span>
-                        ₱600
-                    </span>
-
-                    <span>
-                        ₱400
-                    </span>
-
-                    <span>
-                        ₱200
-                    </span>
-
-                    <span>
-                        ₱0
-                    </span>
+                    <!-- GENERATED BY JAVASCRIPT -->
 
                 </div>
 
@@ -349,178 +789,26 @@
 
                     <!-- GRID -->
 
-                    <div class="chart-grid">
+                    <div
+                        class="chart-grid"
+                        id="chartGrid"
+                    >
 
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                        <!-- GENERATED BY JAVASCRIPT -->
 
                     </div>
 
 
                     <!-- BARS -->
 
-                    <div class="bars">
+                    <div
+                        class="bars"
+                        id="salesBars"
+                    >
 
-                        <!-- MONDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-mon"
-                                style="height: 45%;"
-                            >
-
-                                <span>
-                                    ₱450
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Mon
-                            </small>
-
-                        </div>
-
-
-                        <!-- TUESDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-tue"
-                                style="height: 65%;"
-                            >
-
-                                <span>
-                                    ₱650
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Tue
-                            </small>
-
-                        </div>
-
-
-                        <!-- WEDNESDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-wed"
-                                style="height: 55%;"
-                            >
-
-                                <span>
-                                    ₱550
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Wed
-                            </small>
-
-                        </div>
-
-
-                        <!-- THURSDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-thu"
-                                style="height: 80%;"
-                            >
-
-                                <span>
-                                    ₱800
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Thu
-                            </small>
-
-                        </div>
-
-
-                        <!-- FRIDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-fri"
-                                style="height: 95%;"
-                            >
-
-                                <span>
-                                    ₱950
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Fri
-                            </small>
-
-                        </div>
-
-
-                        <!-- SATURDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-sat"
-                                style="height: 70%;"
-                            >
-
-                                <span>
-                                    ₱700
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Sat
-                            </small>
-
-                        </div>
-
-
-                        <!-- SUNDAY -->
-
-                        <div class="bar-column">
-
-                            <div
-                                class="bar bar-sun"
-                                style="height: 35%;"
-                            >
-
-                                <span>
-                                    ₱350
-                                </span>
-
-                            </div>
-
-                            <small>
-                                Sun
-                            </small>
-
-                        </div>
-
+                        <!-- GENERATED BY JAVASCRIPT -->
 
                     </div>
-
 
                 </div>
 
@@ -529,9 +817,13 @@
         </section>
 
 
-        <!-- NOTES -->
+
+        <!-- =================================================
+             NOTES
+        ================================================== -->
 
         <section class="dashboard-card notes-card">
+
 
             <div class="card-header">
 
@@ -547,7 +839,9 @@
 
                 </div>
 
+
                 <button
+                    type="button"
                     class="add-note-button"
                     onclick="openNoteModal()"
                 >
@@ -563,6 +857,7 @@
             </div>
 
 
+
             <!-- NOTES LIST -->
 
             <div
@@ -570,83 +865,90 @@
                 id="notesList"
             >
 
-                <!-- DUMMY NOTE -->
+                <?php if (empty($notes)): ?>
 
-                <div class="note-item">
+                    <div
+                        class="empty-notes"
+                        id="emptyNotes"
+                    >
 
-                    <div class="note-icon">
-                        !
-                    </div>
-
-                    <div class="note-content">
+                        <div>
+                            📝
+                        </div>
 
                         <h3>
-                            Check food stock
+                            No notes yet
                         </h3>
 
                         <p>
-                            Make sure all ingredients
-                            are available before opening.
+                            Add a note or reminder for the canteen.
                         </p>
 
                     </div>
 
-                    <button
-                        class="delete-note"
-                        onclick="deleteNote(this)"
-                    >
-                        ×
-                    </button>
-
-                </div>
+                <?php else: ?>
 
 
-                <div class="note-item">
+                    <?php foreach ($notes as $note): ?>
 
-                    <div class="note-icon">
-                        !
-                    </div>
+                        <div
+                            class="note-item"
+                            data-note-id="<?= (int)$note['note_id'] ?>"
+                        >
 
-
-                    <div class="note-content">
-
-                        <h3>
-                            Prepare tomorrow's menu
-                        </h3>
-
-                        <p>
-                            Review the available food
-                            items for tomorrow.
-                        </p>
-
-                    </div>
+                            <div class="note-icon">
+                                !
+                            </div>
 
 
-                    <button
-                        class="delete-note"
-                        onclick="deleteNote(this)"
-                    >
-                        ×
-                    </button>
+                            <div class="note-content">
+
+                                <h3>
+                                    <?= htmlspecialchars(
+                                        $note['note_title']
+                                    ) ?>
+                                </h3>
 
 
-                </div>
+                                <p>
+                                    <?= htmlspecialchars(
+                                        $note['note_description']
+                                    ) ?>
+                                </p>
 
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="delete-note"
+                                onclick="deleteNote(<?= (int)$note['note_id'] ?>)"
+                                title="Delete note"
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+
+                <?php endif; ?>
 
             </div>
-
 
         </section>
 
 
     </main>
 
-
 </div>
 
 
 
-<!-- ADD NOTE MODAL -->
+<!-- =========================================================
+     ADD NOTE MODAL
+========================================================= -->
 
 <div
     class="modal-overlay"
@@ -655,8 +957,8 @@
 
     <div class="note-modal">
 
-        <div class="modal-header">
 
+        <div class="modal-header">
 
             <div>
 
@@ -672,6 +974,7 @@
 
 
             <button
+                type="button"
                 class="close-button"
                 onclick="closeNoteModal()"
             >
@@ -685,6 +988,7 @@
             id="noteForm"
             onsubmit="addNote(event)"
         >
+
 
             <div class="form-group">
 
@@ -722,7 +1026,6 @@
 
             <div class="modal-buttons">
 
-
                 <button
                     type="button"
                     class="cancel-button"
@@ -739,20 +1042,132 @@
                     Add Note
                 </button>
 
-
             </div>
 
 
         </form>
 
-
     </div>
-
 
 </div>
 
 
-<script src="../assests\css/js/dashboard-admin.js"></script>
+
+<!-- =========================================================
+     DELETE NOTE CONFIRMATION MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="deleteNoteModal"
+>
+
+    <div class="delete-note-modal">
+
+
+        <div class="delete-note-icon">
+            🗑️
+        </div>
+
+
+        <h2>
+            Delete Note?
+        </h2>
+
+
+        <p>
+            Are you sure you want to delete this note?
+            This action cannot be undone.
+        </p>
+
+
+        <div class="modal-buttons">
+
+
+            <button
+                type="button"
+                class="cancel-button"
+                onclick="closeDeleteNoteModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="confirm-delete-button"
+                id="confirmDeleteNoteButton"
+            >
+                Delete
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     LOGOUT CONFIRMATION MODAL
+========================================================= -->
+
+<div
+    class="modal-overlay"
+    id="logoutModal"
+>
+
+    <div class="logout-modal">
+
+
+        <div class="logout-icon">
+            ↪
+        </div>
+
+
+        <h2>
+            Logout?
+        </h2>
+
+
+        <p>
+            Are you sure you want to log out of your account?
+        </p>
+
+
+        <div class="modal-buttons">
+
+
+            <button
+                type="button"
+                class="cancel-button"
+                onclick="closeLogoutModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="confirm-logout-button"
+                onclick="confirmLogout()"
+            >
+                Logout
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script src="../assests/css/js/dashboard-admin.js"></script>
+<script src="../assests/css/js/dark-mode-admin.js"></script>
 
 </body>
 

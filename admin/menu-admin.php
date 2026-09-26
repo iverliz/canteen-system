@@ -6,7 +6,7 @@ require_once "../config/database.php";
 /* LOGIN SESSION */
 
 if (!isset($_SESSION['admin_username']) || !isset($_SESSION['admin_role'])) {
-    header("Location: admin_login.php");
+    header("Location: login.php");
     exit;
 }
 
@@ -496,14 +496,33 @@ if ($foodResult) {
 
     <title>OrderEATS - Menu</title>
 
+
+    <!-- =====================================================
+         LOAD DARK MODE BEFORE PAGE RENDERS
+    ====================================================== -->
+
+    <script>
+        if (localStorage.getItem("adminDarkMode") === "enabled") {
+            document.documentElement.classList.add("dark-mode");
+        }
+    </script>
+
+
     <link
         rel="stylesheet"
         href="../assests/css/menu-admin.css"
     >
 
     <link
-        rel="icon" type="image/x-icon"
-        href="../assests\css/images/OrderEats_logo.png"
+        rel="stylesheet"
+        href="../assests/css/dark-mode-admin.css"
+    >
+
+
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="../assests/css/images/OrderEats_logo.png"
     >
 
 </head>
@@ -535,7 +554,7 @@ if ($foodResult) {
                 href="dashboard-admin.php"
                 class="sidebar-link"
             >
-                <span class="menu-icon">▣</span>
+                <span class="menu-icon">🟧</span>
                 <span>Dashboard</span>
             </a>
 
@@ -615,23 +634,42 @@ if ($foodResult) {
             </div>
 
 
-            <!-- USER PROFILE -->
+            <!-- HEADER RIGHT -->
 
-            <div class="user-profile">
+            <div class="header-right">
 
-                <div class="profile-icon">
-                    <?= htmlspecialchars($profileInitial) ?>
-                </div>
+                <!-- DARK MODE TOGGLE -->
 
-                <div class="profile-info">
+                <button
+                    type="button"
+                    class="dark-mode-toggle"
+                    id="darkModeToggle"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    ☀️
+                </button>
 
-                    <strong>
-                        <?= htmlspecialchars($loggedInName) ?>
-                    </strong>
 
-                    <span>
-                        <?= htmlspecialchars($displayRole) ?>
-                    </span>
+                <!-- USER PROFILE -->
+
+                <div class="user-profile">
+
+                    <div class="profile-icon">
+                        <?= htmlspecialchars($profileInitial) ?>
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong>
+                            <?= htmlspecialchars($loggedInName) ?>
+                        </strong>
+
+                        <span>
+                            <?= htmlspecialchars($displayRole) ?>
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -808,29 +846,31 @@ if ($foodResult) {
                                     ) ?>
                                 </span>
 
-                            </div>
+
+                                <!-- AVAILABILITY -->
+
+                                <div class="availability-actions">
+
+                                    <button
+                                        type="button"
+                                        class="availability-button available-button <?= $food['availability'] ? 'selected' : '' ?>"
+                                        onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 1)"
+                                        title="Available"
+                                    >
+                                        ✔
+                                    </button>
 
 
-                            <!-- AVAILABILITY -->
+                                    <button
+                                        type="button"
+                                        class="unavailability-button unavailable-button <?= !$food['availability'] ? 'selected' : '' ?>"
+                                        onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 0)"
+                                        title="Not Available"
+                                    >
+                                        ⃠
+                                    </button>
 
-                            <div class="availability-actions">
-
-                                <button
-                                    class="availability-button available-button <?= $food['availability'] ? 'selected' : '' ?>"
-                                    onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 1)"
-                                    title="Available"
-                                >
-                                    ✅
-                                </button>
-
-
-                                <button
-                                    class="availability-button unavailable-button <?= !$food['availability'] ? 'selected' : '' ?>"
-                                    onclick="changeAvailability(<?= (int)$food['food_id'] ?>, 0)"
-                                    title="Not Available"
-                                >
-                                    ❌
-                                </button>
+                                </div>
 
                             </div>
 
@@ -895,7 +935,17 @@ if ($foodResult) {
 
 </div>
 
+<!-- BACK TO TOP BUTTON -->
 
+<button
+    type="button"
+    id="backToTopButton"
+    class="back-to-top-button"
+    aria-label="Back to top"
+    title="Back to top"
+>
+    ⮝
+</button>
 
 <!-- ADD / EDIT MODAL -->
 
@@ -1205,6 +1255,7 @@ if ($foodResult) {
 
 
 <script src="../assests\css/js/menu-admin.js"></script>
+<script src="../assests\css/js/dark-mode-admin.js"></script>
 
 </body>
 

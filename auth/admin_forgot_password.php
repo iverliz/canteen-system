@@ -1,5 +1,7 @@
 <?php
+session_start();
 
+/* DATABASE CONNECTION */
 
 $host = "localhost";
 $dbname = "canteen-system";
