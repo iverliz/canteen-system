@@ -20,27 +20,22 @@ body {
 ========================================= */
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f8e9b5;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
     overflow: hidden;
 }
 
 
 /* =========================================
-   SIGNUP CONTAINER (background collage layer)
+   SIGNUP CONTAINER — FULL SCREEN
 ========================================= */
 
 .signup-container {
     position: relative;
 
-    width: 100%;
-    max-width: 580px;
+    width: 100vw;
     height: 100vh;
-    min-height: 700px;
 
-    margin: 0 auto;
-
-    background: #fff0b9;
+    background: radial-gradient(circle at 50% 40%, #fff8e1 0%, #fff0b9 45%, #ffdb8a 100%);
 
     overflow: hidden;
 
@@ -52,6 +47,9 @@ body {
 
 /* =========================================
    FOOD IMAGES
+   Spread across the full screen, bigger and
+   bolder, faded at the edges, sitting behind
+   the form card.
 ========================================= */
 
 .food {
@@ -66,10 +64,12 @@ body {
 
     object-fit: contain;
 
-    opacity: 0.9;
+    opacity: 0.85;
 
     -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
     mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
+
+    filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.1));
 }
 
 
@@ -78,27 +78,33 @@ body {
 ========================================= */
 
 .food-burger-top {
-    width: 180px;
+    width: 20vw;
+    min-width: 220px;
+    max-width: 340px;
 
-    top: -50px;
-    left: -55px;
+    top: -6vh;
+    left: -2vw;
 
     transform: rotate(15deg);
 }
 
 .food-pizza-top {
-    width: 170px;
+    width: 19vw;
+    min-width: 210px;
+    max-width: 320px;
 
-    top: -45px;
-    right: -50px;
+    top: -5vh;
+    right: -2vw;
 
     transform: rotate(-12deg);
 }
 
 .food-donut-top {
-    width: 140px;
+    width: 15vw;
+    min-width: 170px;
+    max-width: 260px;
 
-    top: 20px;
+    top: 2vh;
     left: 45%;
     transform: translateX(-50%) rotate(10deg);
 }
@@ -109,18 +115,22 @@ body {
 ========================================= */
 
 .food-donut-center {
-    width: 130px;
+    width: 15vw;
+    min-width: 160px;
+    max-width: 250px;
 
     top: 42%;
-    left: -55px;
+    left: -2vw;
     transform: translateY(-50%) rotate(-15deg);
 }
 
 .food-center {
-    width: 140px;
+    width: 16vw;
+    min-width: 170px;
+    max-width: 260px;
 
     top: 42%;
-    right: -50px;
+    right: -2vw;
     transform: translateY(-50%) rotate(15deg);
 }
 
@@ -130,19 +140,23 @@ body {
 ========================================= */
 
 .food-burger-bottom {
-    width: 180px;
+    width: 20vw;
+    min-width: 220px;
+    max-width: 340px;
 
-    bottom: -55px;
-    left: -50px;
+    bottom: -6vh;
+    left: -2vw;
 
     transform: rotate(-8deg);
 }
 
 .food-noodles {
-    width: 170px;
+    width: 19vw;
+    min-width: 210px;
+    max-width: 320px;
 
-    bottom: -50px;
-    right: -50px;
+    bottom: -5vh;
+    right: -2vw;
 
     transform: rotate(10deg);
 }
@@ -157,14 +171,22 @@ body {
 
     z-index: 10;
 
-    width: 82%;
+    width: 90%;
     max-width: 420px;
 
-    padding: 42px 34px;
+    padding: 46px 38px;
 
-    background: rgba(255, 248, 222, 0.94);
-    border-radius: 22px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 24px;
+
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 
@@ -175,13 +197,13 @@ body {
 .signup-box h1 {
     text-align: center;
 
-    font-size: 34px;
-    font-weight: 400;
+    font-size: 32px;
+    font-weight: 600;
 
-    color: #111;
+    color: #2b2013;
 
-    margin-bottom: 30px;
-    letter-spacing: 2px;
+    margin-bottom: 32px;
+    letter-spacing: 2.5px;
 }
 
 
@@ -205,12 +227,14 @@ body {
 .input-group label {
     display: block;
 
-    font-size: 17px;
-    font-weight: 400;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
-    color: #111;
+    color: #6b5a3a;
 
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 
@@ -220,18 +244,21 @@ body {
 
 .input-group input {
     width: 100%;
-    height: 44px;
+    height: 46px;
 
-    padding: 8px 12px;
+    padding: 8px 14px;
 
-    border: 1.5px solid #222;
-    border-radius: 8px;
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
 
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.75);
 
-    font-size: 17px;
+    font-size: 16px;
+    color: #2b2013;
 
     outline: none;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 
@@ -240,8 +267,8 @@ body {
 ========================================= */
 
 .input-group input::placeholder {
-    color: #777;
-    opacity: 0.8;
+    color: #999;
+    opacity: 0.9;
 }
 
 
@@ -250,7 +277,9 @@ body {
 ========================================= */
 
 .input-group input:focus {
-    border-color: #333;
+    border-color: #f9a825;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 4px rgba(249, 168, 37, 0.15);
 }
 
 
@@ -288,15 +317,20 @@ body {
     justify-content: center;
     align-items: center;
 
-    height: 40px;
+    height: 44px;
 
-    border-radius: 7px;
+    border-radius: 10px;
 
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
 
     cursor: pointer;
 
     text-decoration: none;
+    border: none;
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 
@@ -305,23 +339,27 @@ body {
 ========================================= */
 
 .create-btn {
-    width: 110px;
+    width: 118px;
 
-    border: 1px solid #388e3c;
-
-    background: #4caf50;
-
+    background: linear-gradient(135deg, #4caf50, #388e3c);
     color: white;
+
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.35);
 }
 
 .create-btn:hover {
-    background: #43a047;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
+}
+
+.create-btn:active {
+    transform: translateY(0);
 }
 
 .create-btn span {
     margin-right: 6px;
 
-    font-size: 17px;
+    font-size: 16px;
 }
 
 
@@ -330,23 +368,27 @@ body {
 ========================================= */
 
 .back-btn {
-    width: 100px;
+    width: 106px;
 
-    border: 1px solid #666;
-
-    background: #9e9e9e;
-
+    background: linear-gradient(135deg, #9e9e9e, #757575);
     color: white;
+
+    box-shadow: 0 6px 16px rgba(117, 117, 117, 0.3);
 }
 
 .back-btn:hover {
-    background: #8a8a8a;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(117, 117, 117, 0.35);
+}
+
+.back-btn:active {
+    transform: translateY(0);
 }
 
 .back-btn span {
     margin-right: 6px;
 
-    font-size: 16px;
+    font-size: 15px;
 }
 
 
@@ -356,22 +398,18 @@ body {
 
 @media (max-width: 600px) {
 
-    .signup-container {
-        width: 100%;
-    }
-
     .signup-box {
         width: 88%;
-        padding: 32px 24px;
+        padding: 34px 24px;
     }
 
     .signup-box h1 {
-        font-size: 28px;
+        font-size: 26px;
         margin-bottom: 24px;
     }
 
     .input-group label {
-        font-size: 15px;
+        font-size: 11px;
     }
 
     .input-group input {
@@ -380,22 +418,20 @@ body {
     }
 
     .food-burger-top,
-    .food-pizza-top {
-        width: 130px;
-    }
-
-    .food-donut-top {
-        width: 100px;
-    }
-
-    .food-donut-center,
-    .food-center {
-        width: 100px;
-    }
-
+    .food-pizza-top,
     .food-burger-bottom,
     .food-noodles {
-        width: 130px;
+        width: 38vw;
+        min-width: 150px;
+        max-width: 220px;
+    }
+
+    .food-donut-top,
+    .food-donut-center,
+    .food-center {
+        width: 30vw;
+        min-width: 120px;
+        max-width: 180px;
     }
 }
 

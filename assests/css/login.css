@@ -20,27 +20,22 @@ body {
 ========================================= */
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f8e9b5;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
     overflow: hidden;
 }
 
 
 /* =========================================
-   LOGIN CONTAINER (background collage layer)
+   LOGIN CONTAINER — FULL SCREEN
 ========================================= */
 
 .login-container {
     position: relative;
 
-    width: 100%;
-    max-width: 580px;
+    width: 100vw;
     height: 100vh;
-    min-height: 650px;
 
-    margin: 0 auto;
-
-    background: #fff0b9;
+    background: radial-gradient(circle at 50% 40%, #fff8e1 0%, #fff0b9 45%, #ffdb8a 100%);
 
     overflow: hidden;
 
@@ -52,8 +47,9 @@ body {
 
 /* =========================================
    FOOD IMAGES
-   Confined to the corners only, faded at the
-   edges, sitting behind the form card.
+   Spread across the full screen, bigger and
+   bolder, faded at the edges, sitting behind
+   the form card.
 ========================================= */
 
 .food {
@@ -68,10 +64,12 @@ body {
 
     object-fit: contain;
 
-    opacity: 0.9;
+    opacity: 0.85;
 
     -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
     mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
+
+    filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.1));
 }
 
 
@@ -80,19 +78,23 @@ body {
 ========================================= */
 
 .food-donut {
-    width: 190px;
+    width: 20vw;
+    min-width: 220px;
+    max-width: 340px;
 
-    top: -50px;
-    left: -60px;
+    top: -6vh;
+    left: -2vw;
 
     transform: rotate(20deg);
 }
 
 .food-hotdog {
-    width: 170px;
+    width: 18vw;
+    min-width: 200px;
+    max-width: 300px;
 
-    top: -35px;
-    left: 100px;
+    top: 0vh;
+    left: 14vw;
 
     transform: rotate(-20deg);
 }
@@ -103,19 +105,23 @@ body {
 ========================================= */
 
 .food-burger {
-    width: 180px;
+    width: 20vw;
+    min-width: 220px;
+    max-width: 340px;
 
-    top: -45px;
-    right: -55px;
+    top: -6vh;
+    right: -2vw;
 
     transform: rotate(12deg);
 }
 
 .food-tacos {
-    width: 150px;
+    width: 15vw;
+    min-width: 170px;
+    max-width: 260px;
 
-    top: 40px;
-    right: 105px;
+    top: 4vh;
+    right: 14vw;
 
     transform: rotate(-10deg);
 }
@@ -126,10 +132,12 @@ body {
 ========================================= */
 
 .food-pizza-small {
-    width: 130px;
+    width: 15vw;
+    min-width: 160px;
+    max-width: 250px;
 
     top: 45%;
-    left: -55px;
+    left: -2vw;
     transform: translateY(-50%) rotate(20deg);
 }
 
@@ -139,10 +147,12 @@ body {
 ========================================= */
 
 .food-pizza {
-    width: 150px;
+    width: 16vw;
+    min-width: 180px;
+    max-width: 280px;
 
-    top: 40%;
-    right: -50px;
+    top: 38%;
+    right: -2vw;
     transform: translateY(-50%) rotate(-15deg);
 }
 
@@ -152,19 +162,23 @@ body {
 ========================================= */
 
 .food-burger-bottom {
-    width: 180px;
+    width: 20vw;
+    min-width: 220px;
+    max-width: 340px;
 
-    bottom: -55px;
-    left: -50px;
+    bottom: -6vh;
+    left: -2vw;
 
     transform: rotate(-8deg);
 }
 
 .food-spagetti {
-    width: 160px;
+    width: 18vw;
+    min-width: 200px;
+    max-width: 300px;
 
-    bottom: 30px;
-    left: 110px;
+    bottom: 1vh;
+    left: 14vw;
 
     transform: rotate(5deg);
 }
@@ -175,19 +189,23 @@ body {
 ========================================= */
 
 .food-ramen {
-    width: 180px;
+    width: 20vw;
+    min-width: 220px;
+    max-width: 340px;
 
-    bottom: -60px;
-    right: -50px;
+    bottom: -6vh;
+    right: -2vw;
 
     transform: rotate(-10deg);
 }
 
 .food-drink {
-    width: 120px;
+    width: 13vw;
+    min-width: 140px;
+    max-width: 220px;
 
-    bottom: 45px;
-    right: 100px;
+    bottom: 3vh;
+    right: 14vw;
 
     transform: rotate(12deg);
 }
@@ -202,14 +220,22 @@ body {
 
     z-index: 10;
 
-    width: 82%;
+    width: 90%;
     max-width: 420px;
 
-    padding: 42px 34px;
+    padding: 48px 38px;
 
-    background: rgba(255, 248, 222, 0.94);
-    border-radius: 22px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 24px;
+
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 
@@ -220,13 +246,13 @@ body {
 .login-box h1 {
     text-align: center;
 
-    font-size: 36px;
-    font-weight: 400;
+    font-size: 34px;
+    font-weight: 600;
 
-    color: #111;
+    color: #2b2013;
 
-    margin-bottom: 34px;
-    letter-spacing: 2px;
+    margin-bottom: 36px;
+    letter-spacing: 3px;
 }
 
 
@@ -239,7 +265,7 @@ body {
 
     width: 100%;
 
-    margin-bottom: 24px;
+    margin-bottom: 22px;
 }
 
 
@@ -250,12 +276,14 @@ body {
 .input-group label {
     display: block;
 
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
-    color: #111;
+    color: #6b5a3a;
 
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 
@@ -265,18 +293,21 @@ body {
 
 .input-group input {
     width: 100%;
-    height: 46px;
+    height: 48px;
 
-    padding: 8px 12px;
+    padding: 8px 14px;
 
-    border: 1.5px solid #222;
-    border-radius: 8px;
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
 
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.75);
 
-    font-size: 18px;
+    font-size: 16px;
+    color: #2b2013;
 
     outline: none;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 
@@ -285,8 +316,8 @@ body {
 ========================================= */
 
 .input-group input::placeholder {
-    color: #777;
-    opacity: 0.8;
+    color: #999;
+    opacity: 0.9;
 }
 
 
@@ -295,7 +326,9 @@ body {
 ========================================= */
 
 .input-group input:focus {
-    border-color: #333;
+    border-color: #f9a825;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 4px rgba(249, 168, 37, 0.15);
 }
 
 
@@ -304,7 +337,7 @@ body {
 ========================================= */
 
 .password-group {
-    margin-bottom: 26px;
+    margin-bottom: 30px;
 }
 
 
@@ -333,15 +366,20 @@ body {
     justify-content: center;
     align-items: center;
 
-    height: 40px;
+    height: 44px;
 
-    border-radius: 7px;
+    border-radius: 10px;
 
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
 
     cursor: pointer;
 
     text-decoration: none;
+    border: none;
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 
@@ -350,23 +388,27 @@ body {
 ========================================= */
 
 .login-btn {
-    width: 92px;
+    width: 100px;
 
-    border: 1px solid #388e3c;
-
-    background: #4caf50;
-
+    background: linear-gradient(135deg, #4caf50, #388e3c);
     color: white;
+
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.35);
 }
 
 .login-btn:hover {
-    background: #43a047;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
+}
+
+.login-btn:active {
+    transform: translateY(0);
 }
 
 .login-btn span {
     margin-right: 6px;
 
-    font-size: 17px;
+    font-size: 16px;
 }
 
 
@@ -375,23 +417,27 @@ body {
 ========================================= */
 
 .signup-btn {
-    width: 108px;
+    width: 118px;
 
-    border: 1px solid #0067b8;
-
-    background: #2196f3;
-
+    background: linear-gradient(135deg, #2196f3, #1565c0);
     color: white;
+
+    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.35);
 }
 
 .signup-btn:hover {
-    background: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(33, 150, 243, 0.4);
+}
+
+.signup-btn:active {
+    transform: translateY(0);
 }
 
 .signup-btn span {
     margin-right: 6px;
 
-    font-size: 16px;
+    font-size: 15px;
 }
 
 
@@ -402,18 +448,22 @@ body {
 .forgot-password {
     display: block;
 
-    margin-top: 14px;
+    margin-top: 18px;
 
     text-align: center;
 
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
 
-    color: #333;
+    color: #8a6d3b;
 
     text-decoration: none;
+
+    transition: color 0.15s ease;
 }
 
 .forgot-password:hover {
+    color: #f9a825;
     text-decoration: underline;
 }
 
@@ -424,52 +474,43 @@ body {
 
 @media (max-width: 600px) {
 
-    .login-container {
-        width: 100%;
-    }
-
     .login-box {
         width: 88%;
-        padding: 32px 24px;
+        padding: 36px 26px;
     }
 
     .login-box h1 {
-        font-size: 30px;
-        margin-bottom: 26px;
+        font-size: 28px;
+        margin-bottom: 28px;
     }
 
     .input-group label {
-        font-size: 16px;
+        font-size: 12px;
     }
 
     .input-group input {
         height: 44px;
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .food-donut,
     .food-hotdog,
     .food-burger,
-    .food-tacos {
-        width: 130px;
+    .food-burger-bottom,
+    .food-ramen,
+    .food-spagetti {
+        width: 38vw;
+        min-width: 150px;
+        max-width: 220px;
     }
 
     .food-pizza,
-    .food-pizza-small {
-        width: 110px;
-    }
-
-    .food-spagetti {
-        width: 120px;
-    }
-
-    .food-burger-bottom,
-    .food-ramen {
-        width: 130px;
-    }
-
+    .food-pizza-small,
+    .food-tacos,
     .food-drink {
-        width: 90px;
+        width: 30vw;
+        min-width: 120px;
+        max-width: 180px;
     }
 }
 
