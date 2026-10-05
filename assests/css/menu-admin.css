@@ -450,32 +450,6 @@ body {
     background: #fee2e2;
 }
 
-/* NO RESULTS*/
-
-.no-results {
-    display: none;
-    background: white;
-    border: 1px dashed #ccc;
-    border-radius: 12px;
-    padding: 60px 20px;
-    text-align: center;
-    margin-top: 20px;
-}
-
-
-.no-results div {
-    font-size: 45px;
-    margin-bottom: 15px;
-}
-
-.no-results h3 {
-    margin-bottom: 7px;
-}
-
-.no-results p {
-    color: #888;
-    font-size: 14px;
-}
 
 /* MODAL OVERLAY */
 

@@ -620,6 +620,8 @@ async function confirmDelete() {
 
 /* SEARCH + CATEGORY FILTER + SORT */
 
+/* SEARCH + CATEGORY FILTER + SORT */
+
 function applyFilters() {
 
     const search =
@@ -740,9 +742,6 @@ function applyFilters() {
     |--------------------------------------------------------------------------
     */
 
-    let visibleCount = 0;
-
-
     cards.forEach(function (card) {
 
         const name =
@@ -770,36 +769,14 @@ function applyFilters() {
 
             card.style.display = "";
 
-            visibleCount++;
-
         } else {
 
             card.style.display = "none";
+
         }
 
     });
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | NO RESULTS MESSAGE
-    |--------------------------------------------------------------------------
-    */
-
-    const noResults =
-        document.getElementById("noResults");
-
-
-    if (visibleCount === 0) {
-
-        noResults.style.display =
-            "block";
-
-    } else {
-
-        noResults.style.display =
-            "none";
-    }
 }
 
 

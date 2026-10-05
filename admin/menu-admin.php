@@ -939,30 +939,7 @@ if ($foodResult) {
 
             </div>
 
-
-
-            <!-- NO RESULTS -->
-
-            <div
-                class="no-results"
-                id="noResults"
-            >
-
-                <div>
-                    🔍
-                </div>
-
-                <h3>
-                    No food items found
-                </h3>
-
-                <p>
-                    Try another search or category.
-                </p>
-
-            </div>
-
-
+            
         </section>
 
     </main>
