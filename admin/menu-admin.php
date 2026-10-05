@@ -720,6 +720,8 @@ if ($foodResult) {
                 </div>
 
 
+                <!-- CATEGORY FILTER -->
+
                 <select
                     id="categoryFilter"
                     onchange="applyFilters()"
@@ -738,6 +740,37 @@ if ($foodResult) {
                         </option>
 
                     <?php endforeach; ?>
+
+                </select>
+
+
+                <!-- SORT -->
+
+                <select
+                    id="sortFilter"
+                    onchange="applyFilters()"
+                    title="Sort food menu"
+                >
+
+                    <option value="default">
+                        Sort by
+                    </option>
+
+                    <option value="price-asc">
+                        Price: Low to High
+                    </option>
+
+                    <option value="price-desc">
+                        Price: High to Low
+                    </option>
+
+                    <option value="name-asc">
+                        Name: A to Z
+                    </option>
+
+                    <option value="name-desc">
+                        Name: Z to A
+                    </option>
 
                 </select>
 
@@ -785,6 +818,7 @@ if ($foodResult) {
                         data-id="<?= (int)$food['food_id'] ?>"
                         data-name="<?= htmlspecialchars(strtolower($food['food_name'])) ?>"
                         data-category="<?= htmlspecialchars($food['menu_food_category']) ?>"
+                        data-price="<?= htmlspecialchars($food['food_price']) ?>"
                     >
 
                         <div class="food-image">

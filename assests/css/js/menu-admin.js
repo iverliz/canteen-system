@@ -618,7 +618,7 @@ async function confirmDelete() {
 }
 
 
-/* SEARCH + CATEGORY FILTER */
+/* SEARCH + CATEGORY FILTER + SORT */
 
 function applyFilters() {
 
@@ -634,16 +634,116 @@ function applyFilters() {
             .value;
 
 
+    const sort =
+        document.getElementById("sortFilter")
+            .value;
+
+
+    const foodGrid =
+        document.getElementById("foodGrid");
+
+
     const cards =
-        document.querySelectorAll(
-            ".food-grid .food-card"
+        Array.from(
+            foodGrid.querySelectorAll(".food-card")
         );
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | SORT FOOD CARDS
+    |--------------------------------------------------------------------------
+    */
+
+    cards.sort(function (a, b) {
+
+        switch (sort) {
+
+            /* PRICE LOW TO HIGH */
+
+            case "price-asc":
+
+                return (
+                    parseFloat(a.dataset.price) -
+                    parseFloat(b.dataset.price)
+                );
+
+
+            /* PRICE HIGH TO LOW */
+
+            case "price-desc":
+
+                return (
+                    parseFloat(b.dataset.price) -
+                    parseFloat(a.dataset.price)
+                );
+
+
+            /* NAME A TO Z */
+
+            case "name-asc":
+
+                return a.dataset.name.localeCompare(
+                    b.dataset.name,
+                    undefined,
+                    {
+                        sensitivity: "base"
+                    }
+                );
+
+
+            /* NAME Z TO A */
+
+            case "name-desc":
+
+                return b.dataset.name.localeCompare(
+                    a.dataset.name,
+                    undefined,
+                    {
+                        sensitivity: "base"
+                    }
+                );
+
+
+            /* DEFAULT */
+
+            default:
+
+                return (
+                    parseInt(b.dataset.id) -
+                    parseInt(a.dataset.id)
+                );
+        }
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PUT SORTED CARDS BACK INTO THE GRID
+    |--------------------------------------------------------------------------
+    |
+    | The Add Food card stays first.
+    |
+    */
+
+    cards.forEach(function (card) {
+
+        foodGrid.appendChild(card);
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPLY SEARCH + CATEGORY FILTER
+    |--------------------------------------------------------------------------
+    */
 
     let visibleCount = 0;
 
 
-    cards.forEach(card => {
+    cards.forEach(function (card) {
 
         const name =
             card.dataset.name
@@ -676,13 +776,18 @@ function applyFilters() {
 
             card.style.display = "none";
         }
+
     });
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | NO RESULTS MESSAGE
+    |--------------------------------------------------------------------------
+    */
+
     const noResults =
-        document.getElementById(
-            "noResults"
-        );
+        document.getElementById("noResults");
 
 
     if (visibleCount === 0) {
