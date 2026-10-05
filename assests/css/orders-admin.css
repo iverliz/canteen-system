@@ -142,6 +142,47 @@ body {
     font-size: 14px;
 }
 
+/* =========================================================
+   LIVE DATE AND TIME
+========================================================= */
+
+.live-date-time {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 180px;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+.live-date {
+    color: #777;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+}
+
+
+.live-time {
+    color: #f97316;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    line-height: 1.4;
+
+    font-variant-numeric: tabular-nums;
+}
+
 /* PROFILE= */
 
 .user-profile {
@@ -1381,8 +1422,34 @@ body {
     }
 
     .top-header {
-        align-items: flex-start;
+        align-items: center;
+        gap: 10px;
     }
+
+
+    /* LIVE DATE AND TIME */
+
+    .live-date-time {
+        min-width: 0;
+
+        margin-left: auto;
+        margin-right: 5px;
+
+        align-items: flex-end;
+
+        flex-shrink: 1;
+    }
+
+
+    .live-date {
+        font-size: 10px;
+    }
+
+
+    .live-time {
+        font-size: 14px;
+    }
+
 
     .section-header {
         flex-direction: column;
@@ -1410,5 +1477,24 @@ body {
     .orders-card {
         padding: 18px;
     }
+
+    .live-date {
+        font-size: 9px;
+    }
+
+    .live-time {
+        font-size: 13px;
+    }
+
+    .live-date-time {
+        margin-right: 0;
+    }
+
+    .dark-mode-toggle {
+        margin-right: 3px;
+        padding: 3px;
+        font-size: 21px;
+    }
+
 
 }

@@ -1,19 +1,4 @@
 /* =========================================================
-   orders-admin.js
-
-   Features:
-   - Order summary modal
-   - Logout confirmation modal
-   - Status updates
-   - Automatic order refresh
-   - Automatic order log refresh
-   - Date filtering
-   - Dynamic summary counts
-   - New order notification
-========================================================= */
-
-
-/* =========================================================
    GLOBAL SETTINGS
 ========================================================= */
 
@@ -39,6 +24,95 @@ let firstRefreshCompleted = false;
 
 
 /* =========================================================
+   LIVE DATE AND TIME
+========================================================= */
+
+function initializeLiveDateTime() {
+
+    const dateElement =
+        document.getElementById("liveDate");
+
+    const timeElement =
+        document.getElementById("liveTime");
+
+
+    if (!dateElement || !timeElement) {
+        return;
+    }
+
+
+    function updateDateTime() {
+
+        /*
+         * Use Philippine time.
+         */
+
+        const now =
+            new Date();
+
+
+        const dateOptions = {
+            timeZone: "Asia/Manila",
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        };
+
+
+        const timeOptions = {
+            timeZone: "Asia/Manila",
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        };
+
+
+        const philippineDate =
+            new Intl.DateTimeFormat(
+                "en-US",
+                dateOptions
+            ).format(now);
+
+
+        const philippineTime =
+            new Intl.DateTimeFormat(
+                "en-US",
+                timeOptions
+            ).format(now);
+
+
+        dateElement.textContent =
+            philippineDate;
+
+
+        timeElement.textContent =
+            philippineTime;
+
+    }
+
+
+    /*
+     * Show immediately.
+     */
+
+    updateDateTime();
+
+
+    /*
+     * Update every second.
+     */
+
+    setInterval(
+        updateDateTime,
+        1000
+    );
+
+}
+
+
+/* =========================================================
    DOCUMENT READY
 ========================================================= */
 
@@ -55,6 +129,8 @@ document.addEventListener("DOMContentLoaded", function () {
     initializeStatusSelects();
 
     initializeNewOrderNotification();
+
+    initializeLiveDateTime();
 
     /*
      * Start automatic refreshing.

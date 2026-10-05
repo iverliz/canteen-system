@@ -411,6 +411,12 @@ unset($log);
                 </p>
 
             </div>
+            
+
+            <div class="live-date-time" id="liveDateTime">
+                <span class="live-date" id="liveDate"></span>
+                <span class="live-time" id="liveTime"></span>
+            </div>
 
 
             <div class="header-right">
