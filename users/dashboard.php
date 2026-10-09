@@ -44,19 +44,6 @@ foreach ($orderHistory as $order) {
     }
 }
 
-$orderHistory = [];
-while ($row = $historyResult->fetch_assoc()) {
-    $orderHistory[$row['id']]['status'] = $row['status'];
-    $orderHistory[$row['id']]['created_at'] = $row['created_at'];
-    $orderHistory[$row['id']]['total'] = $row['total'];
-    $orderHistory[$row['id']]['items'][] = [
-        'name'     => $row['food_name'],
-        'price'    => $row['price'],
-        'quantity' => $row['quantity'],
-    ];
-}
-$historyStmt->close();
-
 $popularFoods = [];
 
 $popularResult = $conn->query(
