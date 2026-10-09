@@ -2,7 +2,7 @@
 $host = "localhost";
 $dbUsername = "root";
 $dbPassword = "";
-$dbName = "canteen-system";
+$dbName = "canteen_system";
 
 $conn = new mysqli($host, $dbUsername, $dbPassword, $dbName);
 

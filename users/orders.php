@@ -35,6 +35,34 @@ while ($row = $ordersResult->fetch_assoc()) {
     ];
 }
 $ordersStmt->close();
+
+$statusCounts = [
+    'pending'   => 0,
+    'preparing' => 0,
+    'ready'     => 0,
+    'completed' => 0,
+    'cancelled' => 0,
+];
+$activeOrders = 0;
+$totalSpent = 0;
+
+foreach ($myOrders as $order) {
+    $statusKey = strtolower($order['status']);
+
+    if (isset($statusCounts[$statusKey])) {
+        $statusCounts[$statusKey]++;
+    }
+
+    if (in_array($statusKey, ['pending', 'preparing', 'ready'], true)) {
+        $activeOrders++;
+    }
+
+    if ($statusKey !== 'cancelled') {
+        $totalSpent += $order['total'];
+    }
+}
+
+$totalOrders = count($myOrders);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,31 +78,7 @@ $ordersStmt->close();
 
 <body>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    const profileBtn = document.getElementById("profileBtn");
-    const profileDropdown = document.getElementById("profileDropdown");
-
-    profileBtn.addEventListener("click", function (event) {
-        event.stopPropagation();
-        profileDropdown.classList.toggle("show");
-    });
-
-    profileDropdown.addEventListener("click", function (event) {
-        event.stopPropagation();
-    });
-
-    document.addEventListener("click", function () {
-        profileDropdown.classList.remove("show");
-    });
-
-});
-</script>
-
 <div class="dashboard-container">
-
-    <!-- ================= LEFT SIDEBAR ================= -->
 
     <aside class="sidebar">
 
@@ -85,14 +89,17 @@ document.addEventListener("DOMContentLoaded", function () {
         <nav class="sidebar-menu">
 
             <a href="dashboard.php" class="menu-item">
+                <span class="menu-icon">🏠</span>
                 Dashboard
             </a>
 
             <a href="menu.php" class="menu-item">
+                <span class="menu-icon">🍔</span>
                 Menu
             </a>
 
             <a href="orders.php" class="menu-item active">
+                <span class="menu-icon">🧾</span>
                 My Orders
             </a>
 
@@ -100,14 +107,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     </aside>
 
-
-    <!-- ================= MAIN CONTENT ================= -->
-
     <main class="main-content">
 
         <header class="top-header">
 
-            <h1>MY ORDERS</h1>
+            <div class="page-heading">
+                <h1>MY ORDERS</h1>
+                <p>Track your orders and review your order history.</p>
+            </div>
 
             <div class="profile-container">
 
@@ -139,65 +146,124 @@ document.addEventListener("DOMContentLoaded", function () {
 
         </header>
 
+        <?php if (empty($myOrders)): ?>
 
-        <!-- ================= ORDER LIST ================= -->
-
-        <section class="orders-section">
-
-            <?php if (empty($myOrders)): ?>
+            <section class="orders-section">
 
                 <div class="empty-orders">
+                    <div class="empty-icon">🧾</div>
                     <p>You haven't placed any orders yet.</p>
                     <a href="menu.php" class="promo-button">Order Now</a>
                 </div>
 
-            <?php else: ?>
+            </section>
 
-                <?php foreach ($myOrders as $orderId => $order): ?>
+        <?php else: ?>
 
-                    <div class="order-card">
+            <section class="orders-summary">
 
-                        <div class="order-card-header">
+                <div class="stat-card">
+                    <div class="stat-icon">🧾</div>
+                    <div>
+                        <span class="stat-label">Total Orders</span>
+                        <strong class="stat-value"><?= $totalOrders ?></strong>
+                    </div>
+                </div>
 
-                            <div>
-                                <strong>Order #<?= $orderId ?></strong>
-                                <span class="order-date">
-                                    <?= date('M d, Y g:i A', strtotime($order['created_at'])) ?>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div>
+                        <span class="stat-label">Active Orders</span>
+                        <strong class="stat-value"><?= $activeOrders ?></strong>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div>
+                        <span class="stat-label">Total Spent</span>
+                        <strong class="stat-value">₱<?= number_format($totalSpent, 2) ?></strong>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="orders-section">
+
+                <div class="order-filters">
+
+                    <button type="button" class="filter-chip active" data-filter="all" aria-pressed="true">
+                        All <span class="filter-count"><?= $totalOrders ?></span>
+                    </button>
+
+                    <?php foreach ($statusCounts as $statusName => $count): ?>
+
+                        <?php if ($count > 0): ?>
+
+                            <button type="button" class="filter-chip" data-filter="<?= $statusName ?>" aria-pressed="false">
+                                <?= ucfirst($statusName) ?> <span class="filter-count"><?= $count ?></span>
+                            </button>
+
+                        <?php endif; ?>
+
+                    <?php endforeach; ?>
+
+                </div>
+
+                <div class="orders-grid">
+
+                    <?php foreach ($myOrders as $orderId => $order): ?>
+
+                        <?php $statusKey = strtolower($order['status']); ?>
+
+                        <div class="order-card" data-status="<?= htmlspecialchars($statusKey) ?>">
+
+                            <div class="order-card-header">
+
+                                <div>
+                                    <strong>Order #<?= $orderId ?></strong>
+                                    <span class="order-date">
+                                        <?= date('M d, Y g:i A', strtotime($order['created_at'])) ?>
+                                    </span>
+                                </div>
+
+                                <span class="status-badge status-<?= htmlspecialchars($statusKey) ?>">
+                                    <?= ucfirst(htmlspecialchars($statusKey)) ?>
                                 </span>
+
                             </div>
 
-                            <span class="status-badge status-<?= htmlspecialchars($order['status']) ?>">
-                                <?= ucfirst(htmlspecialchars($order['status'])) ?>
-                            </span>
+                            <div class="order-card-items">
+
+                                <?php foreach ($order['items'] as $item): ?>
+                                    <div class="order-card-item">
+                                        <span><?= htmlspecialchars($item['name']) ?> × <?= $item['quantity'] ?></span>
+                                        <span>₱<?= number_format($item['price'] * $item['quantity'], 2) ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+
+                            </div>
+
+                            <div class="order-card-footer">
+                                <span>Total</span>
+                                <strong>₱<?= number_format($order['total'], 2) ?></strong>
+                            </div>
 
                         </div>
 
-                        <div class="order-card-items">
+                    <?php endforeach; ?>
 
-                            <?php foreach ($order['items'] as $item): ?>
-                                <div class="order-card-item">
-                                    <span><?= htmlspecialchars($item['name']) ?> × <?= $item['quantity'] ?></span>
-                                    <span>₱<?= number_format($item['price'] * $item['quantity'], 2) ?></span>
-                                </div>
-                            <?php endforeach; ?>
+                </div>
 
-                        </div>
+            </section>
 
-                        <div class="order-card-footer">
-                            <strong>Total: ₱<?= number_format($order['total'], 2) ?></strong>
-                        </div>
-
-                    </div>
-
-                <?php endforeach; ?>
-
-            <?php endif; ?>
-
-        </section>
+        <?php endif; ?>
 
     </main>
 
 </div>
+
+<script src="../assests/css/js/order_student.js"></script>
 
 </body>
 

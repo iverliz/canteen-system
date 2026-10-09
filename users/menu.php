@@ -3,7 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Protect this page — redirect to login if not authenticated
 if (empty($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     header("Location: ../auth/login.php");
     exit();
@@ -12,8 +11,6 @@ if (empty($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 require_once "../config/database.php";
 
 $username = $_SESSION['username'] ?? 'User';
-
-/* GET CATEGORIES */
 
 $categories = [];
 
@@ -32,8 +29,6 @@ if ($categoryResult) {
         ];
     }
 }
-
-/* GET AVAILABLE FOOD ITEMS */
 
 $foods = [];
 
@@ -65,31 +60,21 @@ if ($foodResult) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>OrderEats Menu</title>
 
     <link rel="stylesheet" href="../assests/css/menu_user.css">
-
 </head>
-
 
 <body>
 
-
 <div class="menu-container">
-
-
-    <!-- =========================================
-         LEFT SIDEBAR
-    ========================================== -->
 
     <aside class="sidebar">
 
@@ -97,18 +82,20 @@ if ($foodResult) {
             Order<span>Eats</span>
         </div>
 
-
         <nav class="sidebar-menu">
 
             <a href="dashboard.php" class="menu-item">
+                <span class="menu-icon">🏠</span>
                 Dashboard
             </a>
 
             <a href="menu.php" class="menu-item active">
+                <span class="menu-icon">🍔</span>
                 Menu
             </a>
 
             <a href="orders.php" class="menu-item">
+                <span class="menu-icon">🧾</span>
                 My Orders
             </a>
 
@@ -116,25 +103,14 @@ if ($foodResult) {
 
     </aside>
 
-
-
-    <!-- =========================================
-         MAIN CONTENT
-    ========================================== -->
-
     <main class="main-content">
-
-
-        <!-- =========================================
-             HEADER
-        ========================================== -->
 
         <header class="top-header">
 
-            <h1>MENU</h1>
-
-
-            <!-- SEARCH -->
+            <div class="page-heading">
+                <h1>MENU</h1>
+                <p>Choose your favorites and add them to your order.</p>
+            </div>
 
             <div class="search-box">
 
@@ -142,66 +118,37 @@ if ($foodResult) {
                     type="text"
                     placeholder="Search Food"
                     id="foodSearch"
+                    aria-label="Search food"
                 >
 
-                <span class="search-icon">
-                    ⌕
-                </span>
+                <span class="search-icon">⌕</span>
 
             </div>
 
-
-
-            <!-- =====================================
-                 PROFILE
-            ====================================== -->
-
             <div class="profile-container">
 
-                <button
-                    type="button"
-                    class="profile-button"
-                    id="profileBtn"
-                >
+                <button type="button" class="profile-button" id="profileBtn">
 
-                    <div class="profile-icon">
-                        👤
-                    </div>
+                    <div class="profile-icon">👤</div>
 
                     <span class="profile-name"><?= htmlspecialchars($username) ?></span>
 
-                    <span class="profile-arrow">
-                        ⌄
-                    </span>
+                    <span class="profile-arrow">⌄</span>
 
                 </button>
 
-
-                <!-- PROFILE DROPDOWN -->
-
-                <div
-                    class="profile-dropdown"
-                    id="profileDropdown"
-                >
+                <div class="profile-dropdown" id="profileDropdown">
 
                     <div class="profile-info">
 
-                        <div class="profile-large-icon">
-                            👤
-                        </div>
+                        <div class="profile-large-icon">👤</div>
 
                         <div>
-
                             <strong><?= htmlspecialchars($username) ?></strong>
-
-                            <small>
-                                Student
-                            </small>
-
+                            <small>Student</small>
                         </div>
 
                     </div>
-
 
                     <div class="dropdown-divider"></div>
 
@@ -215,22 +162,13 @@ if ($foodResult) {
 
         </header>
 
-
-
-        <!-- =========================================
-             CATEGORY
-        ========================================== -->
-
         <section class="category-section">
 
-            <h2>
-                Category
-            </h2>
-
+            <h2>Category</h2>
 
             <div class="category-list">
 
-                <button type="button" class="category-button active" data-category="All">
+                <button type="button" class="category-button active" data-category="All" aria-pressed="true">
                     All
                 </button>
 
@@ -240,14 +178,16 @@ if ($foodResult) {
                         type="button"
                         class="category-button"
                         data-category="<?= htmlspecialchars($category['title']) ?>"
+                        aria-pressed="false"
                     >
 
                         <?php if ($category['has_picture']): ?>
 
                             <img
                                 src="../admin/category-image.php?id=<?= (int)$category['id'] ?>"
-                                alt="<?= htmlspecialchars($category['title']) ?>"
+                                alt=""
                                 class="category-button-icon"
+                                loading="lazy"
                             >
 
                         <?php endif; ?>
@@ -262,18 +202,9 @@ if ($foodResult) {
 
         </section>
 
-
-
-        <!-- =========================================
-             FOOD MENU
-        ========================================== -->
-
         <section class="food-section">
 
-            <h2 class="section-title">
-                Food Menu
-            </h2>
-
+            <h2 class="section-title">Food Menu</h2>
 
             <div class="food-grid" id="foodGrid">
 
@@ -301,15 +232,17 @@ if ($foodResult) {
 
                             <?php else: ?>
 
-                                <div class="food-placeholder">
-                                    🍽️
-                                </div>
+                                <div class="food-placeholder">🍽️</div>
 
                             <?php endif; ?>
 
                             <div class="food-card-content">
 
-                                <h3>
+                                <span class="food-category-tag">
+                                    <?= htmlspecialchars($food['menu_food_category']) ?>
+                                </span>
+
+                                <h3 title="<?= htmlspecialchars($food['food_name']) ?>">
                                     <?= htmlspecialchars($food['food_name']) ?>
                                 </h3>
 
@@ -340,21 +273,26 @@ if ($foodResult) {
 
                     <?php endforeach; ?>
 
+                    <p class="no-food-message" id="noResults" hidden>
+                        No matching food found.
+                    </p>
+
                 <?php endif; ?>
 
             </div>
 
         </section>
 
-
     </main>
 
-
-    <aside class="right-sidebar">
+    <aside class="right-sidebar" id="cartPanel">
 
         <section class="my-order-box">
 
-            <h2>My Order</h2>
+            <div class="order-box-header">
+                <h2>My Order</h2>
+                <button type="button" class="cart-close" id="cartClose" aria-label="Close my order">×</button>
+            </div>
 
             <div class="my-order-content" id="myOrderContent"></div>
 
@@ -373,249 +311,24 @@ if ($foodResult) {
 
     </aside>
 
-
 </div>
 
-
-
-<!-- =========================================
-     JAVASCRIPT
-========================================= -->
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const profileBtn = document.getElementById("profileBtn");
-    const profileDropdown = document.getElementById("profileDropdown");
-
-    if (profileBtn && profileDropdown) {
-
-        profileBtn.addEventListener("click", function (event) {
-            event.stopPropagation();
-            profileDropdown.classList.toggle("show");
-        });
-
-        profileDropdown.addEventListener("click", function (event) {
-            event.stopPropagation();
-        });
-
-        document.addEventListener("click", function () {
-            profileDropdown.classList.remove("show");
-        });
-
-    }
-
-    const categoryButtons = document.querySelectorAll(".category-button");
-    const foodCards = document.querySelectorAll(".food-card");
-
-    categoryButtons.forEach(function (button) {
-
-        button.addEventListener("click", function () {
-
-            const selectedCategory = this.getAttribute("data-category");
-
-            categoryButtons.forEach(function (btn) {
-                btn.classList.remove("active");
-            });
-
-            this.classList.add("active");
-
-            foodCards.forEach(function (card) {
-
-                const foodCategory = card.getAttribute("data-category");
-
-                if (selectedCategory === "All" || foodCategory === selectedCategory) {
-                    card.style.display = "";
-                } else {
-                    card.style.display = "none";
-                }
-
-            });
-
-        });
-
-    });
-
-    const foodSearch = document.getElementById("foodSearch");
-
-    if (foodSearch) {
-
-        foodSearch.addEventListener("input", function () {
-
-            const searchText = this.value.toLowerCase().trim();
-
-            foodCards.forEach(function (card) {
-
-                const foodName = card.querySelector("h3").textContent.toLowerCase();
-
-                if (foodName.includes(searchText)) {
-                    card.style.display = "";
-                } else {
-                    card.style.display = "none";
-                }
-
-            });
-
-        });
-
-    }
-
-    const myOrderContent = document.getElementById("myOrderContent");
-    const orderTotal = document.getElementById("orderTotal");
-    const checkoutButton = document.getElementById("checkoutButton");
-
-    let orders = [];
-
-    const addOrderButtons = document.querySelectorAll(".add-order-button");
-
-    addOrderButtons.forEach(function (button) {
-
-        button.addEventListener("click", function () {
-
-            const foodCard = this.closest(".food-card");
-            const foodId = this.dataset.id;
-            const foodName = foodCard.querySelector("h3").textContent.trim();
-            const foodPriceEl = foodCard.querySelector(".food-price");
-            const foodPrice = parseFloat(foodPriceEl.dataset.price);
-
-            const existingItem = orders.find(function (item) {
-                return item.id === foodId;
-            });
-
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                orders.push({ id: foodId, name: foodName, price: foodPrice, quantity: 1 });
-            }
-
-            updateOrder();
-
-            const originalText = this.textContent;
-            this.textContent = "Added ✓";
-
-            setTimeout(function () {
-                button.textContent = originalText;
-            }, 800);
-
-        });
-
-    });
-
-    function updateOrder() {
-
-        myOrderContent.innerHTML = "";
-        let total = 0;
-
-        if (orders.length === 0) {
-            myOrderContent.innerHTML = `<div class="empty-order"><p>Your order is empty.</p></div>`;
-        }
-
-        orders.forEach(function (item, index) {
-
-            const itemTotal = item.price * item.quantity;
-            total += itemTotal;
-
-            const orderItem = document.createElement("div");
-            orderItem.className = "order-item";
-
-            orderItem.innerHTML = `
-                <div class="order-item-info">
-                    <strong>${item.name}</strong>
-                    <span>₱${item.price.toFixed(2)}</span>
-                </div>
-                <div class="order-item-controls">
-                    <button type="button" class="quantity-button decrease" data-index="${index}">−</button>
-                    <span class="quantity">${item.quantity}</span>
-                    <button type="button" class="quantity-button increase" data-index="${index}">+</button>
-                    <button type="button" class="remove-button" data-index="${index}">×</button>
-                </div>
-                <div class="order-item-total">₱${itemTotal.toFixed(2)}</div>
-            `;
-
-            myOrderContent.appendChild(orderItem);
-
-        });
-
-        orderTotal.textContent = "₱" + total.toFixed(2);
-
-        document.querySelectorAll(".decrease").forEach(function (button) {
-            button.addEventListener("click", function () {
-                const index = parseInt(this.dataset.index);
-                if (orders[index].quantity > 1) {
-                    orders[index].quantity--;
-                } else {
-                    orders.splice(index, 1);
-                }
-                updateOrder();
-            });
-        });
-
-        document.querySelectorAll(".increase").forEach(function (button) {
-            button.addEventListener("click", function () {
-                const index = parseInt(this.dataset.index);
-                orders[index].quantity++;
-                updateOrder();
-            });
-        });
-
-        document.querySelectorAll(".remove-button").forEach(function (button) {
-            button.addEventListener("click", function () {
-                const index = parseInt(this.dataset.index);
-                orders.splice(index, 1);
-                updateOrder();
-            });
-        });
-
-    }
-
-
-    if (checkoutButton) {
-
-        checkoutButton.addEventListener("click", function () {
-
-            if (orders.length === 0) {
-                alert("Your order is empty.");
-                return;
-            }
-
-            checkoutButton.disabled = true;
-            checkoutButton.textContent = "Processing...";
-
-            fetch("checkout.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ orders: orders })
-            })
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
-
-                    if (data.success) {
-                        orders = [];
-                        updateOrder();
-                        window.location.href = "dashboard.php";
-                    } else {
-                        alert(data.message || "Something went wrong.");
-                        checkoutButton.disabled = false;
-                        checkoutButton.textContent = "Checkout";
-                    }
-
-                })
-                .catch(function () {
-                    alert("Something went wrong. Please try again.");
-                    checkoutButton.disabled = false;
-                    checkoutButton.textContent = "Checkout";
-                });
-
-        });
-
-    }
-
-    updateOrder();
-
-});
-
-</script>
+<button
+    type="button"
+    class="cart-fab"
+    id="cartToggle"
+    aria-label="Open my order"
+    aria-controls="cartPanel"
+    aria-expanded="false"
+>
+    <span>🛒</span>
+    <span>My Order</span>
+    <span class="cart-fab-count" id="cartCount">0</span>
+</button>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+
+<script src="../assests/css/js/menu_student.js"></script>
 
 </body>
 

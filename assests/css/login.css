@@ -26,7 +26,9 @@ body {
 
 
 /* =========================================
-   LOGIN CONTAINER — FULL SCREEN
+   LOGIN CONTAINER — ANIMATED BACKGROUND
+   Slowly shifting warm gradient + two soft
+   glow blobs + a faint dotted texture.
 ========================================= */
 
 .login-container {
@@ -35,7 +37,17 @@ body {
     width: 100vw;
     height: 100vh;
 
-    background: radial-gradient(circle at 50% 40%, #fff8e1 0%, #fff0b9 45%, #ffdb8a 100%);
+    background:
+        linear-gradient(
+            120deg,
+            #fff8e1,
+            #ffe9a8,
+            #ffd180,
+            #ffe9a8,
+            #fff3c4
+        );
+    background-size: 300% 300%;
+    animation: bgShift 18s ease-in-out infinite;
 
     overflow: hidden;
 
@@ -44,15 +56,101 @@ body {
     justify-content: center;
 }
 
+/* Glow blobs */
+
+.login-container::before,
+.login-container::after {
+    content: "";
+
+    position: absolute;
+    z-index: 0;
+
+    border-radius: 50%;
+    filter: blur(70px);
+
+    pointer-events: none;
+}
+
+.login-container::before {
+    width: 45vw;
+    height: 45vw;
+
+    top: -15vw;
+    left: -10vw;
+
+    background: rgba(255, 152, 0, 0.35);
+
+    animation: blobDrift 14s ease-in-out infinite;
+}
+
+.login-container::after {
+    width: 40vw;
+    height: 40vw;
+
+    bottom: -15vw;
+    right: -8vw;
+
+    background: rgba(255, 112, 67, 0.3);
+
+    animation: blobDrift 17s ease-in-out infinite reverse;
+}
+
+/* Faint dotted texture over the gradient */
+
+.login-container {
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.45) 1.5px, transparent 1.5px),
+        linear-gradient(
+            120deg,
+            #fff8e1,
+            #ffe9a8,
+            #ffd180,
+            #ffe9a8,
+            #fff3c4
+        );
+    background-size: 28px 28px, 300% 300%;
+}
+
+@keyframes bgShift {
+    0%   { background-position: 0 0, 0% 50%; }
+    50%  { background-position: 0 0, 100% 50%; }
+    100% { background-position: 0 0, 0% 50%; }
+}
+
+@keyframes blobDrift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(5vw, 4vh) scale(1.12); }
+}
+
 
 /* =========================================
    FOOD IMAGES
-   Spread across the full screen, bigger and
-   bolder, faded at the edges, sitting behind
-   the form card.
+   Tidy, mirrored layout that frames the card:
+   - 4 big images in the corners
+   - 4 smaller images tucked beside them
+   - 2 medium images centered on the side edges
+   A light blur gives a soft depth-of-field look
+   (the images stay recognisable, not fully blurred).
 ========================================= */
 
+.login-container {
+    --food-big: clamp(160px, 15vw, 270px);
+    --food-small: clamp(110px, 10vw, 180px);
+    --food-mid: clamp(120px, 11vw, 190px);
+
+    --edge-gap: 2vw;
+    --row-gap: 3vh;
+    --inner-gap: 1.5vw;
+}
+
 .food {
+    --rot: 0deg;
+    --ty: 0px;
+    --blur: 1.5px;
+    --float-distance: 10px;
+    --float-time: 7s;
+    --float-delay: 0s;
+
     position: absolute;
 
     display: block;
@@ -64,150 +162,171 @@ body {
 
     object-fit: contain;
 
-    opacity: 0.85;
+    opacity: 0.92;
 
     -webkit-mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
     mask-image: radial-gradient(ellipse at center, black 55%, transparent 85%);
 
-    filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.1));
+    filter: blur(var(--blur)) drop-shadow(0 12px 18px rgba(0, 0, 0, 0.14));
+
+    transform: translateY(var(--ty)) rotate(var(--rot));
+
+    animation: floatFood var(--float-time) ease-in-out var(--float-delay) infinite;
+}
+
+@keyframes floatFood {
+    0%, 100% {
+        transform: translateY(var(--ty)) rotate(var(--rot));
+    }
+    50% {
+        transform:
+            translateY(calc(var(--ty) - var(--float-distance)))
+            rotate(calc(var(--rot) + 3deg));
+    }
 }
 
 
-/* =========================================
-   TOP LEFT CLUSTER
-========================================= */
+/* ---------- SIZES ---------- */
+
+/* Big: corners (slightly softer blur) */
+
+.food-donut,
+.food-burger,
+.food-burger-bottom,
+.food-ramen {
+    width: var(--food-big);
+    --blur: 1.5px;
+}
+
+/* Small: tucked beside the corners (a bit more blur = depth) */
+
+.food-hotdog,
+.food-tacos,
+.food-spagetti,
+.food-drink {
+    width: var(--food-small);
+    --blur: 2.5px;
+}
+
+/* Medium: side edges */
+
+.food-pizza,
+.food-pizza-small {
+    width: var(--food-mid);
+    --blur: 2px;
+}
+
+
+/* ---------- TOP ROW ---------- */
 
 .food-donut {
-    width: 20vw;
-    min-width: 220px;
-    max-width: 340px;
+    --rot: -8deg;
+    --float-time: 8s;
 
-    top: -6vh;
-    left: -2vw;
-
-    transform: rotate(20deg);
+    top: var(--row-gap);
+    left: var(--edge-gap);
 }
 
 .food-hotdog {
-    width: 18vw;
-    min-width: 200px;
-    max-width: 300px;
+    --rot: 8deg;
+    --float-time: 6.5s;
+    --float-delay: -2s;
 
-    top: 0vh;
-    left: 14vw;
-
-    transform: rotate(-20deg);
+    top: calc(var(--row-gap) + (var(--food-big) - var(--food-small)) / 2);
+    left: calc(var(--edge-gap) + var(--food-big) + var(--inner-gap));
 }
 
-
-/* =========================================
-   TOP RIGHT CLUSTER
-========================================= */
-
 .food-burger {
-    width: 20vw;
-    min-width: 220px;
-    max-width: 340px;
+    --rot: 8deg;
+    --float-time: 7.5s;
+    --float-delay: -1s;
 
-    top: -6vh;
-    right: -2vw;
-
-    transform: rotate(12deg);
+    top: var(--row-gap);
+    right: var(--edge-gap);
 }
 
 .food-tacos {
-    width: 15vw;
-    min-width: 170px;
-    max-width: 260px;
+    --rot: -8deg;
+    --float-time: 6s;
+    --float-delay: -3s;
 
-    top: 4vh;
-    right: 14vw;
-
-    transform: rotate(-10deg);
+    top: calc(var(--row-gap) + (var(--food-big) - var(--food-small)) / 2);
+    right: calc(var(--edge-gap) + var(--food-big) + var(--inner-gap));
 }
 
 
-/* =========================================
-   LEFT EDGE ACCENT
-========================================= */
+/* ---------- MIDDLE (side edges) ---------- */
 
 .food-pizza-small {
-    width: 15vw;
-    min-width: 160px;
-    max-width: 250px;
+    --rot: 10deg;
+    --ty: -50%;
+    --float-time: 9s;
+    --float-delay: -4s;
 
-    top: 45%;
-    left: -2vw;
-    transform: translateY(-50%) rotate(20deg);
+    top: 50%;
+    left: var(--edge-gap);
 }
-
-
-/* =========================================
-   RIGHT EDGE ACCENT
-========================================= */
 
 .food-pizza {
-    width: 16vw;
-    min-width: 180px;
-    max-width: 280px;
+    --rot: -10deg;
+    --ty: -50%;
+    --float-time: 8.5s;
+    --float-delay: -1.5s;
 
-    top: 38%;
-    right: -2vw;
-    transform: translateY(-50%) rotate(-15deg);
+    top: 50%;
+    right: var(--edge-gap);
 }
 
 
-/* =========================================
-   BOTTOM LEFT CLUSTER
-========================================= */
+/* ---------- BOTTOM ROW ---------- */
 
 .food-burger-bottom {
-    width: 20vw;
-    min-width: 220px;
-    max-width: 340px;
+    --rot: -6deg;
+    --float-time: 7s;
+    --float-delay: -5s;
 
-    bottom: -6vh;
-    left: -2vw;
-
-    transform: rotate(-8deg);
+    bottom: var(--row-gap);
+    left: var(--edge-gap);
 }
 
 .food-spagetti {
-    width: 18vw;
-    min-width: 200px;
-    max-width: 300px;
+    --rot: 6deg;
+    --float-time: 8s;
+    --float-delay: -2.5s;
 
-    bottom: 1vh;
-    left: 14vw;
-
-    transform: rotate(5deg);
+    bottom: calc(var(--row-gap) + (var(--food-big) - var(--food-small)) / 2);
+    left: calc(var(--edge-gap) + var(--food-big) + var(--inner-gap));
 }
 
-
-/* =========================================
-   BOTTOM RIGHT CLUSTER
-========================================= */
-
 .food-ramen {
-    width: 20vw;
-    min-width: 220px;
-    max-width: 340px;
+    --rot: 6deg;
+    --float-time: 9s;
+    --float-delay: -3.5s;
 
-    bottom: -6vh;
-    right: -2vw;
-
-    transform: rotate(-10deg);
+    bottom: var(--row-gap);
+    right: var(--edge-gap);
 }
 
 .food-drink {
-    width: 13vw;
-    min-width: 140px;
-    max-width: 220px;
+    --rot: -6deg;
+    --float-time: 6.5s;
+    --float-delay: -0.5s;
 
-    bottom: 3vh;
-    right: 14vw;
+    bottom: calc(var(--row-gap) + (var(--food-big) - var(--food-small)) / 2);
+    right: calc(var(--edge-gap) + var(--food-big) + var(--inner-gap));
+}
 
-    transform: rotate(12deg);
+
+/* ---------- SMALLER SCREENS: fewer images, less clutter ---------- */
+
+@media (max-width: 1100px) {
+
+    .food-hotdog,
+    .food-tacos,
+    .food-spagetti,
+    .food-drink {
+        display: none;
+    }
 }
 
 
@@ -236,6 +355,19 @@ body {
         0 30px 70px rgba(0, 0, 0, 0.15),
         0 2px 8px rgba(0, 0, 0, 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+    animation: cardIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 
@@ -307,28 +439,19 @@ body {
 
     outline: none;
 
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
-
-
-/* =========================================
-   INPUT PLACEHOLDER
-========================================= */
 
 .input-group input::placeholder {
     color: #999;
     opacity: 0.9;
 }
 
-
-/* =========================================
-   INPUT FOCUS
-========================================= */
-
 .input-group input:focus {
     border-color: #f9a825;
     background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 0 0 4px rgba(249, 168, 37, 0.15);
+    transform: translateY(-1px);
 }
 
 
@@ -356,11 +479,16 @@ body {
 
 
 /* =========================================
-   BUTTONS
+   BUTTONS — shared animation
+   Hover: lift + glow + light sweep
+   Press: squish
 ========================================= */
 
 .login-btn,
 .signup-btn {
+    position: relative;
+    overflow: hidden;
+
     display: flex;
 
     justify-content: center;
@@ -379,7 +507,60 @@ body {
     text-decoration: none;
     border: none;
 
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition:
+        transform 0.2s cubic-bezier(0.3, 1.4, 0.5, 1),
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+/* Light sweep */
+
+.login-btn::after,
+.signup-btn::after {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: -80%;
+
+    width: 50%;
+    height: 100%;
+
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.45),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    pointer-events: none;
+}
+
+.login-btn:hover::after,
+.signup-btn:hover::after {
+    left: 130%;
+
+    transition: left 0.6s ease;
+}
+
+.login-btn:active,
+.signup-btn:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.login-btn:focus-visible,
+.signup-btn:focus-visible {
+    outline: 3px solid rgba(249, 168, 37, 0.6);
+    outline-offset: 3px;
+}
+
+.login-btn span,
+.signup-btn span {
+    display: inline-block;
+
+    transition: transform 0.25s ease;
 }
 
 
@@ -394,21 +575,31 @@ body {
     color: white;
 
     box-shadow: 0 6px 16px rgba(76, 175, 80, 0.35);
+
+    animation: loginPulse 2.8s ease-in-out infinite;
 }
 
 .login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
-}
+    transform: translateY(-3px);
+    box-shadow: 0 12px 22px rgba(76, 175, 80, 0.45);
+    filter: brightness(1.05);
 
-.login-btn:active {
-    transform: translateY(0);
+    animation: none;
 }
 
 .login-btn span {
     margin-right: 6px;
 
     font-size: 16px;
+}
+
+.login-btn:hover span {
+    transform: scale(1.3) rotate(-8deg);
+}
+
+@keyframes loginPulse {
+    0%, 100% { box-shadow: 0 6px 16px rgba(76, 175, 80, 0.35); }
+    50%      { box-shadow: 0 6px 22px rgba(76, 175, 80, 0.6); }
 }
 
 
@@ -426,12 +617,9 @@ body {
 }
 
 .signup-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(33, 150, 243, 0.4);
-}
-
-.signup-btn:active {
-    transform: translateY(0);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 22px rgba(33, 150, 243, 0.45);
+    filter: brightness(1.05);
 }
 
 .signup-btn span {
@@ -440,12 +628,18 @@ body {
     font-size: 15px;
 }
 
+.signup-btn:hover span {
+    transform: rotate(90deg) scale(1.15);
+}
+
 
 /* =========================================
    FORGOT PASSWORD
 ========================================= */
 
 .forgot-password {
+    position: relative;
+
     display: block;
 
     margin-top: 18px;
@@ -462,9 +656,63 @@ body {
     transition: color 0.15s ease;
 }
 
+.forgot-password::after {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    bottom: -3px;
+
+    width: 0;
+    height: 1.5px;
+
+    background: #f9a825;
+
+    transform: translateX(-50%);
+
+    transition: width 0.25s ease;
+}
+
 .forgot-password:hover {
     color: #f9a825;
-    text-decoration: underline;
+}
+
+.forgot-password:hover::after {
+    width: 60%;
+}
+
+
+/* =========================================
+   HONEYPOT + ERROR MESSAGE
+========================================= */
+
+.hp-field {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.error-message {
+    background: rgba(211, 47, 47, 0.1);
+    border: 1px solid #d32f2f;
+    color: #b71c1c;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+
+    animation: shake 0.45s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    40%      { transform: translateX(6px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
 }
 
 
@@ -493,44 +741,39 @@ body {
         font-size: 15px;
     }
 
-    .food-donut,
-    .food-hotdog,
-    .food-burger,
-    .food-burger-bottom,
-    .food-ramen,
-    .food-spagetti {
-        width: 38vw;
-        min-width: 150px;
-        max-width: 220px;
+    /* Phones: only the four corner images */
+
+    .login-container {
+        --food-big: clamp(110px, 32vw, 170px);
+        --edge-gap: 0vw;
     }
 
     .food-pizza,
-    .food-pizza-small,
-    .food-tacos,
-    .food-drink {
-        width: 30vw;
-        min-width: 120px;
-        max-width: 180px;
+    .food-pizza-small {
+        display: none;
     }
 }
 
 
-.hp-field {
-    position: absolute;
-    left: -9999px;
-    top: -9999px;
-    opacity: 0;
-    pointer-events: none;
-}
+/* =========================================
+   REDUCED MOTION — respect user setting
+========================================= */
 
+@media (prefers-reduced-motion: reduce) {
 
-.error-message {
-    background: rgba(211, 47, 47, 0.1);
-    border: 1px solid #d32f2f;
-    color: #b71c1c;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    margin-bottom: 20px;
-    text-align: center;
+    .login-container,
+    .login-container::before,
+    .login-container::after,
+    .food,
+    .login-box,
+    .login-btn,
+    .error-message {
+        animation: none;
+    }
+
+    .login-btn,
+    .signup-btn,
+    .input-group input {
+        transition: none;
+    }
 }

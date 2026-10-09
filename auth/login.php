@@ -30,7 +30,7 @@ if (isset($_POST['login'])) {
         $student_id = trim($_POST['student_id']);
         $password = $_POST['password'];
 
-        if ($student_id === '' || $password === '' || strlen($student_id) > 50) {
+        if ($student_id === '' || $password === '' || strlen($student_id) > 50 || !ctype_digit($student_id)) {
             $error = "Please enter a valid I.D and password.";
         } else {
             record_ip_attempt();
@@ -143,6 +143,10 @@ if (isset($_POST['login'])) {
                         name="student_id"
                         placeholder="Input ID"
                         maxlength="50"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        title="Numbers only"
+                        autocomplete="off"
                         required
                     >
                 </div>
@@ -180,6 +184,7 @@ if (isset($_POST['login'])) {
 
     </div>
 
+   <script src="../assests/css/js/login_student.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,338 @@
+:root {
+    --bg: #fffbea;
+    --ink: #222;
+    --muted: #7a7156;
+    --green: #49b95d;
+    --green-dark: #1b5e20;
+    --blue: #2939e8;
+    --blue-dark: #1f2dcc;
+    --card-border: #e2d8b0;
+    --dash: #e2d8b0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: #111;
+}
+
+.receipt-page {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 28px 16px 48px;
+}
+
+.receipt-brand {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.receipt-brand span {
+    color: var(--green);
+}
+
+.receipt {
+    padding: 28px 24px;
+    background: #ffffff;
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.receipt-header {
+    padding-bottom: 18px;
+    text-align: center;
+    border-bottom: 2px dashed var(--dash);
+}
+
+.receipt-check {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(73, 185, 93, 0.16);
+    color: var(--green-dark);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.receipt-check.muted {
+    background: #f0e5cc;
+    color: #8a7f60;
+}
+
+.receipt-header h1,
+.receipt-empty h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.receipt-header p,
+.receipt-empty p {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.receipt-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+    padding: 18px 0;
+    border-bottom: 2px dashed var(--dash);
+}
+
+.receipt-meta > div {
+    min-width: 0;
+}
+
+.receipt-meta span {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #8a7f60;
+}
+
+.receipt-meta strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 14px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.receipt-items {
+    padding: 6px 0;
+    border-bottom: 2px dashed var(--dash);
+}
+
+.receipt-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed #efe5c4;
+}
+
+.receipt-item:last-child {
+    border-bottom: none;
+}
+
+.receipt-item-info {
+    min-width: 0;
+}
+
+.receipt-item-info strong {
+    display: block;
+    font-size: 15px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.receipt-item-info span {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    color: #8a7f60;
+}
+
+.receipt-item-total {
+    flex-shrink: 0;
+    font-size: 15px;
+    color: var(--ink);
+}
+
+.receipt-totals {
+    padding: 14px 0 4px;
+}
+
+.receipt-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.receipt-line.grand {
+    margin-top: 10px;
+    padding-top: 14px;
+    border-top: 2px dashed var(--dash);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.receipt-footer {
+    margin-top: 16px;
+    padding-top: 14px;
+    text-align: center;
+    border-top: 2px dashed var(--dash);
+}
+
+.receipt-footer p {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.receipt-empty {
+    text-align: center;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    background: rgba(255, 152, 0, 0.15);
+    color: #e65100;
+}
+
+.status-preparing {
+    background: rgba(33, 150, 243, 0.15);
+    color: #1565c0;
+}
+
+.status-ready {
+    background: rgba(76, 175, 80, 0.15);
+    color: #2e7d32;
+}
+
+.status-completed {
+    background: rgba(96, 125, 139, 0.15);
+    color: #455a64;
+}
+
+.status-cancelled {
+    background: rgba(244, 67, 54, 0.15);
+    color: #c62828;
+}
+
+.receipt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.receipt-button {
+    flex: 1 1 130px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.receipt-button:hover {
+    transform: translateY(-2px);
+}
+
+.receipt-button.primary {
+    background: var(--blue);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(41, 57, 232, 0.3);
+}
+
+.receipt-button.primary:hover {
+    background: var(--blue-dark);
+    box-shadow: 0 10px 20px rgba(41, 57, 232, 0.35);
+}
+
+.receipt-button.secondary {
+    background: #fffdf2;
+    color: #333;
+    border: 1px solid var(--card-border);
+}
+
+.receipt-button.secondary:hover {
+    background: #f2e2ad;
+}
+
+.receipt-button.success {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    color: #ffffff;
+    box-shadow: 0 6px 14px rgba(76, 175, 80, 0.3);
+}
+
+.receipt-button:focus-visible {
+    outline: 3px solid rgba(41, 57, 232, 0.45);
+    outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+    .receipt-page {
+        padding: 18px 12px 40px;
+    }
+
+    .receipt {
+        padding: 22px 18px;
+    }
+
+    .receipt-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .receipt-button {
+        flex-basis: 100%;
+    }
+}
+
+@media print {
+    body {
+        background: #ffffff;
+    }
+
+    .receipt-brand,
+    .receipt-actions {
+        display: none;
+    }
+
+    .receipt-page {
+        max-width: none;
+        padding: 0;
+    }
+
+    .receipt {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: 0.01ms !important;
+    }
+}

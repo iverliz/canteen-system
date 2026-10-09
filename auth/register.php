@@ -35,6 +35,8 @@ if (isset($_POST['register'])) {
 
         if ($username === '' || $student_id === '' || $password === '') {
             $error = "Please fill in all fields.";
+        } elseif (!ctype_digit($student_id)) {
+            $error = "I.D must contain numbers only.";
         } elseif (strlen($username) > 50 || strlen($student_id) > 50) {
             $error = "Username or ID is too long.";
         } elseif (strlen($password) < 6) {
@@ -144,6 +146,9 @@ if (isset($_POST['register'])) {
                         name="student_id"
                         placeholder="Input ID"
                         maxlength="50"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        title="Numbers only"
                         required
                     >
                 </div>
@@ -182,6 +187,10 @@ if (isset($_POST['register'])) {
         </div>
 
     </div>
+
+
+   <script src="../assests/css/js/register_student.js"></script>
+ 
 
 </body>
 </html>
