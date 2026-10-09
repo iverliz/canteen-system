@@ -16,12 +16,33 @@ $historyStmt = $conn->prepare(
     "SELECT o.id, o.total, o.status, o.created_at, oi.food_name, oi.price, oi.quantity
      FROM orders o
      JOIN order_items oi ON oi.order_id = o.id
-     WHERE o.user_id = ?
+     WHERE o.user_id = ? AND DATE(o.created_at) = CURDATE()
      ORDER BY o.created_at DESC, o.id DESC"
 );
 $historyStmt->bind_param("i", $_SESSION['user_id']);
 $historyStmt->execute();
 $historyResult = $historyStmt->get_result();
+
+$orderHistory = [];
+while ($row = $historyResult->fetch_assoc()) {
+    $orderHistory[$row['id']]['status'] = $row['status'];
+    $orderHistory[$row['id']]['created_at'] = $row['created_at'];
+    $orderHistory[$row['id']]['total'] = $row['total'];
+    $orderHistory[$row['id']]['items'][] = [
+        'name'     => $row['food_name'],
+        'price'    => $row['price'],
+        'quantity' => $row['quantity'],
+    ];
+}
+$historyStmt->close();
+
+$todaySpent = 0;
+
+foreach ($orderHistory as $order) {
+    if (strtolower($order['status']) !== 'cancelled') {
+        $todaySpent += $order['total'];
+    }
+}
 
 $orderHistory = [];
 while ($row = $historyResult->fetch_assoc()) {
@@ -300,54 +321,73 @@ if ($popularResult) {
 
         <section class="history-box">
 
-            <div class="box-header">
-                <h2>History Order</h2>
-                <span class="count-pill"><?= count($orderHistory) ?></span>
+    <div class="box-header">
+        <div>
+            <h2>History Order</h2>
+            <span class="history-day"><?= date('M d, Y') ?> · resets daily</span>
+        </div>
+        <span class="count-pill"><?= count($orderHistory) ?></span>
+    </div>
+
+    <div class="history-content">
+
+        <?php if (empty($orderHistory)): ?>
+
+            <div class="empty-history">
+                <p>No orders today.</p>
+                <a href="orders.php" class="history-link">View all my orders</a>
             </div>
 
-            <div class="history-content">
+        <?php else: ?>
 
-                <?php if (empty($orderHistory)): ?>
+            <?php foreach ($orderHistory as $orderId => $order): ?>
 
-                    <p class="empty-history">No orders yet.</p>
+                <div class="history-order">
 
-                <?php else: ?>
+                    <div class="history-order-header">
+                        <strong>Order #<?= $orderId ?></strong>
+                        <span class="status-badge status-<?= htmlspecialchars(strtolower($order['status'])) ?>">
+                            <?= ucfirst(htmlspecialchars(strtolower($order['status']))) ?>
+                        </span>
+                    </div>
 
-                    <?php foreach ($orderHistory as $orderId => $order): ?>
+                    <div class="history-order-date">
+                        <?= date('M d, Y g:i A', strtotime($order['created_at'])) ?>
+                    </div>
 
-                        <div class="history-order">
-
-                            <div class="history-order-header">
-                                <strong>Order #<?= $orderId ?></strong>
-                                <span class="status-badge status-<?= htmlspecialchars($order['status']) ?>">
-                                    <?= ucfirst(htmlspecialchars($order['status'])) ?>
-                                </span>
+                    <?php foreach ($order['items'] as $item): ?>
+                        <div class="history-item">
+                            <div class="history-item-info">
+                                <strong><?= htmlspecialchars($item['name']) ?></strong>
+                                <span><?= (int)$item['quantity'] ?> × ₱<?= number_format($item['price'], 2) ?></span>
                             </div>
-
-                            <div class="history-order-date">
-                                <?= date('M d, Y g:i A', strtotime($order['created_at'])) ?>
-                            </div>
-
-                            <?php foreach ($order['items'] as $item): ?>
-                                <div class="history-item">
-                                    <span><?= htmlspecialchars($item['name']) ?> × <?= $item['quantity'] ?></span>
-                                    <span>₱<?= number_format($item['price'] * $item['quantity'], 2) ?></span>
-                                </div>
-                            <?php endforeach; ?>
-
-                            <div class="history-order-total">
-                                Total: ₱<?= number_format($order['total'], 2) ?>
-                            </div>
-
+                            <span class="history-item-total">₱<?= number_format($item['price'] * $item['quantity'], 2) ?></span>
                         </div>
-
                     <?php endforeach; ?>
 
-                <?php endif; ?>
+                    <div class="history-order-footer">
+                        <a href="receipt.php?id=<?= (int)$orderId ?>" class="history-receipt">View receipt</a>
+                        <span class="history-total">Total: ₱<?= number_format($order['total'], 2) ?></span>
+                    </div>
 
-            </div>
+                </div>
 
-        </section>
+            <?php endforeach; ?>
+
+        <?php endif; ?>
+
+    </div>
+
+    <?php if (!empty($orderHistory)): ?>
+
+        <div class="history-summary">
+            <span>Spent today</span>
+            <strong>₱<?= number_format($todaySpent, 2) ?></strong>
+        </div>
+
+    <?php endif; ?>
+
+</section>
 
         <section class="cta-box">
 
