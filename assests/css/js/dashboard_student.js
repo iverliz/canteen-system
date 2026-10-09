@@ -250,3 +250,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const foodSearch = document.getElementById("foodSearch");
+    const popularCards = document.querySelectorAll(".popular-card");
+    const searchEmpty = document.getElementById("searchEmpty");
+
+    if (!foodSearch) return;
+
+    foodSearch.addEventListener("input", function () {
+        const searchValue = foodSearch.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        popularCards.forEach(function (card) {
+            const foodName = card.getAttribute("data-name") || "";
+
+            if (foodName.includes(searchValue)) {
+                card.style.display = "";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        // Show a message if no food matches
+        if (searchEmpty) {
+            searchEmpty.hidden = visibleCount !== 0;
+        }
+    });
+});

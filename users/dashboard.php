@@ -13,55 +13,45 @@ $username = $_SESSION['username'] ?? 'User';
 require_once '../database/db_connect.php';
 
 $historyStmt = $conn->prepare(
-    "SELECT o.id, o.total, o.status, o.created_at,
-            oi.food_name, oi.price, oi.quantity
+    "SELECT o.id, o.total, o.status, o.created_at, oi.food_name, oi.price, oi.quantity
      FROM orders o
      JOIN order_items oi ON oi.order_id = o.id
-     WHERE o.user_id = ?
-       AND DATE(o.created_at) = CURDATE()
+     WHERE o.user_id = ? AND DATE(o.created_at) = CURDATE()
      ORDER BY o.created_at DESC, o.id DESC"
 );
-
 $historyStmt->bind_param("i", $_SESSION['user_id']);
 $historyStmt->execute();
-
 $historyResult = $historyStmt->get_result();
 
 $orderHistory = [];
-$todaySpent = 0;
-
 while ($row = $historyResult->fetch_assoc()) {
-
-    $orderId = $row['id'];
-
-    if (!isset($orderHistory[$orderId])) {
-        $orderHistory[$orderId] = [
-            'status'     => $row['status'],
-            'created_at' => $row['created_at'],
-            'total'      => $row['total'],
-            'items'      => []
-        ];
-    }
-
-    $orderHistory[$orderId]['items'][] = [
+    $orderHistory[$row['id']]['status'] = $row['status'];
+    $orderHistory[$row['id']]['created_at'] = $row['created_at'];
+    $orderHistory[$row['id']]['total'] = $row['total'];
+    $orderHistory[$row['id']]['items'][] = [
         'name'     => $row['food_name'],
         'price'    => $row['price'],
         'quantity' => $row['quantity'],
     ];
 }
+$historyStmt->close();
+
+$todaySpent = 0;
 
 foreach ($orderHistory as $order) {
-
     if (strtolower($order['status']) !== 'cancelled') {
-        $todaySpent += (float) $order['total'];
+        $todaySpent += $order['total'];
     }
 }
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
 $historyStmt->close();
 
 >>>>>>> 86c0e6a4e1afb3a67d4b9a92d70dcad9b8bb1952
+=======
+>>>>>>> Stashed changes
 $popularFoods = [];
 
 $popularResult = $conn->query(
@@ -69,7 +59,7 @@ $popularResult = $conn->query(
             (SELECT COALESCE(SUM(oi.quantity), 0)
              FROM order_items oi
              WHERE oi.food_name = m.food_name) AS sold
-     FROM `food-menu` m
+     FROM food-menu m
      WHERE m.availability = 1
      ORDER BY sold DESC, m.food_id DESC
      LIMIT 8"
@@ -77,15 +67,14 @@ $popularResult = $conn->query(
 
 if ($popularResult) {
     while ($row = $popularResult->fetch_assoc()) {
-
         $row['picture'] = !empty($row['food_picture'])
             ? 'data:image/jpeg;base64,' . base64_encode($row['food_picture'])
             : null;
-
         $popularFoods[] = $row;
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
